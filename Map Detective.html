@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Map Detective</title>
+<style>
+:root{--bg:#F6FAF9;--card:#fff;--ink:#1F2937;--mut:#5B6572;--teal:#0F766E;--tl:#E3F3F1;--or:#E08E45;--bd:#DCEAE7;--ok:#1F7A3D;--okb:#E5F5E9;--bad:#B23B32;--badb:#FCEBEA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10201E;--card:#172B28;--ink:#E7F0EE;--mut:#9BB0AC;--teal:#3CB5A9;--tl:#1E3A36;--bd:#2B4642;--ok:#7FD99A;--okb:#1E3A2A;--bad:#F0968E;--badb:#3D2220}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;padding:1.4rem 1rem}
+.wrap{max-width:640px;margin:auto}
+h1{font-size:28px;color:var(--teal);margin:0;text-align:center}.sub{text-align:center;color:var(--mut);margin:2px 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:1.3rem}
+.stat{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+.bar{height:9px;background:var(--tl);border-radius:6px;overflow:hidden;margin:6px 0 14px}.bar div{height:100%;background:var(--teal);transition:width .25s}
+.badge{display:inline-block;background:var(--tl);color:var(--teal);font-weight:700;font-size:13px;padding:4px 12px;border-radius:99px;margin-bottom:10px}
+.q{font-size:20px;font-weight:700;margin:6px 0 14px}
+.map{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 6px}.map div{background:var(--tl);border-radius:10px;text-align:center;padding:6px 2px;font-size:12px;font-weight:600}.map span{display:block;font-size:22px}
+.note{font-size:12px;color:var(--mut);margin:0 0 12px;text-align:center}
+.opts{display:grid;gap:9px}
+button.opt{text-align:left;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--bd);background:var(--card);color:var(--ink);cursor:pointer}
+button.opt:hover:not(:disabled){border-color:var(--teal);background:var(--tl)}
+.opt.c{background:var(--okb);border-color:var(--ok);color:var(--ok);font-weight:700}.opt.w{background:var(--badb);border-color:var(--bad);color:var(--bad);font-weight:700}
+.fb{margin-top:12px;font-weight:700;min-height:22px}.fb.g{color:var(--ok)}.fb.b{color:var(--bad)}
+.btn{background:var(--teal);color:#fff;border:none;font-size:16px;font-weight:700;padding:11px 20px;border-radius:12px;cursor:pointer}.btn.o{background:var(--or)}.btn.s{background:var(--card);color:var(--teal);border:1.5px solid var(--teal)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+label{display:block;font-size:13px;font-weight:700;color:var(--teal);margin:12px 0 4px}
+input{width:100%;font-size:16px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--bd);background:var(--card);color:var(--ink);font-family:inherit}
+.err{color:var(--bad);font-size:13.5px;margin-top:8px;min-height:18px}
+.big{font-size:44px;font-weight:800;color:var(--teal);text-align:center;margin:0}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}th,td{text-align:left;padding:6px;border-bottom:1px solid var(--bd);vertical-align:top}th{color:var(--teal);font-size:11px;text-transform:uppercase}
+.y{color:var(--ok);font-weight:700}.n{color:var(--bad);font-weight:700}
+.det{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:14px;background:var(--tl);padding:10px 14px;border-radius:12px;margin:10px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.ov .card{max-width:420px;text-align:center}.ov h2{margin:0 0 8px;color:var(--bad)}
+@media print{body{background:#fff;color:#000;padding:0}.noprint,h1,.sub{display:none!important}.card{border:none;padding:0}:root{--ink:#000;--mut:#444;--bd:#bbb;--tl:#eef6f4;--teal:#0F766E;--ok:#1F7A3D;--bad:#B23B32}tr{page-break-inside:avoid}}
+</style></head><body><div class="wrap">
+<h1>🕵️ Map Detective</h1><p class="sub">50 clues · 5 missions</p>
+<div class="card" id="g"></div></div>
+<script>
+const MAP=[["📚","Library"],["🅿️","Car park"],["☕","Café"],["🏋️","Gym"],["🌳","Garden"],["🏦","Bank"],["🛍️","Shop"],["🚌","Bus stop"],["🏫","School"]];
+const SEC=[["Map Reader 🗺️",0],["Time Travel ⏳",10],["Switch It 🔄",22],["Link Up 🔗",32],["Final Case ✅",42]];
+// First answer in each list is the correct one (options are shuffled when shown).
+const Q=[
+["The garden is in the ___ of the map.",["middle","corner","top","bottom"]],
+["The library is in the top ___ corner.",["left","right","middle","centre"]],
+["The car park is ___ the library and the café.",["between","opposite","behind","under"]],
+["The gym is ___ the bank.",["opposite","in front of","behind","inside"]],
+["The bus stop is ___ the garden.",["south of","north of","east of","west of"]],
+["The café is in the top ___ corner.",["right","left","middle","bottom"]],
+["The school is in the bottom right-hand ___.",["corner","side","middle","edge"]],
+["The bank is ___ the garden.",["next to","behind","between","inside"]],
+["The shop is ___ the bus stop.",["west of","east of","north of","south of"]],
+["The car park is ___ the garden.",["north of","south of","east of","west of"]],
+["They ___ the old library last year.",["moved","move","moves","moving"]],
+["The college ___ a new gym in 2010.",["built","builded","build","builds"]],
+["Workers ___ many old trees.",["cut","cutted","cuts","cutting"]],
+["The old café ___ a bookshop.",["became","becomed","become","becomes"]],
+["They ___ a pond in the park.",["dug","digged","dig","digs"]],
+["The city ___ the roads in 1998.",["expanded","expand","expands","expanding"]],
+["Which verb is irregular?",["make","move","create","expand"]],
+["Which verb is regular?",["develop","put","build","dig"]],
+["In 1995 there ___ one car park.",["was","were","is","be"]],
+["There ___ two cafés in 2005.",["were","was","are","be"]],
+["The town ___ a lot between 2000 and 2020.",["changed","change","changes","changing"]],
+["They ___ the bus stop to the left.",["put","putted","puts","puting"]],
+["The gym ___ in 2010.",["was built","built","is built","were built"]],
+["New trees ___ in the park.",["were planted","was planted","planted","are plant"]],
+["The old library ___.",["was demolished","demolished","is demolish","were demolished"]],
+["Two cafés ___ to the site.",["were added","was added","added","adds"]],
+["Make it passive: They moved the bus stop.",["The bus stop was moved.","The bus stop moved.","The bus stop is moving.","They were moved."]],
+["Which sentence is passive?",["A gym was built.","They built a gym.","A gym builds.","They are building a gym."]],
+["Which sentence is active?",["The council expanded the park.","The park was expanded.","Trees were planted.","A pond was dug."]],
+["A new road ___ last year.",["was constructed","constructed","were constructed","is construct"]],
+["Two houses ___ to make space.",["were knocked down","was knocked down","knocked down","knock down"]],
+["The passive is formed with:",["was / were + past participle","is + -ing","have + -ed","will + verb"]],
+["The old gym was small. ___, the new gym is large.",["However","In addition","So","Because"]],
+["A pool was built. ___, a café was added.",["In addition","However","Whereas","But"]],
+["In 2005 there was a car park, ___ now there is a garden.",["whereas","so","also","then"]],
+["___, the college grew and became more modern.",["Overall","Firstly","Because","Before"]],
+["Which is the best introduction?",["The two maps show changes to a college between 2005 and today.","I think college is good.","Maps are boring.","Let me tell you about my town."]],
+["Which word means 'knocked down'?",["demolished","built","moved","planted"]],
+["Which word means 'got bigger'?",["expanded","shrank","removed","replaced"]],
+["Which word means 'made'?",["created","destroyed","removed","closed"]],
+["Which word means 'moved to a new place'?",["relocated","demolished","expanded","planted"]],
+["The wasteland was ___ a park.",["transformed into","next to","opposite","between"]],
+["The library is ___ the café and the gym.",["between","among","under","at"]],
+["The pool is ___ the bottom left-hand corner.",["in","on","at","by"]],
+["The car park is ___ the left of the gym.",["on","in","at","to"]],
+["Which sentence is correct?",["The pond was dug last year.","The pond was dig last year.","The pond dug last year.","The pond is dug last year."]],
+["Which sentence compares two maps?",["The new library is bigger than the old one.","The new library big.","The library is.","Library new old."]],
+["Which sentence is an overview?",["Overall, the centre became larger.","The café has 20 tables.","A tree was planted by the door.","The toilet is green."]],
+["A map report should have at least ___ words.",["150","50","100","300"]],
+["You should spend about ___ minutes on a map report.",["20","5","40","60"]]];
+const g=document.getElementById("g"),T=Q.length;
+let me={name:"",cls:"",date:""},i=0,sc=0,st=0,log=[],opts=[],done=false,active=false,leaves=0,away=false;
+const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const esc=s=>{const d=document.createElement("div");d.textContent=s;return d.innerHTML};
+const fd=s=>{try{return new Date(s+"T12:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"})}catch(e){return s}};
+function intro(){active=false;const t=new Date().toISOString().slice(0,10);
+g.innerHTML=`<p style="margin-top:0">Solve 50 clues across 5 missions. Stay on this tab: if you leave it twice, the game restarts.</p>
+<label>Full name</label><input id="n" placeholder="e.g. Amina K." value="${esc(me.name)}">
+<label>Class</label><input id="c" placeholder="e.g. 10B" value="${esc(me.cls)}">
+<label>Date</label><input id="d" type="date" value="${me.date||t}">
+<p class="err" id="e"></p><div class="row"><button class="btn o" id="go">Start the mission</button></div>`;
+document.getElementById("go").onclick=()=>{const n=document.getElementById("n").value.trim(),c=document.getElementById("c").value.trim(),d=document.getElementById("d").value;
+if(n.length<2||!c||!d){document.getElementById("e").textContent="Please fill in your name, class and date to start.";return}
+me={name:n,cls:c,date:d};restart()}}
+function restart(){i=0;sc=0;st=0;log=[];leaves=0;away=false;active=true;show()}
+function show(){if(i>=T)return finish();done=false;const [q,o]=Q[i];opts=sh(o);
+let sec=SEC.filter(s=>i>=s[1]).pop();
+let map=i<10?`<div class="map">${MAP.map(m=>`<div><span>${m[0]}</span>${m[1]}</div>`).join("")}</div><p class="note">North is at the top of the map.</p>`:"";
+g.innerHTML=`<div class="stat"><span>Clue ${i+1} / ${T}</span><span>${st>=3?"🔥 ":""}Streak ${st} · Points ${sc}</span></div><div class="bar"><div style="width:${i/T*100}%"></div></div>
+<span class="badge">${sec[0]}</span>${map}<p class="q">${q}</p><div class="opts" id="o"></div><div class="fb" id="f"></div>
+<div class="row"><button class="btn" id="nx" style="display:none">${i==T-1?"Finish":"Next"} →</button></div>`;
+const w=document.getElementById("o");opts.forEach(t=>{const b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=()=>pick(t,b);w.appendChild(b)});
+document.getElementById("nx").onclick=()=>{i++;show()}}
+function pick(t,b){if(done)return;done=true;const r=Q[i][1][0],ok=t===r,bs=document.querySelectorAll(".opt"),f=document.getElementById("f");
+bs.forEach(x=>{x.disabled=true;if(x.textContent===r)x.classList.add("c")});
+if(ok){st++;sc+=10+(st>=3?5:0);f.className="fb g";f.textContent=["Great detective work! 🎉","Correct! ⭐","Spot on! 🔍","Brilliant! 🚀"][i%4]}
+else{b.classList.add("w");st=0;f.className="fb b";f.textContent="Not quite. Answer: "+r}
+log.push({q:Q[i][0],mine:t,right:r,ok});document.getElementById("nx").style.display="inline-block"}
+function finish(){active=false;const n=log.filter(l=>l.ok).length,p=Math.round(n/T*100);
+let rank=p>=90?"Master Detective 🏆":p>=70?"Senior Detective 🌟":p>=50?"Junior Detective 🔎":"Detective in training 📚";
+g.innerHTML=`<div class="noprint" style="text-align:center"><p class="big">${n}/${T}</p><p style="margin:0;font-weight:700">${rank}</p></div>
+<h2 style="margin:14px 0 4px;color:var(--teal)">Final review</h2>
+<div class="det"><span><b>Name:</b> ${esc(me.name)}</span><span><b>Class:</b> ${esc(me.cls)}</span><span><b>Date:</b> ${fd(me.date)}</span><span><b>Score:</b> ${n}/${T} (${p}%) · ${sc} pts</span></div>
+<table><thead><tr><th>#</th><th>Question</th><th>Your answer</th><th>Correct</th><th></th></tr></thead><tbody>${log.map((l,k)=>`<tr><td>${k+1}</td><td>${esc(l.q)}</td><td>${esc(l.mine)}</td><td>${esc(l.right)}</td><td class="${l.ok?"y":"n"}">${l.ok?"✓":"✗"}</td></tr>`).join("")}</tbody></table>
+<div class="row noprint"><button class="btn o" id="pdf">Download PDF</button><button class="btn s" id="ag">Play again</button></div>
+<p class="note noprint" style="text-align:left">In the print window choose <b>Save as PDF</b>, then upload the file to Google Classroom.</p>`;
+document.getElementById("pdf").onclick=()=>{const old=document.title;document.title=(me.name+"_"+me.cls+"_Map_Detective").replace(/\s+/g,"_");window.print();setTimeout(()=>document.title=old,500)};
+document.getElementById("ag").onclick=restart}
+function modal(h,m,cb){const o=document.createElement("div");o.className="ov";o.innerHTML=`<div class="card"><h2>${h}</h2><p>${m}</p><button class="btn o" id="ok">OK</button></div>`;document.body.appendChild(o);o.querySelector("#ok").onclick=()=>{o.remove();if(cb)cb()}}
+document.addEventListener("visibilitychange",()=>{
+if(document.hidden){if(active)away=true;return}
+if(!active||!away)return;away=false;leaves++;
+if(leaves===1)modal("⚠️ Warning","You left the game tab. Please stay on this tab. If you leave again, the activity will restart from clue 1.");
+else modal("🔄 Activity restarted","You left the tab a second time, so the activity has restarted. Good luck!",()=>restart())});
+intro();
+</script></body></html>
