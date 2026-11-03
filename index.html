@@ -24,13 +24,9 @@
       --line: #e5e2da;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -41,9 +37,7 @@
       line-height: 1.7;
     }
 
-    a {
-      color: inherit;
-    }
+    a { color: inherit; }
 
     .container {
       width: min(1060px, calc(100% - 40px));
@@ -94,12 +88,7 @@
       padding: 58px 52px;
       border-radius: 10px;
       color: var(--white);
-      background: linear-gradient(
-        115deg,
-        #1b3028 0%,
-        #29483b 62%,
-        #3c5a49 100%
-      );
+      background: linear-gradient(115deg, #1b3028 0%, #29483b 62%, #3c5a49 100%);
     }
 
     .hero::after {
@@ -111,9 +100,8 @@
       top: -170px;
       border: 1px solid rgba(221, 201, 162, 0.24);
       border-radius: 50%;
-      box-shadow:
-        0 0 0 38px rgba(221, 201, 162, 0.045),
-        0 0 0 76px rgba(221, 201, 162, 0.035);
+      box-shadow: 0 0 0 38px rgba(221, 201, 162, 0.045),
+                  0 0 0 76px rgba(221, 201, 162, 0.035);
       pointer-events: none;
     }
 
@@ -165,9 +153,7 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
-    main {
-      padding: 48px 0 64px;
-    }
+    main { padding: 48px 0 64px; }
 
     .section-top {
       display: flex;
@@ -214,13 +200,9 @@
       transition: background 0.2s ease;
     }
 
-    .resource-item:last-child {
-      border-bottom: none;
-    }
+    .resource-item:last-child { border-bottom: none; }
 
-    .resource-item:hover {
-      background: #faf9f6;
-    }
+    .resource-item:hover { background: #faf9f6; }
 
     .resource-number {
       color: var(--gold);
@@ -263,13 +245,9 @@
       background: #aaa99e;
     }
 
-    .resource-status.available {
-      color: #35654a;
-    }
+    .resource-status.available { color: #35654a; }
 
-    .resource-status.available::before {
-      background: #477b58;
-    }
+    .resource-status.available::before { background: #477b58; }
 
     .resource-link {
       display: inline-block;
@@ -280,11 +258,10 @@
       text-decoration: none;
     }
 
-    .resource-link:hover {
-      text-decoration: underline;
-    }
+    .resource-link:hover { text-decoration: underline; }
 
-    .vocabulary-section {
+    .vocabulary-section,
+    .games-section {
       margin-top: 48px;
     }
 
@@ -325,6 +302,60 @@
       font-size: 13px;
     }
 
+    .game-card {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 20px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--gold);
+      border-radius: 7px;
+      background: var(--white);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .game-card:hover {
+      background: #faf9f6;
+      transform: translateY(-2px);
+    }
+
+    .game-icon {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 8px;
+      background: #f1eee6;
+      font-size: 29px;
+    }
+
+    .game-card h3 {
+      margin: 0 0 5px;
+      font-size: 17px;
+    }
+
+    .game-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .game-link {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 5px;
+      background: var(--green);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+
+    .game-link:hover { background: var(--green-light); }
+
     footer {
       padding: 25px 0;
       border-top: 1px solid var(--line);
@@ -334,42 +365,26 @@
     }
 
     @media (max-width: 650px) {
-      .container {
-        width: calc(100% - 28px);
-      }
+      .container { width: calc(100% - 28px); }
 
-      .nav-inner {
-        min-height: 72px;
-      }
+      .nav-inner { min-height: 72px; }
 
-      .brand-name {
-        font-size: 12px;
-      }
+      .brand-name { font-size: 12px; }
 
-      .brand-subtitle {
-        font-size: 9px;
-      }
+      .brand-subtitle { font-size: 9px; }
 
       .hero {
         margin-top: 20px;
         padding: 38px 25px;
       }
 
-      .hero-description {
-        font-size: 14px;
-      }
+      .hero-description { font-size: 14px; }
 
-      main {
-        padding-top: 35px;
-      }
+      main { padding-top: 35px; }
 
-      .section-top {
-        align-items: start;
-      }
+      .section-top { align-items: start; }
 
-      .section-top h2 {
-        font-size: 22px;
-      }
+      .section-top h2 { font-size: 22px; }
 
       .resource-item {
         grid-template-columns: 34px minmax(0, 1fr);
@@ -382,24 +397,37 @@
         white-space: normal;
       }
 
-      .resource-title {
-        font-size: 15px;
-      }
+      .resource-title { font-size: 15px; }
 
       .word-list {
         grid-template-columns: 1fr;
         gap: 19px;
       }
 
-      .vocabulary-card {
-        padding: 23px 19px;
+      .vocabulary-card { padding: 23px 19px; }
+
+      .game-card {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 14px;
+        padding: 19px 16px;
+      }
+
+      .game-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 23px;
+      }
+
+      .game-card h3 { font-size: 15px; }
+
+      .game-link {
+        grid-column: 2;
+        justify-self: start;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
+      html { scroll-behavior: auto; }
 
       *, *::before, *::after {
         transition: none !important;
@@ -458,7 +486,6 @@
           <span class="resource-status available">Available</span>
         </article>
 
-   
         <article class="resource-item">
           <div class="resource-number">02</div>
           <div>
@@ -473,7 +500,6 @@
           <span class="resource-status available">Available</span>
         </article>
 
-
         <article class="resource-item">
           <div class="resource-number">03</div>
           <div>
@@ -485,7 +511,6 @@
           <span class="resource-status">Coming soon</span>
         </article>
 
-     
         <article class="resource-item">
           <div class="resource-number">04</div>
           <div>
@@ -542,6 +567,33 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- GAMES & INTERACTIVE LEARNING -->
+    <section class="games-section" id="games">
+      <div class="section-top">
+        <div>
+          <h2>🎮 Games &amp; Interactive Learning</h2>
+          <p>Practise English through engaging interactive challenges.</p>
+        </div>
+        <span class="section-index">GAMES</span>
+      </div>
+
+      <article class="game-card">
+        <div class="game-icon" aria-hidden="true">🗺️</div>
+
+        <div>
+          <h3>Map Detective</h3>
+          <p>
+            Explore maps, follow clues and practise reading carefully
+            to solve challenges.
+          </p>
+        </div>
+
+        <a class="game-link" href="Map%20Detective.html">
+          Play Map Detective →
+        </a>
+      </article>
     </section>
   </main>
 
