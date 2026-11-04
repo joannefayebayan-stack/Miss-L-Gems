@@ -7,7 +7,6 @@
   <meta name="theme-color" content="#20382f">
   <meta name="description" content="Academic English resources for secondary learners.">
   <title>Faye's EAL Resource Hub</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -25,7 +24,6 @@
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -201,7 +199,6 @@
     }
 
     .resource-item:last-child { border-bottom: none; }
-
     .resource-item:hover { background: #faf9f6; }
 
     .resource-number {
@@ -246,7 +243,6 @@
     }
 
     .resource-status.available { color: #35654a; }
-
     .resource-status.available::before { background: #477b58; }
 
     .resource-link {
@@ -271,7 +267,10 @@
       border-top: 3px solid var(--green);
       border-radius: 6px;
       background: var(--white);
+      margin-bottom: 18px;
     }
+
+    .vocabulary-card:last-child { margin-bottom: 0; }
 
     .vocabulary-card h3 {
       margin: 0 0 23px;
@@ -300,6 +299,16 @@
       margin: 0;
       color: var(--muted);
       font-size: 13px;
+    }
+
+    .vocabulary-card .resource-link {
+      margin-top: 18px;
+    }
+
+    .resource-meta {
+      margin: -12px 0 18px;
+      color: var(--muted);
+      font-size: 12px;
     }
 
     .game-card {
@@ -366,11 +375,8 @@
 
     @media (max-width: 650px) {
       .container { width: calc(100% - 28px); }
-
       .nav-inner { min-height: 72px; }
-
       .brand-name { font-size: 12px; }
-
       .brand-subtitle { font-size: 9px; }
 
       .hero {
@@ -379,11 +385,8 @@
       }
 
       .hero-description { font-size: 14px; }
-
       main { padding-top: 35px; }
-
       .section-top { align-items: start; }
-
       .section-top h2 { font-size: 22px; }
 
       .resource-item {
@@ -428,7 +431,6 @@
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-
       *, *::before, *::after {
         transition: none !important;
       }
@@ -544,12 +546,11 @@
           <h2>Academic Vocabulary Bank</h2>
           <p>Essential words for learning across subjects.</p>
         </div>
-        <span class="section-index">FEATURED</span>
+        <span class="section-index">VOCABULARY</span>
       </div>
 
       <div class="vocabulary-card">
         <h3>Three words to know</h3>
-
         <div class="word-list">
           <div class="word">
             <strong>Analyze</strong>
@@ -567,6 +568,19 @@
           </div>
         </div>
       </div>
+
+      <!-- MATHS VOCABULARY RESOURCE -->
+      <div class="vocabulary-card">
+        <h3>🔢 Maths Word Lab</h3>
+        <p class="resource-meta">4 November 2026 · Term 1</p>
+        <p class="resource-description">
+          Build mathematical vocabulary and develop confidence in understanding
+          and using key maths terminology.
+        </p>
+        <a class="resource-link" href="Maths%20Word%20Lab%20November%204%2C%202026.html">
+          Open Maths Word Lab →
+        </a>
+      </div>
     </section>
 
     <!-- GAMES & INTERACTIVE LEARNING -->
@@ -581,7 +595,6 @@
 
       <article class="game-card">
         <div class="game-icon" aria-hidden="true">🗺️</div>
-
         <div>
           <h3>Map Detective</h3>
           <p>
