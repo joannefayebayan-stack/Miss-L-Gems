@@ -92,10 +92,10 @@ const $=id=>document.getElementById(id),g=$("g");
 const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
 const say=t=>{try{const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
 const esc=s=>{const d=document.createElement("div");d.textContent=s;return d.innerHTML};
-let S,M={},stg=[],LOG=[],REC=[],AN=0,RES=0,DT=0,T0=null,DONE=null,AT=false,REL=false,ST=0,AW=false,TA=0,FST=0,SHOT=false,LN=false,PK=0;
+let SNAP={score:0,ok:0,n:0},WR=false,XS=false,S,M={},stg=[],LOG=[],REC=[],AN=0,RES=0,DT=0,T0=null,DONE=null,AT=false,REL=false,ST=0,AW=false,TA=0,FST=0,SHOT=false,LN=false,PK=0;
 const lg=(type,detail)=>{if(LOG.length<400)LOG.push({t:new Date().toISOString(),type,detail:detail||""})};
 function newAttempt(){AN++;LOG=[];REC=[];RES=0;DT=0;T0=new Date();DONE=null;lg("attempt-start","attempt "+AN)}
-function intro(){AT=false;REL=false;gate();S={name:"",yg:"",fg:"",score:0,streak:0,st:0,q:[],i:0,sok:0,sn:0,ok:0,n:0,txt:[]};M={};stg=[];
+function intro(){AT=false;REL=false;WR=false;XS=false;gate();S={name:"",yg:"",fg:"",score:0,streak:0,st:0,q:[],i:0,sok:0,sn:0,ok:0,n:0,txt:[]};M={};stg=[];
 g.innerHTML=`<div class="box"><b>Activity goal</b><br>Describe where places are on a map and how a place changed over time, using the correct grammar and linking words.</div>
 <div class="box"><b>Learning objectives</b> By the end I can:<ul><li>say where places are using directions and prepositions,</li><li>use the past simple and the passive to describe change,</li><li>link ideas with words like <i>however</i> and <i>overall</i>,</li><li>write clear sentences that compare a map in the past and today.</li></ul></div>
 <div class="box"><b>Success criteria</b> 80% or more in each mission and 3 clear sentences in the writing task. Clues you miss come back for a second chance.</div>
@@ -111,7 +111,7 @@ g.innerHTML=`<div class="sr"><span>Guided example</span><span>not scored</span><
 <div class="row"><button class="btn s" id="sp">🔊 Hear it</button><button class="btn o" id="gx">I am ready</button></div>`;
 $("sp").onclick=()=>say("The café is in the top right-hand corner. A gym was built.");$("gx").onclick=()=>begin(0)}
 function mk(id,x){return{id,opts:sh(Q[id][1]),...x}}
-function begin(n){S.st=n;S.i=0;S.sok=0;S.sn=0;S.q=sh([...Array(ST0[n+1]-ST0[n]).keys()].map(k=>ST0[n]+k)).map(id=>mk(id,{}));
+function begin(n){SNAP={score:S.score,ok:S.ok,n:S.n};XS=false;S.st=n;S.i=0;S.sok=0;S.sn=0;S.q=sh([...Array(ST0[n+1]-ST0[n]).keys()].map(k=>ST0[n]+k)).map(id=>mk(id,{}));
 lg("stage-start",NAMES[n]+" | order: "+S.q.map(q=>q.id+1).join(", "));show()}
 function head(){return`<div class="dots">${[0,1,2,3,4].map(i=>`<span class="${i<S.st?"c":i==S.st?"d":""}"></span>`).join("")}</div><div class="sr"><span>${NAMES[S.st]} · ${Math.min(S.i+1,S.q.length)}/${S.q.length}</span><span>⭐ ${S.score} · 🔥 ${S.streak}</span></div><div class="pg"><i style="width:${S.i/S.q.length*100}%"></i></div>`}
 function show(){if(S.i>=S.q.length)return endStage();const it=S.q[S.i],p=Q[it.id];
@@ -127,11 +127,11 @@ if(ok){S.streak++;S.score+=10+(S.streak>=3?5:0)}else{S.streak=0;if(!it.r&&!it.rv
 if(!it.r&&!it.rv){S.sn++;S.n++;if(ok){S.sok++;S.ok++}}
 const sec=Math.max(0,SEC.map(s=>s[1]).filter(s=>it.id>=s).length-1);
 $("fb").innerHTML=`<b class="${ok?"g":"r"}">${ok?"Correct! "+(S.streak>=3?"🔥 ":""):"Not yet. "}</b>${RULE[sec]}`;$("nx").style.display="inline-block";$("nx").focus();if(ok)say(r)}
-function endStage(){if(S.st==5)return finish();const a=S.sn?Math.round(100*S.sok/S.sn):100,s=a>=90?3:a>=70?2:1;if(S.st<5)stg[S.st]=a;
+function endStage(){if(S.st==5)return finish();XS=true;const a=S.sn?Math.round(100*S.sok/S.sn):100,s=a>=90?3:a>=70?2:1;if(S.st<5)stg[S.st]=a;
 g.innerHTML=`<div class="big">${"⭐".repeat(s)}</div><h2 style="text-align:center;margin:6px 0">${NAMES[S.st]} complete!</h2><p style="text-align:center;color:var(--mut)">First-try accuracy: <b>${a}%</b> · Missed clues come back in the review round.</p><button class="btn o" id="n" style="width:100%">${S.st==4?"Last task: write it":"Next mission"} →</button>`;
 $("n").onclick=()=>S.st==4?teach():begin(S.st+1)}
 function secScores(){return SEC.map((m,i)=>{const r=REC.filter(x=>x.stage==i+1&&!x.retry&&!x.rv);return[m[0].replace(/[^\x20-\x7E]/g,"").trim(),r.filter(x=>x.ok).length,ST0[i+1]-ST0[i]]})}
-function teach(){lg("stage-start","Writing task");
+function teach(){WR=true;XS=false;lg("stage-start","Writing task");
 const F=[["Introduce","The two maps show ... between 2005 and today."],["Compare","In 2005 there was ... , whereas now there is ..."],["Overview","Overall, the site ..."]];
 g.innerHTML=`<div class="dots">${[0,1,2,3,4].map(()=>'<span class="c"></span>').join("")}</div><p class="q">Write it up</p>
 <div class="box"><b>2005:</b> car park in the top left-hand corner · library next to the café · wasteland behind the gym<br><b>Today:</b> garden in the top left-hand corner · library relocated to the right · wasteland transformed into a pool</div>
@@ -140,8 +140,8 @@ g.innerHTML=`<div class="dots">${[0,1,2,3,4].map(()=>'<span class="c"></span>').
 +F.map((f,i)=>`<label for="t${i}" style="font-size:15px;color:var(--ink)"><b>${i+1}. ${f[0]}</b> – ${f[1]}</label><textarea id="t${i}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>`).join("")
 +`<button class="btn o" id="fin" style="width:100%">Finish writing</button>`;
 $("fin").onclick=()=>{S.txt=F.map((f,i)=>({part:f[0],frame:f[1],text:$("t"+i).value.trim()}));lg("writing-submitted","");review()}}
-function review(){const ids=[...new Set(REC.filter(r=>!r.ok&&!r.retry&&!r.rv).map(r=>r.id))];if(!ids.length)return finish();
-S.st=5;S.i=0;S.sok=0;S.sn=0;S.q=sh(ids).slice(0,8).map(id=>mk(id,{rv:1}));lg("stage-start","Review round | order: "+S.q.map(q=>q.id+1).join(", "));show()}
+function review(){WR=false;XS=false;const ids=[...new Set(REC.filter(r=>!r.ok&&!r.retry&&!r.rv).map(r=>r.id))];if(!ids.length)return finish();
+SNAP={score:S.score,ok:S.ok,n:S.n};S.st=5;S.i=0;S.sok=0;S.sn=0;S.q=sh(ids).slice(0,8).map(id=>mk(id,{rv:1}));lg("stage-start","Review round | order: "+S.q.map(q=>q.id+1).join(", "));show()}
 function finish(){AT=false;REL=true;gate();DONE=new Date();lg("completed","score "+S.score);const acc=S.n?Math.round(100*S.ok/S.n):0,miss=[...new Set(REC.filter(r=>!r.ok&&!r.retry&&!r.rv).map(r=>r.id+1))];
 const chk=SEC.map((s,i)=>(stg[i]>=80?"✅ ":"🔁 ")+s[0]+" (80%+)").join("<br>")+"<br>"+(S.txt.filter(x=>x.text.split(/\s+/).filter(Boolean).length>=6).length==3?"✅ ":"🔁 ")+"Wrote 3 sentences (teacher checks accuracy)",mR=myWork(acc,miss),tR=report(acc,miss),mine=wrap(mR),sum=wrap(tR),rvw=REC.map((r,k)=>`<div class="box"><b>${k+1}.</b> ${esc(r.q)}<br>My answer: <b>${esc(r.chosen)}</b> ${r.ok?"✅":"❌ Correct answer: <b>"+esc(r.correct)+"</b>"}${r.rv?" (review)":r.retry?" (second try)":""}</div>`).join("")+(S.txt.length?`<div class="box"><b>My writing</b>${S.txt.map(t=>`<p><b>${esc(t.part)}:</b> ${esc(t.text||"[no response]")}</p>`).join("")}</div>`:"");
 g.innerHTML=`<div class="big">${acc>=90?"🏆":acc>=75?"🌟":"💪"}</div><h2 style="text-align:center;margin:6px 0">${esc(S.name)}, case closed!</h2><div class="stat"><div><b>${S.score}</b>Score</div><div><b>${acc}%</b>First-try</div><div><b>${miss.length}</b>To review</div></div>
@@ -203,11 +203,15 @@ const allow=e=>e.target&&e.target.closest&&e.target.closest("[data-allow]");
 document.addEventListener("selectstart",e=>{const n=e.target.nodeType==3?e.target.parentNode:e.target;if(!(n.closest&&n.closest("input,textarea,[data-allow]")))e.preventDefault()});
 document.addEventListener("keydown",e=>{const k=(e.key||"").toLowerCase();if(((e.ctrlKey||e.metaKey)&&["c","x","v","insert"].includes(k))||(e.shiftKey&&["insert","delete"].includes(k))){if(k=="c"&&allow(e))return;if(AT)lg("blocked-shortcut",(e.ctrlKey?"ctrl+":"cmd+")+k);e.preventDefault()}});
 /* ---- tab departures: warn first, reset second ---- */
-function modal(m,rs){const d=$("ac");d.innerHTML=`<div class="acb"><h3>${rs?"🔄 Attempt reset":"⚠️ Notice"}</h3><p>${m}</p><button class="btn" id="acok">OK</button></div>`;d.style.display="flex";$("acok").onclick=()=>d.style.display="none";$("acok").focus()}
-function resetAttempt(){const n=S.name,y=S.yg,f=S.fg;lg("reset","attempt "+AN+" ended; answers cleared: "+REC.length);RES++;AN++;lg("attempt-start","attempt "+AN+" (new attempt after reset)");REC=[];M={};stg=[];S={name:n,yg:y,fg:f,score:0,streak:0,st:0,q:[],i:0,sok:0,sn:0,ok:0,n:0,txt:[]};ST=0;begin(0)}
+function modal(m,rs){const d=$("ac");d.innerHTML=`<div class="acb"><h3>${rs?"🔄 Mission reset":"⚠️ Notice"}</h3><p>${m}</p><button class="btn" id="acok">OK</button></div>`;d.style.display="flex";$("acok").onclick=()=>d.style.display="none";$("acok").focus()}
+function resetAttempt(){const st=S.st;
+if(WR){lg("reset","writing task cleared");RES++;S.txt=[];ST=CFG.resetAt-1;teach();return}
+const sg=st==5?7:st+1,cut=REC.filter(r=>r.stage==sg).length;lg("reset","mission reset: "+NAMES[st]+"; answers cleared: "+cut);RES++;
+REC=REC.filter(r=>r.stage!=sg);S.score=SNAP.score;S.ok=SNAP.ok;S.n=SNAP.n;S.streak=0;if(st<5)stg[st]=undefined;
+M={};REC.filter(r=>!r.rv).forEach(r=>{const m=M[r.id]=M[r.id]||{ok:0,bad:0};r.ok?m.ok++:m.bad++});ST=CFG.resetAt-1;st==5?review():begin(st)}
 const away=e=>{if(!AT||AW||Date.now()-FST<1500)return;AW=true;ST++;DT++;TA=Date.now();lg("departure",(e&&e.type)||"unknown")};
 const back=()=>{if(!AW)return;AW=false;if(!AT)return;lg("returned","away about "+Math.round((Date.now()-TA)/1000)+"s");
-if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your answers were cleared and the activity restarted from the beginning. Stay on this page and work on your own.",1)}else{lg("warning-shown","");modal("Warning: you left the activity page. Stay on this page. If you leave again, your attempt will be reset and you will start again.")}};
+if(ST>=CFG.resetAt&&XS){ST=CFG.resetAt-1;lg("warning-shown","");modal("Warning: you left the activity page. Stay on this page.")}else if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your answers for this part were cleared and it restarted. Stay on this page and work on your own.",1)}else{lg("warning-shown","");modal("Warning: you left the activity page. Stay on this page. If you leave again, your answers for this mission will be cleared and the mission will restart.")}};
 document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab-hidden"}):back());window.addEventListener("blur",away);window.addEventListener("focus",back);
 const GL={};`library|图书馆|ห้องสมุด
 car park|停车场|ที่จอดรถ

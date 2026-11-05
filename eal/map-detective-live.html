@@ -84,7 +84,7 @@ function missionScores(){return SECN.map((n,m)=>{const r=recs.filter(x=>x.m==m);
 const SECN=["Map Reader","Time Travel","Switch It","Link Up","Final Case"];
 function myText(){const L=[],A=s=>L.push(s),ok=recs.filter(r=>r.ok).length;
 A("MAP DETECTIVE LIVE - MY WORK");A("English Name: "+me.name+" | Year Group: "+me.yg+" | Form Group: "+me.fg);
-A("Completed: "+(fin?new Date().toISOString().slice(0,10):"not completed")+" | Attempt: "+att);
+A("Completed: "+(fin?new Date().toISOString().slice(0,10):"not completed"));
 A("Score: "+score+" points | Rank: "+(rank?rank+" of "+of:"n/a")+" | Correct: "+ok+" of "+recs.length);A("");
 A("SCORE BY MISSION");missionScores().forEach(x=>A(x[0]+": "+x[1]+"/"+x[2]));A("");
 A("MY ANSWERS");recs.forEach((r,i)=>A((i+1)+". "+SECN[r.m]+" | "+r.stem+" | My answer: "+(r.chosen===null?"[no answer]":r.chosen)+" | "+(r.ok?"Correct":"Not yet. Correct answer: "+r.correct)));return L.join("\n")}
@@ -155,13 +155,13 @@ const allow=e=>e.target&&e.target.closest&&e.target.closest("[data-allow]");
 document.addEventListener("selectstart",e=>{const n=e.target.nodeType==3?e.target.parentNode:e.target;if(!(n.closest&&n.closest("input,textarea,[data-allow]")))e.preventDefault()});
 document.addEventListener("keydown",e=>{const k=(e.key||"").toLowerCase();if(((e.ctrlKey||e.metaKey)&&["c","x","v","insert"].includes(k))||(e.shiftKey&&["insert","delete"].includes(k))){if(k=="c"&&allow(e))return;e.preventDefault()}});
 /* ---------- tab departures: warn first, reset second ---------- */
-function modal(m,rs){const d=$("ac");d.innerHTML=`<div class="acb"><h3>${rs?"🔄 Attempt reset":"⚠️ Notice"}</h3><p>${m}</p><button class="btn" id="acok">OK</button></div>`;d.style.display="flex";$("acok").onclick=()=>d.style.display="none";$("acok").focus()}
-function resetAttempt(){recs=[];score=0;att++;ST=0;try{conn.send({t:"reset"})}catch(e){}
+function modal(m,rs){const d=$("ac");d.innerHTML=`<div class="acb"><h3>${rs?"🔄 Mission reset":"⚠️ Notice"}</h3><p>${m}</p><button class="btn" id="acok">OK</button></div>`;d.style.display="flex";$("acok").onclick=()=>d.style.display="none";$("acok").focus()}
+function resetAttempt(){const m=curQ?curQ.m:-1;recs=recs.filter(r=>r.m!=m);score=recs.filter(r=>r.ok).length*1000;ST=CFG.resetAt-1;try{conn.send({t:"reset"})}catch(e){}
 if(curQ&&!lastResFor(curQ.qi)){sentAns=null;curQ.a=null;qScreen(curQ)}}
 const lastResFor=q=>lastRes&&lastRes.qi===q;
 const away=e=>{if(!AT||AW||Date.now()-FST<1500)return;AW=true;ST++;TA=Date.now();ev("departure")};
 const back=()=>{if(!AW)return;AW=false;if(!AT)return;
-if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your points and answers were cleared. Stay on this page and work on your own.",1)}else{ev("warning");modal("Warning: you left the activity page. Stay on this page. If you leave again, your points and answers will be cleared.")}};
+if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your points and answers for this mission were cleared. Stay on this page and work on your own.",1)}else{ev("warning");modal("Warning: you left the activity page. Stay on this page. If you leave again, your points and answers for this mission will be cleared.")}};
 document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab-hidden"}):back());window.addEventListener("blur",away);window.addEventListener("focus",back);
 joinScreen();gate();
 </script></body></html>

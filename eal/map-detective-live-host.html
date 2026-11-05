@@ -2485,7 +2485,7 @@ p={key,name,yg,fg,conn,on:true,score:0,att:1,ans:{},hist:[],dep:0,warn:0,reset:0
 conn.send({t:"joined"});drawLobby();return}
 const p=plist().find(x=>x.conn===conn);if(!p)return;
 if(d.t=="ans"){if(phase!="q"||d.qi!==qi||p.ans[qi]!==undefined)return;const c=Number.isInteger(d.c)?d.c:-1;if(c<0||c>=cur.opts.length)return;p.ans[qi]=c;drawHud();maybeReveal();return}
-if(d.t=="reset"){p.reset++;p.att++;p.score=0;p.ans={};p.hist=[];if(phase=="q")drawHud();return}
+if(d.t=="reset"){p.reset++;if(phase=="q"||phase=="reveal"){const m=mOf(cur.id);p.hist=p.hist.filter(h=>h.m!=m);p.score=p.hist.filter(h=>h.ok).length*1000;Object.keys(p.ans).forEach(k=>{if(mOf(seq[+k])==m)delete p.ans[k]});if(phase=="q")drawHud()}return}
 if(d.t=="ev"){if(d.k=="departure")p.dep++;else if(d.k=="warning")p.warn++;else if(d.k=="screenshot")p.shot++;else if(d.k=="fs-exit")p.fsx++}}
 function resync(p){if(phase=="q")send(p,{t:"q",qi,n:seq.length,m:mOf(cur.id),opts:cur.opts,a:p.ans[qi]===undefined?null:p.ans[qi]});
 else if(phase=="reveal"){const h=p.hist[p.hist.length-1];if(h)send(p,resMsg(p,h))}
@@ -2533,12 +2533,12 @@ SEC.forEach((s,m)=>{});
 A("CLASS RESULTS BY CLUE");qlog.forEach((q,i)=>A((i+1)+". "+mName(mOf(q.id))+" | "+Q[q.id][0]+" | Correct answer: "+Q[q.id][1][0]+" | Correct: "+q.nOk+" of "+q.n));A("");
 a.forEach((p,k)=>{A("STUDENT "+(k+1)+": "+p.name.toUpperCase());
 A("English Name: "+p.name+" | Year Group: "+p.yg+" | Form Group: "+p.fg);
-const okN=p.hist.filter(h=>h.ok).length;A("Score: "+p.score+" points | Rank: "+p.rank+" of "+P.size+" | Correct: "+okN+" of "+seq.length+" | Attempt: "+p.att);A("");
+const okN=p.hist.filter(h=>h.ok).length;A("Score: "+p.score+" points | Rank: "+p.rank+" of "+P.size+" | Correct: "+okN+" of "+seq.length);A("");
 A("SCORE BY MISSION "+(k+1));SEC.forEach((s,m)=>{const tot=seq.filter(id=>mOf(id)==m).length;if(tot)A(mName(m)+": "+p.hist.filter(h=>h.m==m&&h.ok).length+"/"+tot)});A("");
 A("INCORRECT AND UNANSWERED "+(k+1));const bad=seq.map((id,i)=>({id,i,h:p.hist.find(h=>h.qi==i)})).filter(x=>!x.h||!x.h.ok);
 if(!bad.length)A("None.");bad.forEach(x=>{const h=x.h,qq=qlog[x.i];A((x.i+1)+". "+Q[x.id][0]);A("   Student answer: "+(h?(h.c===undefined?"[no answer]":h.opts[h.c]):"[not recorded]")+" | Correct: "+Q[x.id][1][0])});A("");
-A("MONITORING "+(k+1)+" (browser-visible events only)");A("Page departures: "+p.dep+" | Warnings shown: "+p.warn+" | Resets: "+p.reset+" | Screenshot keys detected: "+p.shot+" | Full-screen exits: "+p.fsx);
-if(p.reset)A("After a reset the score and answers above cover only the latest attempt.");A("")});
+A("MONITORING "+(k+1)+" (browser-visible events only)");A("Page departures: "+p.dep+" | Warnings shown: "+p.warn+" | Mission resets: "+p.reset+" | Screenshot keys detected: "+p.shot+" | Full-screen exits: "+p.fsx);
+if(p.reset)A("After a mission reset, the points and answers for the mission in progress were cleared and are not counted above. Earlier missions were kept.");A("")});
 A("STUDENT'S WRITTEN OUTPUT");A("This live game is multiple choice only, so there is no written output. Use Map Detective (solo version) for the writing task.");A("");
 A("NOTES: Results are held on the teacher screen only and are lost if this page is closed or reloaded before saving. A recorded event is an observable browser event, not proof of misconduct. The browser cannot see other apps, other devices or AI and translation tools. No response times are recorded.");return L.join("\n")}
 async function copy(t){const c=$("ct");try{await navigator.clipboard.writeText(t);c.textContent="Report copied."}catch(e){c.textContent="Could not copy. Open 'Show report text' and copy from there."}}
