@@ -1,44 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" translate="no"><head><meta charset="UTF-8"><meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Map Detective</title>
+<html lang="en" translate="no" class="notranslate"><head><meta charset="UTF-8"><meta name="google" content="notranslate"><meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Map Detective</title>
 <style>
-:root{--bg:#F6FAF9;--card:#fff;--ink:#1F2937;--mut:#5B6572;--teal:#0F766E;--tl:#E3F3F1;--or:#E08E45;--bd:#DCEAE7;--ok:#1F7A3D;--okb:#E5F5E9;--bad:#B23B32;--badb:#FCEBEA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10201E;--card:#172B28;--ink:#E7F0EE;--mut:#9BB0AC;--teal:#3CB5A9;--tl:#1E3A36;--bd:#2B4642;--ok:#7FD99A;--okb:#1E3A2A;--bad:#F0968E;--badb:#3D2220}}
+:root{--bg:#F6FAF9;--card:#fff;--ink:#1F2937;--mut:#5B6572;--teal:#0F766E;--td:#0B5C56;--tl:#E3F3F1;--or:#E08E45;--bd:#DCEAE7;--ok:#1F7A3D;--okb:#E5F5E9;--bad:#B23B32;--badb:#FCEBEA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1716;--card:#16211F;--ink:#E8EEEC;--mut:#A5B3B0;--teal:#3CB5A9;--td:#5EDACB;--tl:#12312E;--bd:#2A3B38;--ok:#8EDBA3;--okb:#16341F;--bad:#F0A39C;--badb:#3A1C1A}}
 *{box-sizing:border-box}html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;padding:1.4rem 1rem}
-.wrap{max-width:640px;margin:auto}
-h1{font-size:28px;color:var(--teal);margin:0;text-align:center}.sub{text-align:center;color:var(--mut);margin:2px 0 14px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:1.3rem}
-.stat{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
-.bar{height:9px;background:var(--tl);border-radius:6px;overflow:hidden;margin:6px 0 14px}.bar div{height:100%;background:var(--teal);transition:width .25s}
-.badge{display:inline-block;background:var(--tl);color:var(--teal);font-weight:700;font-size:13px;padding:4px 12px;border-radius:99px;margin-bottom:10px}
-.q{font-size:20px;font-weight:700;margin:6px 0 14px}
-.map{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 6px}.map div{background:var(--tl);border-radius:10px;text-align:center;padding:6px 2px;font-size:12px;font-weight:600}.map span{display:block;font-size:22px}
-.note{font-size:12px;color:var(--mut);margin:0 0 12px;text-align:center}
-.opts{display:grid;gap:9px}
-button.opt{text-align:left;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--bd);background:var(--card);color:var(--ink);cursor:pointer}
-button.opt:hover:not(:disabled){border-color:var(--teal);background:var(--tl)}
-.opt.c{background:var(--okb);border-color:var(--ok);color:var(--ok);font-weight:700}.opt.w{background:var(--badb);border-color:var(--bad);color:var(--bad);font-weight:700}
-.fb{margin-top:12px;font-weight:700;min-height:22px}.fb.g{color:var(--ok)}.fb.b{color:var(--bad)}
-.btn{background:var(--teal);color:#fff;border:none;font-size:16px;font-weight:700;padding:11px 20px;border-radius:12px;cursor:pointer}.btn.o{background:var(--or)}.btn.s{background:var(--card);color:var(--teal);border:1.5px solid var(--teal)}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-label{display:block;font-size:13px;font-weight:700;color:var(--teal);margin:12px 0 4px}
-input{width:100%;font-size:16px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--bd);background:var(--card);color:var(--ink);font-family:inherit}
-.err{color:var(--bad);font-size:13.5px;margin-top:8px;min-height:18px}
-.big{font-size:44px;font-weight:800;color:var(--teal);text-align:center;margin:0}
-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}th,td{text-align:left;padding:6px;border-bottom:1px solid var(--bd);vertical-align:top}th{color:var(--teal);font-size:11px;text-transform:uppercase}
-.y{color:var(--ok);font-weight:700}.n{color:var(--bad);font-weight:700}
-.det{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:14px;background:var(--tl);padding:10px 14px;border-radius:12px;margin:10px 0}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
-.ov .card{max-width:420px;text-align:center}.ov h2{margin:0 0 8px;color:var(--bad)}
-@media print{body{background:#fff;color:#000;padding:0}.noprint,h1,.sub{display:none!important}.card{border:none;padding:0}:root{--ink:#000;--mut:#444;--bd:#bbb;--tl:#eef6f4;--teal:#0F766E;--ok:#1F7A3D;--bad:#B23B32}tr{page-break-inside:avoid}}
-body{-webkit-user-select:none;user-select:none}input{-webkit-user-select:text;user-select:text}
-.chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;font-weight:400;color:var(--ink);margin:9px 0}.chk input{width:20px;height:20px;flex:none;margin-top:2px}
-.warnbox{background:var(--badb);color:var(--bad);border-radius:12px;padding:10px 12px;font-size:13.5px;margin:10px 0}.wide{overflow-x:auto}
-</style></head><body><div class="wrap">
-<h1>🕵️ Map Detective</h1><p class="sub">50 clues · 5 missions</p>
-<div class="card" id="g"></div></div>
+body{background:radial-gradient(circle at 15% 0,var(--tl),transparent 45%),var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;padding:1.4rem 1rem;min-height:100vh;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,[data-allow]{-webkit-user-select:text;user-select:text}
+.wrap{max-width:660px;margin:auto}h1{font-size:28px;color:var(--td);margin:0;text-align:center}.sub{text-align:center;color:var(--mut);margin:2px 0 14px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:22px;padding:1.4rem;box-shadow:0 10px 30px rgba(15,118,110,.12)}
+.box{background:var(--tl);border-left:5px solid var(--or);border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14.5px}.box b{color:var(--td)}.box ul{margin:4px 0;padding-left:20px}
+.sr{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}.pg{height:11px;background:var(--tl);border-radius:6px;overflow:hidden;margin:6px 0 12px}.pg i{display:block;height:100%;background:var(--teal);transition:width .25s}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:10px}.dots span{width:34px;height:8px;border-radius:5px;background:var(--bd)}.dots .d{background:var(--or)}.dots .c{background:var(--teal)}
+.map{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 6px}.map div{background:var(--tl);border-radius:10px;text-align:center;padding:6px 2px;font-size:12px;font-weight:600}.map span{display:block;font-size:22px}.note{font-size:12px;color:var(--mut);margin:0 0 10px;text-align:center}
+.q{font-size:20px;font-weight:700;margin:6px 0 14px}.opts{display:grid;gap:9px}
+button.opt{text-align:left;font:inherit;font-size:16px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--bd);border-bottom-width:4px;background:var(--card);color:var(--ink);cursor:pointer}
+button.opt:hover:not(:disabled){border-color:var(--teal);background:var(--tl)}.opt.c{background:var(--okb);border-color:var(--ok);color:var(--ok);font-weight:700}.opt.w{background:var(--badb);border-color:var(--bad);color:var(--bad);font-weight:700}
+.fb{margin-top:12px;font-size:14.5px;min-height:20px}.fb b.g{color:var(--ok)}.fb b.r{color:var(--bad)}
+.btn{font:inherit;font-weight:700;border:0;border-radius:14px;padding:11px 18px;cursor:pointer;background:var(--teal);color:#fff;box-shadow:0 4px 0 var(--td)}.btn:active{transform:translateY(3px);box-shadow:none}.btn.o{background:linear-gradient(90deg,var(--or),#F0A35E);box-shadow:0 4px 0 #C77530}.btn.s{background:var(--card);color:var(--td);border:1.5px solid var(--teal);box-shadow:0 4px 0 var(--bd)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+input{width:100%;font:inherit;font-size:16px;padding:11px 13px;border:1.5px solid var(--bd);border-radius:11px;background:var(--card);color:var(--ink);margin:4px 0 10px}
+.big{text-align:center;font-size:44px}.stat{display:flex;gap:10px;justify-content:center;margin:12px 0;flex-wrap:wrap}.stat div{background:var(--bg);border-radius:12px;padding:10px 18px;text-align:center}.stat b{display:block;font-size:20px;color:var(--td)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.chip{padding:4px 11px;border-radius:99px;font-size:13px;font-weight:600}.chip.g{background:var(--okb);color:var(--ok)}.chip.b{background:var(--badb);color:var(--bad)}
+pre{white-space:pre-wrap;word-break:break-word;font-size:11px;line-height:1.4;background:var(--bg);padding:10px;border-radius:10px;overflow:auto;max-height:320px}details{margin-top:12px}textarea{width:100%;min-height:120px}
+#ac{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:1rem}.acb{background:var(--card);border-radius:18px;padding:1.4rem;max-width:420px;border:2px solid var(--or)}.acb h3{margin:0 0 8px}
+#fs{display:none;position:fixed;inset:0;z-index:60;background:#0E1716}
+#pp{display:none}@media print{.wrap,#ac,#fs{display:none!important}#pp{display:block!important}#pp pre{max-height:none;overflow:visible;font-size:10pt;background:none}body{background:#fff;color:#000}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><div class="wrap"><h1>🕵️ Map Detective</h1><p class="sub">50 clues · 5 missions</p>
+<div class="card" id="g"></div></div><div id="ac" role="alertdialog" aria-live="assertive"></div><div id="fs" role="dialog" aria-modal="true" aria-label="Paused"></div><div id="pp"></div>
 <script>
 const MAP=[["📚","Library"],["🅿️","Car park"],["☕","Café"],["🏋️","Gym"],["🌳","Garden"],["🏦","Bank"],["🛍️","Shop"],["🚌","Bus stop"],["🏫","School"]];
 const SEC=[["Map Reader 🗺️",0],["Time Travel ⏳",10],["Switch It 🔄",22],["Link Up 🔗",32],["Final Case ✅",42]];
@@ -94,73 +84,114 @@ const Q=[
 ["Which sentence is an overview?",["Overall, the centre became larger.","The café has 20 tables.","A tree was planted by the door.","The toilet is green."]],
 ["A map report should have at least ___ words.",["150","50","100","300"]],
 ["You should spend about ___ minutes on a map report.",["20","5","40","60"]]];
-const g=document.getElementById("g"),T=Q.length,MAX_LEAVES=2;
-let me={name:"",cls:"",date:""},attempt=0,plan=[],i=0,sc=0,st=0,log=[],done=false,active=false,leaves=0,away=false,tl=0,warns=0,resets=0,ev=[];
+const RULE=["Use north, south, east and west and words like corner and middle to say exactly where a place is.","Use the past simple for finished actions. Regular verbs add -ed. Irregular verbs change (build → built).","The passive is was / were + past participle. Use it when the action is more important than who did it.","Linking words show addition (In addition), contrast (However, whereas) and overview (Overall).","A good map report has an introduction, an overview, details and a final check. Aim for 150+ words in about 20 minutes."];
+const ST0=[0,10,22,32,42,50],NAMES=SEC.map(s=>s[0]).concat(["Review round"]);
+const CFG={resetAt:2,fsRequired:true}; // 2 = warn on 1st departure, reset on 2nd
+const $=id=>document.getElementById(id),g=$("g");
 const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const say=t=>{try{const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
 const esc=s=>{const d=document.createElement("div");d.textContent=s;return d.innerHTML};
-const fd=s=>{try{return new Date(s+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}catch(e){return s}};
-const clk=()=>new Date().toLocaleTimeString("en-GB");
-const secOf=id=>SEC.filter(s=>id>=s[1]).pop();
-function rec(type,detail){ev.push({time:clk(),attempt,q:(active&&i<T)?i+1:null,type,detail:detail||""})}
-function newPlan(){plan=sh([...Array(T).keys()]).map(id=>({id,opts:sh(Q[id][1])}))}
-const DECL=["I will complete this activity on my own.","I will not use ChatGPT, Claude, Gemini, Google Translate or any other AI or translation tool.","I will not copy answers from another student.","I understand that tab changes and other activity on this page will be recorded."];
-function intro(){active=false;const t=new Date().toISOString().slice(0,10);
-g.innerHTML=`<p style="margin-top:0">Solve 50 clues across 5 missions. The clues and answer choices are in a different order every attempt. Do not translate this page.</p>
-<label>Full name</label><input id="n" autocomplete="off" placeholder="e.g. Amina K." value="${esc(me.name)}">
-<label>Class</label><input id="c" autocomplete="off" placeholder="e.g. 10B" value="${esc(me.cls)}">
-<label>Date</label><input id="d" type="date" value="${me.date||t}">
-<div class="warnbox"><b>Academic integrity.</b> Tick every box to start.</div>
-${DECL.map((d,k)=>`<label class="chk"><input type="checkbox" class="dc"> <span>${d}</span></label>`).join("")}
-<p class="err" id="e" role="alert"></p><div class="row"><button class="btn o" id="go">Start the mission</button></div>`;
-document.getElementById("go").onclick=()=>{const n=document.getElementById("n").value.trim(),c=document.getElementById("c").value.trim(),d=document.getElementById("d").value;
-const all=[...document.querySelectorAll(".dc")].every(x=>x.checked),e=document.getElementById("e");
-if(n.length<2||!c||!d){e.textContent="Please fill in your name, class and date.";return}
-if(!all){e.textContent="Please tick all four boxes to confirm you will work independently.";return}
-me={name:n,cls:c,date:d};ev=[];attempt=0;tl=0;warns=0;resets=0;restart("Start")}}
-function restart(why){attempt++;i=0;sc=0;st=0;log=[];leaves=0;away=false;newPlan();active=true;rec("attempt_start",why||"");show()}
-function show(){if(i>=T)return finish();done=false;const p=plan[i],q=Q[p.id][0],sec=secOf(p.id);
-const map=p.id<10?`<div class="map">${MAP.map(m=>`<div><span>${m[0]}</span>${m[1]}</div>`).join("")}</div><p class="note">North is at the top of the map.</p>`:"";
-g.innerHTML=`<div class="stat"><span>Clue ${i+1} / ${T} · Attempt ${attempt}</span><span>${st>=3?"🔥 ":""}Streak ${st} · Points ${sc}</span></div><div class="bar"><div style="width:${i/T*100}%"></div></div>
-<span class="badge">${sec[0]}</span>${map}<p class="q">${esc(q)}</p><div class="opts" id="o" role="group" aria-label="Answer choices"></div><div class="fb" id="f" aria-live="polite"></div>
-<div class="row"><button class="btn" id="nx" style="display:none">${i==T-1?"Finish":"Next"} →</button></div>`;
-const w=document.getElementById("o");p.opts.forEach(t=>{const b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=()=>pick(t,b);w.appendChild(b)});
-document.getElementById("nx").onclick=()=>{i++;show()}}
-function pick(t,b){if(done)return;done=true;const p=plan[i],r=Q[p.id][1][0],ok=t===r,f=document.getElementById("f");
-document.querySelectorAll(".opt").forEach(x=>x.disabled=true);
-if(ok){b.classList.add("c");st++;sc+=10+(st>=3?5:0);f.className="fb g";f.textContent=["Great detective work! 🎉","Correct! ⭐","Spot on! 🔍","Brilliant! 🚀"][i%4]}
-else{b.classList.add("w");st=0;f.className="fb b";f.textContent="Not correct. You will see the answer in your final review."}
-log.push({n:i+1,id:p.id,q:Q[p.id][0],shown:p.opts.slice(),mine:t,right:r,ok});
-document.getElementById("nx").style.display="inline-block";document.getElementById("nx").focus()}
-function reportText(){const n=log.filter(l=>l.ok).length;
-let s=`MAP DETECTIVE - TEACHER REPORT\nName: ${me.name}\nClass: ${me.cls}\nDate: ${fd(me.date)}\nAttempt: ${attempt}\nScore: ${n}/${T} (${Math.round(n/T*100)}%)\nTab departures: ${tl} | Warnings: ${warns} | Resets: ${resets}\n\nANSWERS (in the order the student saw them)\n`;
-log.forEach(l=>{s+=`${l.n}. ${l.q}\n   Options shown: ${l.shown.join(" | ")}\n   Student answer: ${l.mine}\n   Correct answer: ${l.right}\n   ${l.ok?"Correct":"Incorrect"}\n`});
-s+="\nOBSERVABLE EVENTS\n";ev.forEach(e=>{s+=`${e.time} | attempt ${e.attempt} | clue ${e.q||"-"} | ${e.type} ${e.detail}\n`});
-return s+"\nNote: these are observable browser events only. They do not prove misconduct, and this page cannot detect AI tools used elsewhere."}
-function copyText(t,cb){const done=()=>cb("Report copied. Paste it into Google Classroom or an email.");
-if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done).catch(()=>fb(t,cb));else fb(t,cb)}
-function fb(t,cb){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy")}catch(e){}a.remove();cb(ok?"Report copied.":"Copy was blocked. Use Download PDF instead.")}
-function finish(){active=false;rec("finished");const n=log.filter(l=>l.ok).length,p=Math.round(n/T*100);
-const rank=p>=90?"Master Detective 🏆":p>=70?"Senior Detective 🌟":p>=50?"Junior Detective 🔎":"Detective in training 📚";
-g.innerHTML=`<div class="noprint" style="text-align:center"><p class="big">${n}/${T}</p><p style="margin:0;font-weight:700">${rank}</p></div>
-<h2 style="margin:14px 0 4px;color:var(--teal)">Final review</h2>
-<div class="det"><span><b>Name:</b> ${esc(me.name)}</span><span><b>Class:</b> ${esc(me.cls)}</span><span><b>Date:</b> ${fd(me.date)}</span><span><b>Attempt:</b> ${attempt}</span><span><b>Score:</b> ${n}/${T} (${p}%) · ${sc} pts</span><span><b>Tab departures:</b> ${tl} · Warnings ${warns} · Resets ${resets}</span></div>
-<div class="wide"><table><thead><tr><th>#</th><th>Question (order seen)</th><th>Choices shown</th><th>Your answer</th><th>Correct</th><th></th></tr></thead><tbody>${log.map(l=>`<tr><td>${l.n}</td><td>${esc(l.q)}</td><td>${l.shown.map(esc).join(" / ")}</td><td>${esc(l.mine)}</td><td>${esc(l.right)}</td><td class="${l.ok?"y":"n"}">${l.ok?"✓":"✗"}</td></tr>`).join("")}</tbody></table></div>
-<h3 style="color:var(--teal);margin:16px 0 4px">Observable activity</h3>
-<div class="wide"><table><thead><tr><th>Time</th><th>Attempt</th><th>Clue</th><th>Event</th></tr></thead><tbody>${ev.map(e=>`<tr><td>${e.time}</td><td>${e.attempt}</td><td>${e.q||"-"}</td><td>${esc(e.type+" "+e.detail)}</td></tr>`).join("")}</tbody></table></div>
-<p class="note" style="text-align:left">These are observable browser events only. They do not prove misconduct. This page cannot detect AI tools used on another tab or device.</p>
-<div class="row noprint"><button class="btn o" id="pdf">Download PDF</button><button class="btn s" id="cp">Copy teacher report</button><button class="btn s" id="ag">Play again</button></div>
-<p class="note noprint" id="msg" aria-live="polite" style="text-align:left">For the PDF, choose <b>Save as PDF</b> in the print window, then upload the file to Google Classroom.</p>`;
-document.getElementById("pdf").onclick=()=>{const old=document.title;document.title=(me.name+"_"+me.cls+"_Map_Detective").replace(/\s+/g,"_");window.print();setTimeout(()=>document.title=old,500)};
-document.getElementById("cp").onclick=()=>copyText(reportText(),m=>document.getElementById("msg").textContent=m);
-document.getElementById("ag").onclick=()=>restart("Play again")}
-function modal(h,m,cb){const o=document.createElement("div");o.className="ov";o.setAttribute("role","alertdialog");o.innerHTML=`<div class="card"><h2>${h}</h2><p>${m}</p><button class="btn o" id="ok">OK</button></div>`;document.body.appendChild(o);const b=o.querySelector("#ok");b.focus();b.onclick=()=>{o.remove();if(cb)cb()}}
-document.addEventListener("visibilitychange",()=>{
-if(document.hidden){if(active&&!away){away=true;rec("left_tab")}return}
-if(!active||!away)return;away=false;leaves++;tl++;rec("returned_to_tab","departure "+leaves);
-if(leaves<MAX_LEAVES){warns++;rec("warning_shown");modal("⚠️ Warning","You left the game tab. This has been recorded. If you leave again, the activity will restart from clue 1.")}
-else{resets++;rec("attempt_reset","Attempt "+attempt+" cleared after "+leaves+" departures");modal("🔄 Activity restarted","You left the tab again, so your answers have been cleared and the activity restarts with a new order. This has been recorded.",()=>restart("Reset after tab departures"))}});
-const inp=e=>e.target&&e.target.tagName==="INPUT";
-["copy","cut","paste","contextmenu","selectstart","dragstart"].forEach(t=>document.addEventListener(t,e=>{if(inp(e))return;e.preventDefault();if(active&&t!=="selectstart"&&t!=="dragstart")rec("blocked_action",t)}));
-document.addEventListener("keydown",e=>{if(inp(e))return;const k=e.key.toLowerCase();if((e.ctrlKey||e.metaKey)&&"cxvausp".includes(k)&&k.length===1){if(k==="p"&&!active)return;e.preventDefault();if(active)rec("blocked_shortcut","Ctrl/Cmd+"+k.toUpperCase())}});
+let S,M={},stg=[],LOG=[],REC=[],AN=0,RES=0,DT=0,T0=null,DONE=null,AT=false,REL=false,ST=0,AW=false,TA=0,FST=0,SHOT=false,LN=false,PK=0;
+const lg=(type,detail)=>{if(LOG.length<400)LOG.push({t:new Date().toISOString(),type,detail:detail||""})};
+function newAttempt(){AN++;LOG=[];REC=[];RES=0;DT=0;T0=new Date();DONE=null;lg("attempt-start","attempt "+AN)}
+function intro(){AT=false;REL=false;gate();S={name:"",yg:"",fg:"",score:0,streak:0,st:0,q:[],i:0,sok:0,sn:0,ok:0,n:0};M={};stg=[];
+g.innerHTML=`<div class="box"><b>Activity goal</b><br>Describe where places are on a map and how a place changed over time, using the correct grammar and linking words.</div>
+<div class="box"><b>Learning objectives</b> By the end I can:<ul><li>say where places are using directions and prepositions,</li><li>use the past simple and the passive to describe change,</li><li>link ideas with words like <i>however</i> and <i>overall</i>,</li><li>choose the best words to write a clear map report.</li></ul></div>
+<div class="box"><b>Success criteria</b> 80% or more in each mission. Clues you miss come back for a second chance.</div>
+<label for="nm"><b>English Name</b></label><input id="nm" autocomplete="off"><label for="yg"><b>Year Group</b></label><input id="yg" autocomplete="off" placeholder="e.g. Year 10"><label for="fg"><b>Form Group</b></label><input id="fg" autocomplete="off" placeholder="e.g. 10B">
+<div class="fb" id="er" role="alert" style="color:var(--bad)"></div><button class="btn o" id="go" style="width:100%;font-size:16px;padding:13px">Start the mission</button>`;
+$("go").onclick=()=>{const n=$("nm").value.trim(),y=$("yg").value.trim(),f=$("fg").value.trim();if(!n||!y||!f){$("er").textContent="Please fill in your English Name, Year Group and Form Group.";return}
+S.name=n;S.yg=y;S.fg=f;AT=true;ST=0;AW=false;newAttempt();lg("fullscreen-status",isFull()?"active at start":"not active");guide()}}
+function guide(){lg("guided-example","shown");
+g.innerHTML=`<div class="sr"><span>Guided example</span><span>not scored</span></div><p class="q">Look first. Then practise.</p>
+<div class="box"><b>Read the map</b><div class="map">${MAP.map(m=>`<div><span>${m[0]}</span>${m[1]}</div>`).join("")}</div><p class="note">North is at the top.</p><p>The <b>café</b> is in the top right-hand <b>corner</b>. The <b>garden</b> is <b>between</b> the gym and the bank.</p></div>
+<div class="box"><b>Past simple and passive</b><p>Active: They <b>built</b> a gym. → Passive: A gym <b>was built</b>.</p><p><b>However</b> shows contrast. <b>Overall</b> starts a summary.</p></div>
+<div class="row"><button class="btn s" id="sp">🔊 Hear it</button><button class="btn o" id="gx">I am ready</button></div>`;
+$("sp").onclick=()=>say("The café is in the top right-hand corner. A gym was built.");$("gx").onclick=()=>begin(0)}
+function mk(id,x){return{id,opts:sh(Q[id][1]),...x}}
+function begin(n){S.st=n;S.i=0;S.sok=0;S.sn=0;S.q=sh([...Array(ST0[n+1]-ST0[n]).keys()].map(k=>ST0[n]+k)).map(id=>mk(id,{}));
+lg("stage-start",NAMES[n]+" | order: "+S.q.map(q=>q.id+1).join(", "));show()}
+function head(){return`<div class="dots">${[0,1,2,3,4].map(i=>`<span class="${i<S.st?"c":i==S.st?"d":""}"></span>`).join("")}</div><div class="sr"><span>${NAMES[S.st]} · ${Math.min(S.i+1,S.q.length)}/${S.q.length}</span><span>⭐ ${S.score} · 🔥 ${S.streak}</span></div><div class="pg"><i style="width:${S.i/S.q.length*100}%"></i></div>`}
+function show(){if(S.i>=S.q.length)return endStage();const it=S.q[S.i],p=Q[it.id];
+const map=it.id<10?`<div class="map">${MAP.map(m=>`<div><span>${m[0]}</span>${m[1]}</div>`).join("")}</div><p class="note">North is at the top of the map.</p>`:"";
+g.innerHTML=head()+map+`<p class="q">${esc(p[0])}</p><div class="opts" id="o" role="group" aria-label="Answer choices"></div><div class="row"><button class="btn s" id="sp">🔊 Hear it</button><button class="btn" id="nx" style="display:none">Next →</button></div><div class="fb" id="fb" aria-live="polite"></div>`;
+it.opts.forEach(x=>{const b=document.createElement("button");b.className="opt";b.textContent=x;b.onclick=()=>pick(it,x,b);$("o").appendChild(b)});
+$("sp").onclick=()=>say(p[0].replace("___","blank"));$("nx").onclick=()=>{S.i++;show()}}
+function pick(it,x,b){if(b.disabled)return;const p=Q[it.id],r=p[1][0],ok=x==r;
+document.querySelectorAll(".opt").forEach(e=>{e.disabled=1});ok?b.classList.add("c"):b.classList.add("w");
+const st=it.rv?6:S.st;REC.push({id:it.id,stage:st+1,q:p[0],shown:it.opts.slice(),chosen:x,correct:r,ok,retry:!!it.r,rv:!!it.rv});
+if(!it.rv){const m=M[it.id]=M[it.id]||{ok:0,bad:0};ok?m.ok++:m.bad++}
+if(ok){S.streak++;S.score+=10+(S.streak>=3?5:0)}else{S.streak=0;if(!it.r&&!it.rv)S.q.push(mk(it.id,{r:1}))}
+if(!it.r&&!it.rv){S.sn++;S.n++;if(ok){S.sok++;S.ok++}}
+const sec=Math.max(0,SEC.map(s=>s[1]).filter(s=>it.id>=s).length-1);
+$("fb").innerHTML=`<b class="${ok?"g":"r"}">${ok?"Correct! "+(S.streak>=3?"🔥 ":""):"Not yet. "}</b>${RULE[sec]}`;$("nx").style.display="inline-block";$("nx").focus();if(ok)say(r)}
+function endStage(){if(S.st==5)return finish();const a=S.sn?Math.round(100*S.sok/S.sn):100,s=a>=90?3:a>=70?2:1;if(S.st<5)stg[S.st]=a;
+g.innerHTML=`<div class="big">${"⭐".repeat(s)}</div><h2 style="text-align:center;margin:6px 0">${NAMES[S.st]} complete!</h2><p style="text-align:center;color:var(--mut)">First-try accuracy: <b>${a}%</b> · Missed clues come back in the review round.</p><button class="btn o" id="n" style="width:100%">${S.st==4?"Review round":"Next mission"} →</button>`;
+$("n").onclick=()=>S.st==4?review():begin(S.st+1)}
+function review(){const ids=[...new Set(REC.filter(r=>!r.ok&&!r.retry&&!r.rv).map(r=>r.id))];if(!ids.length)return finish();
+S.st=5;S.i=0;S.sok=0;S.sn=0;S.q=sh(ids).slice(0,8).map(id=>mk(id,{rv:1}));lg("stage-start","Review round | order: "+S.q.map(q=>q.id+1).join(", "));show()}
+function finish(){AT=false;REL=true;gate();DONE=new Date();lg("completed","score "+S.score);const acc=S.n?Math.round(100*S.ok/S.n):0,miss=[...new Set(REC.filter(r=>!r.ok&&!r.retry&&!r.rv).map(r=>r.id+1))];
+const chk=SEC.map((s,i)=>(stg[i]>=80?"✅ ":"🔁 ")+s[0]+" (80%+)").join("<br>"),mR=myWork(acc,miss),tR=report(acc,miss),mine=wrap(mR),sum=wrap(tR),rvw=REC.map((r,k)=>`<div class="box"><b>${k+1}.</b> ${esc(r.q)}<br>My answer: <b>${esc(r.chosen)}</b> ${r.ok?"✅":"❌ Correct answer: <b>"+esc(r.correct)+"</b>"}${r.rv?" (review)":r.retry?" (second try)":""}</div>`).join("");
+g.innerHTML=`<div class="big">${acc>=90?"🏆":acc>=75?"🌟":"💪"}</div><h2 style="text-align:center;margin:6px 0">${esc(S.name)}, case closed!</h2><div class="stat"><div><b>${S.score}</b>Score</div><div><b>${acc}%</b>First-try</div><div><b>${miss.length}</b>To review</div></div>
+<p><b>Did I reach my goals?</b></p><div class="box">${chk}</div><div class="chips">${SEC.map((s,i)=>`<span class="chip ${stg[i]>=80?"g":"b"}">${s[0]} ${stg[i]}%</span>`).join("")}</div>
+<details open><summary><b>Final review</b> (all questions and my answers)</summary>${rvw}</details><div class="row"><button class="btn" id="pd">Save my work as PDF</button><button class="btn" id="cw">Copy My Work</button><button class="btn s" id="pr">Print</button><button class="btn s" id="ag">Play again</button></div><p class="fb" id="ct" aria-live="polite"></p>
+<details><summary><b>Teacher report</b> (tap to read)</summary><pre data-allow id="rp"></pre><div class="row"><button class="btn s" id="cp">Copy teacher report</button><button class="btn s" id="pt">Save teacher report as PDF</button></div></details>`;
+$("rp").textContent=sum;$("ag").onclick=intro;$("pd").onclick=()=>savePdf(mR,"my_work");$("pt").onclick=()=>savePdf(tR,"teacher_report");$("cw").onclick=()=>cpy(mine);$("cp").onclick=()=>cpy(sum);$("pr").onclick=()=>prt(mine)}
+const wrap=(t,w=100)=>t.split("\n").flatMap(p=>{const o=[];let l="";p.split(" ").forEach(x=>{if((l+x).length>w&&l){o.push(l.trimEnd());l="   "}l+=x+" "});o.push(l.trimEnd());return o}).join("\n");
+function report(acc,miss){const f=REC.filter(r=>!r.retry&&!r.rv),L=[],P=s=>L.push(s);
+P("MAP DETECTIVE - TEACHER REPORT");P("English Name: "+S.name+" | Year Group: "+S.yg+" | Form Group: "+S.fg);P("Attempt number: "+AN+" | Status: "+(DONE?"Completed":"Not completed"));
+P("Started: "+(T0?T0.toISOString():"n/a")+" | Completed: "+(DONE?DONE.toISOString():"n/a"));P("Score: "+S.score+" | First-try correct: "+f.filter(r=>r.ok).length+"/"+f.length+" ("+acc+"%) | Unanswered: "+Math.max(0,50-f.length));
+P("Departures detected: "+DT+" | Warnings shown: "+LOG.filter(x=>x.type=="warning-shown").length+" | Resets: "+RES);P("");P("CLUES MISSED ON FIRST TRY: "+(miss.join(", ")||"none"));
+P("");P("QUESTIONS IN THE ORDER PRESENTED");REC.forEach((r,i)=>P((i+1)+". S"+r.stage+" clue "+(r.id+1)+(r.rv?" (review)":r.retry?" (retry)":"")+" | "+r.q+" | shown: "+r.shown.join(" / ")+" | student: "+r.chosen+" | correct: "+r.correct+" | "+(r.ok?"CORRECT":"INCORRECT")));
+P("");P("INTEGRITY EVENTS (browser-visible only)");LOG.forEach(x=>P(x.t+" | "+x.type+(x.detail?" | "+x.detail:"")));
+P("");P("NOTES: Events are limited to what the browser reports: page hidden or focus lost, full-screen changes, blocked copy and paste, and screenshot-related key presses (most screenshot methods cannot be detected). The page cannot see other apps, other devices, or AI and translation tools. A recorded event is not proof of misconduct. Records stay on this device and are not sent anywhere automatically.");return L.join("\n")}
+function myWork(acc,miss){const f=REC.filter(r=>!r.retry&&!r.rv),L=[],P=s=>L.push(s);
+P("MAP DETECTIVE - MY WORK");P("English Name: "+S.name+" | Year Group: "+S.yg+" | Form Group: "+S.fg);P("Completed: "+(DONE?DONE.toISOString().slice(0,16).replace("T"," ")+" UTC":"not completed")+" | Attempt: "+AN);
+P("Score: "+S.score+" | First-try correct: "+f.filter(r=>r.ok).length+"/"+f.length+" ("+acc+"%)");P("");P("MY ANSWERS");
+REC.forEach((r,i)=>P((i+1)+". "+NAMES[r.stage-1]+" | "+r.q+" | My answer: "+r.chosen+" | "+(r.ok?"Correct":"Not yet. Correct answer: "+r.correct)+(r.rv?" (review)":r.retry?" (second try)":"")));
+P("");P("CLUES TO PRACTISE AGAIN: "+(miss.join(", ")||"none"));return L.join("\n")}
+function cpy(t){const c=$("ct");(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>c.textContent="Copied. Paste it into Google Classroom or an email.").catch(()=>{c.innerHTML="";const a=document.createElement("textarea");a.readOnly=true;a.value=t;a.setAttribute("data-allow","");c.appendChild(a)})}
+function prt(t){const p=$("pp");p.innerHTML="";const h=document.createElement("h2");h.textContent="Map Detective";const e=document.createElement("pre");e.textContent=t;p.append(h,e);try{window.print()}catch(x){$("ct").textContent="Printing is not available here. Use Save my work as PDF."}}
+function mkPdf(text,foot){const PW=595,PH=842,MG=48,LH=12.5,CPL=88,L=[];
+wrap(text,CPL).split("\n").forEach(l=>{while(l.length>CPL){L.push(l.slice(0,CPL));l="   "+l.slice(CPL)}L.push(l)});
+const per=Math.floor((PH-2*MG)/LH),pages=[];for(let i=0;i<L.length;i+=per)pages.push(L.slice(i,i+per));
+const e=s=>String(s).replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,"-").replace(/…/g,"...").replace(/[^\x20-\x7E]/g,"?").replace(/([\\()])/g,"\\$1");
+const o=[];o[1]="<</Type/Catalog/Pages 2 0 R>>";o[3]="<</Type/Font/Subtype/Type1/BaseFont/Courier>>";o[4]="<</Type/Font/Subtype/Type1/BaseFont/Courier-Bold>>";let n=5;const kids=[];
+pages.forEach((p,pi)=>{let c="";p.forEach((l,i)=>{const b=/^[A-Z][A-Z0-9 ,.&'\-:()]{5,}$/.test(l);c+=`BT /${b?"F2":"F1"} 9 Tf ${MG} ${(PH-MG-i*LH).toFixed(1)} Td (${e(l)}) Tj ET\n`});
+c+=`BT /F1 8 Tf ${MG} 28 Td (${e(foot+"  |  Page "+(pi+1)+" of "+pages.length)}) Tj ET`;
+o[n]="<</Length "+c.length+">>\nstream\n"+c+"\nendstream";o[n+1]="<</Type/Page/Parent 2 0 R/MediaBox[0 0 "+PW+" "+PH+"]/Resources<</Font<</F1 3 0 R/F2 4 0 R>>>>/Contents "+n+" 0 R>>";kids.push(n+1);n+=2});
+o[2]="<</Type/Pages/Count "+kids.length+"/Kids["+kids.map(k=>k+" 0 R").join(" ")+"]>>";
+let s="%PDF-1.4\n";const off=[];for(let i=1;i<o.length;i++){off[i]=s.length;s+=i+" 0 obj\n"+o[i]+"\nendobj\n"}
+const x=s.length;s+="xref\n0 "+o.length+"\n0000000000 65535 f \n"+off.slice(1).map(v=>String(v).padStart(10,"0")+" 00000 n \n").join("")+"trailer\n<</Size "+o.length+"/Root 1 0 R>>\nstartxref\n"+x+"\n%%EOF";
+return new Blob([Uint8Array.from(s,c=>c.charCodeAt(0)&255)],{type:"application/pdf"})}
+async function savePdf(txt,tag){const t=$("ct");try{let d=null;try{d=window.claude?await window.claude.use("downloads"):null}catch(x){d=null}const fn="Map_Detective_"+S.name.replace(/[^A-Za-z0-9]+/g,"_")+"_attempt"+AN+"_"+tag+".pdf",bl=mkPdf(txt,"Map Detective - "+S.name+" ("+S.yg+", "+S.fg+")");
+if(!d){const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);t.textContent="PDF ready. Check your downloads.";return}
+await d.save({filename:fn,data:bl});t.textContent="PDF ready. Check your downloads."}catch(e){t.textContent=(e&&e.code=="declined")?"Save cancelled.":"Could not save the PDF. Use Copy My Work instead."}}
+/* ---- full screen silent freeze ---- */
+const FSE=()=>document.fullscreenElement||document.webkitFullscreenElement;
+const sizeOk=()=>{const lw=innerWidth>=innerHeight,m=Math.max(screen.width,screen.height),n=Math.min(screen.width,screen.height),SW=lw?m:n,SH=lw?n:m,a=document.activeElement,ty=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName);
+let ok=innerWidth>=SW*.95&&(ty||innerHeight>=SH*.75);const pm=Math.max(innerWidth,innerHeight)*(devicePixelRatio||1);if(ok&&pm>PK)PK=pm;return ok&&(ty||pm>=PK*.9)};
+const isFull=()=>!!FSE()||sizeOk(),need=()=>SHOT||(CFG.fsRequired&&!REL&&!isFull());
+function gate(){const o=$("fs"),wp=document.querySelector(".wrap");LN=need();if(!LN){o.style.display="none";wp.inert=false;wp.removeAttribute("aria-hidden");return}wp.inert=true;wp.setAttribute("aria-hidden","true");o.style.display="block"}
+$("fs").onclick=()=>{if(SHOT){SHOT=false;gate()}if(!need())return;const e=document.documentElement,f=e.requestFullscreen||e.webkitRequestFullscreen;if(f){try{Promise.resolve(f.call(e)).catch(()=>{})}catch(x){}}};
+const check=()=>{const n=need();if(n!==LN){if(AT)lg(n?"fullscreen-exit":"fullscreen-enter",n?"activity paused":"activity resumed");gate()}};
+const onfs=()=>{FST=Date.now();check()};document.addEventListener("fullscreenchange",onfs);document.addEventListener("webkitfullscreenchange",onfs);
+window.addEventListener("resize",check);document.addEventListener("focusin",check);document.addEventListener("focusout",()=>setTimeout(check,50));setInterval(check,400);window.addEventListener("orientationchange",()=>setTimeout(check,150));
+function shot(k){if(SHOT)return;SHOT=true;if(AT)lg("screenshot-key",k);gate()}
+const scKey=e=>{const c=e.code||"",k=e.key||"";if(c=="PrintScreen"||k=="PrintScreen"||k=="Snapshot")return"PrintScreen";if(e.metaKey&&e.shiftKey&&/^(Digit|Numpad)[3-6]$/.test(c))return"Cmd+Shift+"+c.slice(-1);if(e.metaKey&&e.shiftKey&&c=="KeyS")return"Win/Cmd+Shift+S";return""};
+["keydown","keyup"].forEach(t=>document.addEventListener(t,e=>{const k=scKey(e);if(k)shot(k)},true));
+/* ---- clipboard, selection, context menu ---- */
+const allow=e=>e.target&&e.target.closest&&e.target.closest("[data-allow]");
+["copy","cut","paste","drop","contextmenu","dragstart"].forEach(t=>document.addEventListener(t,e=>{if(t=="copy"&&allow(e))return;if(AT)lg("blocked-"+t,"");e.preventDefault()}));
+document.addEventListener("selectstart",e=>{const n=e.target.nodeType==3?e.target.parentNode:e.target;if(!(n.closest&&n.closest("input,textarea,[data-allow]")))e.preventDefault()});
+document.addEventListener("keydown",e=>{const k=(e.key||"").toLowerCase();if(((e.ctrlKey||e.metaKey)&&["c","x","v","insert"].includes(k))||(e.shiftKey&&["insert","delete"].includes(k))){if(k=="c"&&allow(e))return;if(AT)lg("blocked-shortcut",(e.ctrlKey?"ctrl+":"cmd+")+k);e.preventDefault()}});
+/* ---- tab departures: warn first, reset second ---- */
+function modal(m,rs){const d=$("ac");d.innerHTML=`<div class="acb"><h3>${rs?"🔄 Attempt reset":"⚠️ Notice"}</h3><p>${m}</p><button class="btn" id="acok">OK</button></div>`;d.style.display="flex";$("acok").onclick=()=>d.style.display="none";$("acok").focus()}
+function resetAttempt(){const n=S.name,y=S.yg,f=S.fg;lg("reset","attempt "+AN+" ended; answers cleared: "+REC.length);RES++;AN++;lg("attempt-start","attempt "+AN+" (new attempt after reset)");REC=[];M={};stg=[];S={name:n,yg:y,fg:f,score:0,streak:0,st:0,q:[],i:0,sok:0,sn:0,ok:0,n:0};ST=0;begin(0)}
+const away=e=>{if(!AT||AW||Date.now()-FST<1500)return;AW=true;ST++;DT++;TA=Date.now();lg("departure",(e&&e.type)||"unknown")};
+const back=()=>{if(!AW)return;AW=false;if(!AT)return;lg("returned","away about "+Math.round((Date.now()-TA)/1000)+"s");
+if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your answers were cleared and the activity restarted from the beginning. Stay on this page and work on your own.",1)}else{lg("warning-shown","");modal("Warning: you left the activity page. Stay on this page. If you leave again, your attempt will be reset and you will start again.")}};
+document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab-hidden"}):back());window.addEventListener("blur",away);window.addEventListener("focus",back);
 intro();
 </script></body></html>
+<!-- v2: rebuilt on Maths Word Lab standard; supersedes earlier published version -->
