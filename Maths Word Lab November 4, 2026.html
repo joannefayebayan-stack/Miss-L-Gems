@@ -85,10 +85,10 @@ S.q=n==0?[...sh(["chord","diameter","radius","tangent","secant","arc"]).map(id=>
 n==1?sh(W).slice(0,10).map(w=>({t:"mc",w:w[0],p:`Which word means: “${w[2]}”?`})):
 n==2?sh(CMD).map(c=>({t:"mc",w:c[0],cmd:1,p:`The question says: <b>${c[1]}</b><br>Which maths word fits?`})):
 n==3?sh(W).slice(0,10).map(w=>({t:"mc",w:w[0],p:w[3].replace("___","<b>_____</b>")})):
-n==4?sh(long).slice(0,8).map(w=>({t:"sp",w})):[{t:"teach"}];S.q.forEach((q,i)=>q.id=(n+1)+"."+(i+1)+":"+q.t+(q.w?":"+q.w:""));QN[n]=S.q.length;lg("stage-start",NAMES[n]+" | order: "+S.q.map(q=>q.id).join(", "));
+n==4?sh(long).slice(0,8).map(w=>({t:"sp",w})):[{t:"teach"}];S.q.forEach((q,i)=>q.id=(n+1)+"."+(i+1)+":"+q.t+(q.w?":"+q.w:""));QN[n]=S.q.length;
 show()}
 function head(){return`<div class="dots">${NAMES.slice(0,6).map((_,i)=>`<span class="${i<S.st?"c":i==S.st?"d":""}"></span>`).join("")}</div><div class="sr"><span>${NAMES[S.st]} · ${Math.min(S.i+1,S.q.length)}/${S.q.length}</span><span>⭐ ${S.score} · 🔥 ${S.streak}</span></div><div class="pg"><i style="width:${S.i/S.q.length*100}%"></i></div>`}
-function rec(ok,it,ch,op){REC.push({t:new Date().toISOString(),id:it.id,stage:S.st+1,w:it.w,retry:!!it.r,rv:!!it.rv,shown:op,chosen:ch,correct:it.w,ok});if(!it.rv){const m=M[it.w]=M[it.w]||{ok:0,bad:0};ok?m.ok++:m.bad++}
+function rec(ok,it,ch,op){REC.push({id:it.id,stage:S.st+1,w:it.w,retry:!!it.r,rv:!!it.rv,shown:op,chosen:ch,correct:it.w,ok});if(!it.rv){const m=M[it.w]=M[it.w]||{ok:0,bad:0};ok?m.ok++:m.bad++}
 if(ok){S.streak++;S.score+=10+(S.streak>=3?5:0)}else{S.streak=0;if(!it.r)S.q.push({...it,r:1,o:null})}
 if(!it.r&&!it.rv){S.sn++;S.n++;if(ok){S.sok++;S.ok++}}}
 function fb(ok,msg){const f=$("fb");f.innerHTML=`<b class="${ok?"g":"r"}">${ok?"Correct! "+(S.streak>=3?"🔥 ":""):"Not yet. "}</b>${msg}`;$("nx").style.display="inline-block"}
@@ -125,7 +125,7 @@ function teach(){const F=["A chord is different from a diameter because …","To
 g.innerHTML=head()+`<p class="q">Teach-back: explain in your own words</p><div class="box">Write 1–2 full sentences each. Use the words in <b>bold</b>.</div>`+F.map((f,i)=>`<label><b>${i+1}.</b> ${f}</label><textarea id="t${i}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>`).join("")+`<button class="btn o" id="fin">Finish</button>`;
 $("fin").onclick=()=>{S.txt=F.map((f,i)=>f+"\n"+$("t"+i).value.trim());review()}}
 function review(){const w=Object.keys(M).filter(k=>M[k].bad>0);if(!w.length)return finish();
-S.st=6;S.i=0;S.sok=0;S.sn=0;S.q=sh(w).slice(0,8).map((k,i)=>({t:"mc",w:k,rv:1,id:"7."+(i+1)+":mc:"+k,p:`Review: which word means “${T(k)[2]}”?`}));QN[6]=S.q.length;lg("stage-start",NAMES[6]+" | order: "+S.q.map(q=>q.id).join(", "));show()}
+S.st=6;S.i=0;S.sok=0;S.sn=0;S.q=sh(w).slice(0,8).map((k,i)=>({t:"mc",w:k,rv:1,id:"7."+(i+1)+":mc:"+k,p:`Review: which word means “${T(k)[2]}”?`}));QN[6]=S.q.length;show()}
 function finish(){AT=false;REL=true;gate();DONE=new Date();lg("completed","score "+S.score);const acc=S.n?Math.round(100*S.ok/S.n):0;const miss=Object.keys(M).filter(k=>M[k].bad>0);
 const L=[["Matched circle words to the diagram (80%+)",stg[0]>=80],["Chose the right command word (80%+)",stg[2]>=80],["Knew meanings and used words in gaps (80%+)",stg[1]>=80&&stg[3]>=80],["Spelled the long words (80%+)",stg[4]>=80],["Wrote 3 explanation sentences (teacher checks accuracy)",S.txt.filter(x=>(x.split("\n")[1]||"").split(/\s+/).filter(Boolean).length>=6).length==3]];
 const chk=L.map(l=>(l[1]?"✅ ":"🔁 ")+l[0]).join("<br>");
@@ -170,7 +170,7 @@ P("Score: "+S.score+" | First-try correct: "+first.filter(r=>r.ok).length+"/"+fi
 P("Departures detected: "+DT+" | Warnings shown: "+LOG.filter(x=>x.type=="warning-shown").length+" | Resets: "+RES);
 P("");P("INCORRECT ON FIRST TRY: "+(bad.length?[...new Set(bad.map(r=>r.w))].join(", "):"none"));P("WORDS TO REVIEW: "+(miss.join(", ")||"none"));
 P("");P("QUESTIONS IN THE ORDER PRESENTED (answer choices in the order the student saw them)");
-REC.forEach((r,i)=>P((i+1)+". "+r.t.slice(11,19)+" S"+r.stage+" id "+r.id+(r.rv?" (review round)":r.retry?" (retry)":"")+" | shown: "+(Array.isArray(r.shown)?r.shown.join(" / "):r.shown)+" | student: "+r.chosen+" | correct: "+r.correct+" | "+(r.ok?"CORRECT":"INCORRECT")));
+REC.forEach((r,i)=>P((i+1)+". "+"S"+r.stage+" id "+r.id+(r.rv?" (review round)":r.retry?" (retry)":"")+" | shown: "+(Array.isArray(r.shown)?r.shown.join(" / "):r.shown)+" | student: "+r.chosen+" | correct: "+r.correct+" | "+(r.ok?"CORRECT":"INCORRECT")));
 P("");P("TEACH-BACK RESPONSES");S.txt.forEach(t=>P(t));
 P("");P("INTEGRITY EVENTS (browser-visible events only)");LOG.forEach(x=>P(x.t+" | "+x.type+(x.detail?" | "+x.detail:"")));
 P("");P("NOTES: Events are limited to what the browser reports: page hidden or focus lost, window width changes, blocked copy/paste/right-click/shortcut attempts, screenshot-related key presses (Print Screen and common shortcuts; most screenshot methods cannot be detected), large single inputs and dictation. The page cannot see other apps, Split View windows, other devices, screenshots, dictated content, or AI and translation tools. A recorded event is not proof of misconduct. Answers are held in the page code and records stay on this device, so for formal assessment use supervised testing or school-managed devices. Attempt number counts attempts since this page was opened. This report is not sent anywhere automatically.");
