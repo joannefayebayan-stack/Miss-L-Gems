@@ -8,107 +8,108 @@
 <meta name="description" content="Interactive games, quizzes and practice for secondary students: EAL, mainstream subjects and other activities.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Jost:wght@400;500&display=swap">
 <style>
-/* Layout: a jeweller's tray. Three cut stones open the page and act as the way in; each collection below keeps its stone's colour. */
+/* Layout: a jeweller's case. A midnight band holds three cut stones; each collection below takes its stone's colour. */
 :root{
-  --bg:#f1f4f3; --surface:#ffffff; --fg:#17262a; --muted:#566468; --line:#d5dddb;
-  --emerald:#0d6b52; --sapphire:#1f4f91; --amber:#9a5c08;
-  --on-accent:#ffffff;
-  --display:"Young Serif",Georgia,"Times New Roman",serif;
-  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --bg:#f8f6f1; --surface:#fffefb; --fg:#1b2430; --muted:#5d6470; --line:#e0d9c8;
+  --gold:#80632a; --emerald:#1d5a48; --sapphire:#27477d; --bronze:#86622a;
+  --hero:#141e2b; --hero-fg:#f6f1e4; --hero-muted:#c9c3b3; --hero-gold:#cdb078;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"Jost","Century Gothic",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#121a1c; --surface:#1a2528; --fg:#e8eeed; --muted:#a3b1b2; --line:#30403f;
-  --emerald:#46c29d; --sapphire:#83adf0; --amber:#e6a94a; --on-accent:#10181a; color-scheme:dark}}
+  --bg:#10171f; --surface:#18212c; --fg:#ece7da; --muted:#a8acb0; --line:#323c47;
+  --gold:#cdb078; --emerald:#7cc5ab; --sapphire:#9db8e6; --bronze:#d8b476; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#121a1c; --surface:#1a2528; --fg:#e8eeed; --muted:#a3b1b2; --line:#30403f;
-  --emerald:#46c29d; --sapphire:#83adf0; --amber:#e6a94a; --on-accent:#10181a; color-scheme:dark}
+  --bg:#10171f; --surface:#18212c; --fg:#ece7da; --muted:#a8acb0; --line:#323c47;
+  --gold:#cdb078; --emerald:#7cc5ab; --sapphire:#9db8e6; --bronze:#d8b476; color-scheme:dark}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tray a,.tray svg{transition:none!important}}
-body{margin:0;background:var(--bg);color:var(--fg);font:400 1rem/1.55 var(--body)}
-.wrap{max-width:1040px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tray svg{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1.02rem/1.6 var(--body)}
+.wrap{max-width:1000px;margin-inline:auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 a{color:inherit}
-a:focus-visible{outline:3px solid var(--fg);outline-offset:3px;border-radius:3px}
-h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+a:focus-visible{outline:2px solid var(--hero-gold);outline-offset:3px}
+h1,h2{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0}
 
-.hero{padding-block:clamp(40px,8vw,84px) clamp(28px,5vw,48px)}
-h1{font-size:clamp(3.2rem,11vw,6.6rem);line-height:1;letter-spacing:-.015em}
-.lede{font-size:clamp(1.1rem,2.4vw,1.35rem);max-width:34em;margin:18px 0 0;color:var(--muted)}
+.hero{background:var(--hero);color:var(--hero-fg);text-align:center;padding-block:clamp(52px,9vw,96px) clamp(40px,6vw,64px)}
+h1{font-size:clamp(3.4rem,11vw,6.8rem);line-height:1;letter-spacing:.005em}
+.lede{font:italic 400 clamp(1.25rem,2.8vw,1.6rem)/1.35 var(--display);max-width:30em;margin:20px auto 0;color:var(--hero-muted);text-wrap:balance}
+.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,4vw,44px);margin-top:clamp(36px,6vw,60px);padding-top:clamp(32px,5vw,48px);border-top:1px solid color-mix(in srgb,var(--hero-gold) 45%,transparent)}
+.tray a{display:grid;gap:8px;justify-items:center;align-content:start;text-decoration:none;min-width:0}
+.tray svg{display:block;width:100%;max-width:120px;height:auto;margin-bottom:8px;transition:transform .3s ease}
+.tray a:hover svg{transform:translateY(-4px)}
+.tray strong{font:500 clamp(1.2rem,2.8vw,1.65rem)/1.15 var(--display);color:var(--hero-fg)}
+.tray span{color:var(--hero-muted);font-size:.92rem;line-height:1.45}
 
-.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,3vw,28px);margin-top:clamp(32px,6vw,56px)}
-.tray a{display:grid;gap:10px;align-content:start;text-decoration:none;min-width:0}
-.tray svg{display:block;width:100%;max-width:190px;height:auto;transition:transform .25s ease}
-.tray a:hover svg{transform:translateY(-5px) rotate(-3deg)}
-.tray strong{font:400 clamp(1.1rem,2.6vw,1.55rem)/1.2 var(--display)}
-.tray span{color:var(--muted);font-size:.94rem;line-height:1.4}
+.collection{padding-block:clamp(44px,7vw,76px);scroll-margin-top:12px}
+.collection+.collection{border-top:1px solid var(--line)}
+.head{display:grid;grid-template-columns:40px minmax(0,1fr);gap:18px;align-items:start;margin-bottom:30px}
+.head svg{width:40px;height:auto;margin-top:8px}
+h2{font-size:clamp(2.2rem,5.5vw,3.2rem);line-height:1.08;color:var(--c)}
+.sub{margin:8px 0 0;font-size:1.08rem;color:var(--muted);max-width:40em}
+#eal{--c:var(--emerald)} #mainstream{--c:var(--sapphire)} #other{--c:var(--bronze)}
 
-.collection{border-top:1px solid var(--line);padding-block:clamp(36px,6vw,60px);scroll-margin-top:12px}
-.head{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start;margin-bottom:26px}
-.head svg{width:44px;height:auto}
-h2{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.1;color:var(--c)}
-.sub{margin:6px 0 0;font-size:1.1rem;color:var(--muted);max-width:40em}
-#eal{--c:var(--emerald)} #mainstream{--c:var(--sapphire)} #other{--c:var(--amber)}
-
-h3{font:700 .95rem/1.3 var(--body);color:var(--c);margin:30px 0 10px}
+h3{font:500 .82rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:34px 0 12px}
 h3:first-of-type{margin-top:0}
-.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line)}
 .list>li+li{border-top:1px solid var(--line)}
-.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;padding:20px clamp(16px,3vw,24px);align-items:center}
-.name{font:600 1.2rem/1.3 var(--body);margin:0 0 8px}
-.name small{font-weight:500;font-size:.88rem;color:var(--muted);margin-left:6px;white-space:nowrap}
-dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px 12px;font-size:.96rem}
-dt{font-weight:600}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 28px;padding:24px clamp(18px,3vw,30px);align-items:center}
+.name{font:600 clamp(1.4rem,3vw,1.65rem)/1.2 var(--display);margin:0 0 10px}
+.name small{font:400 .88rem var(--body);color:var(--muted);margin-left:8px;white-space:nowrap}
+dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px 14px;font-size:.96rem}
+dt{font-weight:500}
 dd{margin:0;color:var(--muted)}
-.go{display:inline-block;padding:9px 16px;border-radius:4px;background:var(--c);color:var(--on-accent);font-weight:600;font-size:.95rem;text-decoration:none;white-space:nowrap}
-.go:hover{text-decoration:underline}
+.go{display:inline-block;padding:9px 22px;border:1px solid var(--c);color:var(--c);font-weight:500;font-size:.86rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s}
+.go:hover{background:var(--c);color:var(--surface)}
+.go:focus-visible{outline-color:var(--c)}
 
-.words{padding:18px clamp(16px,3vw,24px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.words-title{grid-column:1/-1;margin:0;font-weight:600}
-.words b{display:block;font-size:1.05rem}
+.words{padding:22px clamp(18px,3vw,30px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.words-title{grid-column:1/-1;margin:0;font:italic 500 1.2rem var(--display)}
+.words b{display:block;font-weight:500}
 .words span{color:var(--muted);font-size:.94rem}
 .soon{margin:30px 0 0;color:var(--muted);font-size:.96rem}
-.soon b{color:var(--fg);font-weight:600}
+.soon b{color:var(--fg);font-weight:500}
 
-footer{border-top:1px solid var(--line);padding-block:26px 34px;color:var(--muted);font-size:.92rem}
-footer b{font:400 1.05rem var(--display);color:var(--fg);margin-right:8px}
+footer{background:var(--hero);color:var(--hero-muted);padding-block:30px 36px;text-align:center;font-size:.92rem}
+footer b{display:block;font:500 1.35rem var(--display);color:var(--hero-fg);margin-bottom:2px}
 
 @media (max-width:640px){
   .item{grid-template-columns:minmax(0,1fr)}
-  .go{justify-self:start;margin-top:8px}
+  .go{justify-self:start;margin-top:10px}
   .words{grid-template-columns:minmax(0,1fr)}
   .tray span{display:none}
-  .name small{display:block;margin:2px 0 0}
+  .name small{display:block;margin:3px 0 0}
 }
 </style>
 </head>
 <body>
 
-<header class="hero wrap">
+<header class="hero"><div class="wrap">
   <h1>Miss L Gems</h1>
   <p class="lede">Games, quizzes and practice for secondary students. Small activities, polished until they shine.</p>
   <nav class="tray" aria-label="Collections">
     <a href="#eal">
-      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#0d6b52"/><polygon points="44,8 156,8 136,38 64,38" fill="#3fb48f"/><polygon points="156,8 192,44 162,58 136,38" fill="#1c8a6b"/><polygon points="192,44 192,106 162,92 162,58" fill="#0b5c47"/><polygon points="192,106 156,142 136,112 162,92" fill="#084a39"/><polygon points="156,142 44,142 64,112 136,112" fill="#0a5541"/><polygon points="44,142 8,106 38,92 64,112" fill="#127a5e"/><polygon points="8,106 8,44 38,58 38,92" fill="#2aa17e"/><polygon points="8,44 44,8 64,38 38,58" fill="#5cc9a6"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#169071"/><polygon points="64,38 110,38 62,112 38,92 38,58" fill="#3fb48f" opacity=".55"/></svg>
+      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#17614c"/><polygon points="44,8 156,8 136,38 64,38" fill="#4f9e84"/><polygon points="156,8 192,44 162,58 136,38" fill="#23795f"/><polygon points="192,44 192,106 162,92 162,58" fill="#134f3f"/><polygon points="192,106 156,142 136,112 162,92" fill="#0e4133"/><polygon points="156,142 44,142 64,112 136,112" fill="#124a3b"/><polygon points="44,142 8,106 38,92 64,112" fill="#1c6b55"/><polygon points="8,106 8,44 38,58 38,92" fill="#378a70"/><polygon points="8,44 44,8 64,38 38,58" fill="#79bfa7"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#2a8469"/><polygon points="64,38 110,38 62,112 38,92 38,58" fill="#4f9e84" opacity=".55"/></svg>
       <strong>EAL</strong><span>Find your words. Build your voice.</span>
     </a>
     <a href="#mainstream">
-      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#1f4f91"/><polygon points="52,10 148,10 128,54 72,54" fill="#79a7e6"/><polygon points="52,10 72,54 8,54" fill="#4a7dc6"/><polygon points="148,10 192,54 128,54" fill="#2c62ad"/><polygon points="8,54 72,54 100,144" fill="#2c62ad"/><polygon points="72,54 128,54 100,144" fill="#3f78c9"/><polygon points="128,54 192,54 100,144" fill="#173f76"/></svg>
+      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#2d5796"/><polygon points="52,10 148,10 128,54 72,54" fill="#8fabd8"/><polygon points="52,10 72,54 8,54" fill="#5a7db5"/><polygon points="148,10 192,54 128,54" fill="#35609f"/><polygon points="8,54 72,54 100,144" fill="#35609f"/><polygon points="72,54 128,54 100,144" fill="#4a73b0"/><polygon points="128,54 192,54 100,144" fill="#234679"/></svg>
       <strong>Mainstream Subjects</strong><span>The language of every lesson, made clear.</span>
     </a>
     <a href="#other">
-      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#b9730f"/><polygon points="50,10 150,10 125,42 75,42" fill="#f4c877"/><polygon points="150,10 194,75 152,75 125,42" fill="#d48f24"/><polygon points="194,75 150,140 125,108 152,75" fill="#8a5208"/><polygon points="150,140 50,140 75,108 125,108" fill="#a8650f"/><polygon points="50,140 6,75 48,75 75,108" fill="#c27e18"/><polygon points="6,75 50,10 75,42 48,75" fill="#ecb65c"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#e6a94a"/><polygon points="75,42 112,42 70,102 48,75" fill="#f8dca0" opacity=".6"/></svg>
+      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#a67c38"/><polygon points="50,10 150,10 125,42 75,42" fill="#efdcae"/><polygon points="150,10 194,75 152,75 125,42" fill="#bd944e"/><polygon points="194,75 150,140 125,108 152,75" fill="#7a5a26"/><polygon points="150,140 50,140 75,108 125,108" fill="#8f6a2e"/><polygon points="50,140 6,75 48,75 75,108" fill="#ab8440"/><polygon points="6,75 50,10 75,42 48,75" fill="#dcc286"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#cdb078"/><polygon points="75,42 112,42 70,102 48,75" fill="#f7ecd0" opacity=".6"/></svg>
       <strong>Other Activities</strong><span>For form time, free time and fresh thinking.</span>
     </a>
   </nav>
-</header>
+</div></header>
 
 <main>
 
 <section class="collection" id="eal"><div class="wrap">
   <div class="head">
-    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#0d6b52"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#3fb48f"/></svg>
+    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#17614c"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#4f9e84"/></svg>
     <div><h2>EAL</h2><p class="sub">Find your words. Build your voice. Academic English for learners growing in confidence and independence.</p></div>
   </div>
 
@@ -150,7 +151,7 @@ footer b{font:400 1.05rem var(--display);color:var(--fg);margin-right:8px}
 
 <section class="collection" id="mainstream"><div class="wrap">
   <div class="head">
-    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#1f4f91"/><polygon points="52,10 148,10 128,54 72,54" fill="#79a7e6"/></svg>
+    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#2d5796"/><polygon points="52,10 148,10 128,54 72,54" fill="#8fabd8"/></svg>
     <div><h2>Mainstream Subjects</h2><p class="sub">The language of every lesson, made clear. Key terms and revision for the subjects you study.</p></div>
   </div>
 
@@ -175,7 +176,7 @@ footer b{font:400 1.05rem var(--display);color:var(--fg);margin-right:8px}
 
 <section class="collection" id="other"><div class="wrap">
   <div class="head">
-    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#b9730f"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#f4c877"/></svg>
+    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#a67c38"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#efdcae"/></svg>
     <div><h2>Other Activities</h2><p class="sub">For form time, free time and fresh thinking. Pick one up whenever you have a few minutes.</p></div>
   </div>
 
