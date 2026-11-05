@@ -252,4 +252,8 @@ const away=e=>{if(!AT||AW||Date.now()-FST<1500)return;AW=true;ST++;DT++;TA=Date.
 const back=()=>{if(!AW)return;AW=false;if(!AT)return;lg("returned","away about "+Math.round((Date.now()-TA)/1000)+"s");if(ST<CFG.resetAt)lg("warning-shown","");if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your answers were cleared and the activity restarted from the beginning. Stay on this page and work on your own.",1)}else modal("Warning: you left the activity page. Stay on this page. If you leave again, your attempt will be reset and you will start again.")};
 document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab-hidden"}):back());window.addEventListener("blur",away);window.addEventListener("focus",back);
 intro();dec(g);ob.observe(g,{childList:true,subtree:true});
-</script></body></html>
+</script><!-- Miss L Gems: link back to the home page -->
+<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#17302a;color:#fff;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
+<style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #e0a63a;outline-offset:2px}</style>
+<script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
+</body></html>

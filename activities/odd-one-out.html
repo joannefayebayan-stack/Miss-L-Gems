@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Odd One Out – Year 9 Challenge</title>
+<style>
+:root{--bg:#fff7f3;--card:#fff;--ink:#2b2320;--mute:#7a6a64;--acc:#ef6f53;--acc2:#c94f36;--line:#f0d9d0;--ok:#2e9e5b;--bad:#d63c3c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1614;--card:#2a211e;--ink:#f6ebe6;--mute:#b6a39b;--line:#443632;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1614;--card:#2a211e;--ink:#f6ebe6;--mute:#b6a39b;--line:#443632;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:8px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:12px}
+p{line-height:1.5;color:var(--mute)}
+input{width:100%;padding:12px;font-size:1rem;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);margin:6px 0 12px}
+button.btn{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:12px 22px;font-size:1rem;font-weight:700;cursor:pointer}
+button.btn:hover{background:var(--acc2)}
+button.alt{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.hud{display:flex;justify-content:space-between;gap:8px;font-weight:700;flex-wrap:wrap;font-size:.95rem}
+.hud span{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.bar{height:12px;background:var(--line);border-radius:8px;overflow:hidden;margin:12px 0}
+.bar i{display:block;height:100%;width:100%;background:var(--acc)}
+#grid{display:grid;gap:4px;margin:0 auto;width:min(100%,520px)}
+#grid button{aspect-ratio:1;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+#grid button span{display:block;pointer-events:none}
+#grid.flashbad{outline:4px solid var(--bad)}#grid.flashok{outline:4px solid var(--ok)}
+.msg{text-align:center;min-height:1.6em;font-weight:700;margin:8px 0}
+table{width:100%;border-collapse:collapse}td{padding:9px 4px;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-weight:700}
+.sel{border-color:var(--acc)!important;background:var(--acc)!important;color:#fff!important}.modes button{margin:2px;padding:9px 14px}.hide{display:none}.big{font-size:2.4rem;text-align:center;margin:0}
+.tier{font-size:.85rem;color:var(--mute);text-align:center}
+</style></head><body><main>
+
+<section id="start">
+<h1>🔎 Odd One Out</h1>
+<div class="card">
+<p>One icon in the grid is different. Find it before the clock runs out! Across <b>100 levels</b> the grid gets bigger, the timer gets shorter, and the differences get sneakier. You have just <b>3 lives</b>. A wrong click or a timeout costs a life. Later levels add visual noise (every icon is slightly jittered) and the grid even <b>shuffles while you search</b>.</p>
+<label for="nm"><b>Your name</b></label>
+<input id="nm" maxlength="30" placeholder="Type your name" autocomplete="off">
+<button class="btn" id="go">Start game</button>
+</div>
+<div class="card hide" id="lb"></div>
+</section>
+
+<section id="play" class="hide">
+<div class="hud"><span id="hLvl">Level 1/50</span><span id="hLives">❤️❤️❤️❤️❤️</span><span id="hScore">Score 0</span><span id="hAtt">Attempts 0</span></div>
+<div class="bar"><i id="bar"></i></div>
+<div class="tier" id="tier"></div>
+<div class="msg" id="msg"></div>
+<div id="grid"></div>
+<div class="bd tier"></div>
+</section>
+
+<section id="ready" class="hide"><div class="card" style="text-align:center"><h1 id="rTitle"></h1><p id="rSub"></p><button class="btn" id="rGo">I’m ready</button><div class="bd" style="margin-top:12px"></div></div></section>
+
+<section id="end" class="hide">
+<div class="card" id="sum">
+<p class="big" id="eEmoji">🏆</p>
+<h1 id="eTitle" style="text-align:center"></h1>
+<table>
+<tr><td>Name</td><td id="sName"></td></tr>
+<tr><td>Level reached</td><td id="sLvl"></td></tr>
+<tr><td>Levels cleared</td><td id="sCleared"></td></tr>
+<tr><td>Total attempts</td><td id="sAtt"></td></tr>
+<tr><td>Accuracy</td><td id="sAcc"></td></tr>
+<tr><td>Final score</td><td id="sScore"></td></tr>
+<tr><td>Date</td><td id="sDate"></td></tr>
+</table>
+</div>
+<div class="card hide" id="bres"></div>
+<p style="text-align:center"><button class="btn" id="again">Play again</button> <button class="btn alt" id="copy">Copy summary</button></p>
+<div class="msg" id="cmsg"></div>
+</section>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const MAXL=100,LIVES=3;
+const base=["🚀","🐟","🦜","🍕","🎸","🔑","🦆","🐢","🎈","🦋","🍄","🚲"];
+const pairs=[["🙂","🙃"],["🔍","🔎"],["🥶","🥵"],["🌑","🌚"],["🐶","🐕"],["😀","😃"],["🕐","🕑"],["🍅","🍎"],["🧅","🧄"],["🌙","🌛"],["😐","😑"],["🙁","☹️"],["🐵","🙉"],["🔔","🛎️"],["🐱","😺"],["🍊","🍑"],["⭐","🌟"],["😊","☺️"]];
+const diffEmoji=["🐶","🐱","🍎","🚗","⚽","🌳","🎩","🍔","📚","🐸","🎲","🌻","🍩","🦊","🪁","🧁"];
+let S,room=null,mode="solo";
+let ROUNDS=10;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mk=n=>({name:n,score:0,att:0,hits:0,wins:0});
+const pc=p=>p.att?Math.round(p.hits/p.att*100):0;
+const hash=c=>[...c].reduce((a,x)=>(a*31+x.charCodeAt(0))|0,7);
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+function cfg(l){
+ const q=Math.floor((l-51)/10);
+ const size=l>50?[7,8,9,10,12][q]:Math.min(12,4+Math.floor((l-1)/6));
+ const time=l>50?Math.max(6,Math.round((14-(l-51)*0.1)*10)/10):Math.max(5,Math.round((13-l*0.16)*10)/10);
+ let mode,tier;
+ if(l<=5){mode="cat";tier="Tier 1 · Spot the different icon"}
+ else if(l<=14){mode="sim";tier="Tier 2 · Look-alikes"}
+ else if(l<=24){mode="hue";tier="Tier 3 · Colour shift"+(l>=20?" + noise":"")}
+ else if(l<=34){mode="rot";tier="Tier 4 · Rotation"+(l>=29?" + noise":"")}
+ else if(l<=42){mode="mix";tier="Tier 5 · Expert: tiny differences"}
+ else if(l<=50){mode="mix";tier="Tier 6 · Chaos: tiny differences + shuffling grid"}
+ else{const T=[["geo","Tier 7 · Geometry: spot the shifted corner"],["sph","Tier 8 · 3D lighting"],["cube","Tier 9 · 3D shapes"],["tess","Tier 10 · 4D tesseracts"],["real","Tier 11 · Master: realistic shading, all worlds mixed"]][q];mode=T[0];tier=T[1]}
+ return {size,time,mode,tier};
+}
+const NEW=["geo","sph","cube","tess","real"];
+const svg=(s,b)=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100">${b}</svg>`;
+function artInit(m){
+ const t=m==="real"?1:((S.level-51)%10)/9;
+ return {k:m==="real"?pick(NEW):m,h:rnd(360),a:1-0.7*t,v:rnd(6),dx:pick([-1,1]),dy:pick([-1,1])};
+}
+function art(o,fs){
+ const A=S.A,h=A.h,a=A.a,sz=Math.round(fs*1.4),c=`hsl(${h} 70% 55%)`;
+ if(A.k==="geo"){
+  const p=[0,1,2,3,4,5].map(i=>{const r=34+(o&&i===A.v?14*a:0),g=i*Math.PI/3-Math.PI/2;return(50+r*Math.cos(g)).toFixed(1)+","+(50+r*Math.sin(g)).toFixed(1)}).join(" ");
+  return svg(sz,`<polygon points="${p}" fill="${c}" stroke="#0005" stroke-width="3"/>`);
+ }
+ if(A.k==="sph"||A.k==="real"){
+  const x=30+(o?A.dx*20*a:0),y=30+(o?A.dy*20*a:0),r=A.k==="real";
+  return `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${r?`radial-gradient(circle at ${x}% ${y}%,#fff 0,#fff0 12%),`:""}radial-gradient(circle at ${x}% ${y}%,#fff 0,${c} 35%,hsl(${h} 70% 18%) 100%);${r?`box-shadow:0 ${sz*.1}px ${sz*.12}px #0007`:""}"></div>`;
+ }
+ if(A.k==="cube"){
+  const H=40+(o?A.dy*12*a:0);
+  return svg(sz,`<polygon points="50,6 86,24 50,42 14,24" fill="hsl(${h} 70% 72%)"/><polygon points="14,24 50,42 50,${42+H} 14,${24+H}" fill="hsl(${h} 70% 50%)"/><polygon points="50,42 86,24 86,${24+H} 50,${42+H}" fill="hsl(${h} 70% 34%)"/>`);
+ }
+ const sx=o?A.dx*9*a:0,sy=o?A.dy*9*a:0,x0=32+sx,x1=68+sx,y0=32+sy,y1=68+sy,k=`stroke="hsl(${h} 70% 45%)" stroke-width="3" fill="none"`;
+ return svg(sz,`<rect x="12" y="12" width="76" height="76" ${k}/><rect x="${x0}" y="${y0}" width="36" height="36" ${k}/><path d="M12 12L${x0} ${y0}M88 12L${x1} ${y0}M12 88L${x0} ${y1}M88 88L${x1} ${y1}" ${k}/>`);
+}
+function oddStyle(mode,l){
+ // returns style for the odd one (relative to normal)
+ const sg=Math.random()<.5?1:-1;
+ if(mode==="hue"){const d=Math.max(14,90-(l-15)*7);return {f:`hue-rotate(${d*sg}deg)`,jh:l>=20?d*0.3:0,jr:0}}
+ if(mode==="rot"){const d=Math.max(10,70-(l-25)*6);return {t:`rotate(${d*sg}deg)`,jr:l>=29?d*0.3:0,jh:0}}
+ if(mode==="mix"){
+  const k=pick(["hue","rot","scale","flip"]),s=(l-34)/16,jr=l>=40?4:0,jh=l>=40?5:0;
+  if(k==="hue")return {f:`hue-rotate(${Math.round(30-s*18)*sg}deg)`,jr,jh};
+  if(k==="rot")return {t:`rotate(${Math.round(14-s*6)*sg}deg)`,jr:jr/2,jh};
+  if(k==="scale")return {t:`scale(${(0.88+s*0.05).toFixed(2)})`,jr,jh};
+  return {t:"scaleX(-1)",jr,jh};
+ }
+ return {};
+}
+function build(){
+ const o=Math.random;
+ if(mode!=="solo"){let a=S.seed+S.level*7919;Math.random=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+ try{build0()}finally{Math.random=o}
+}
+function build0(){
+ const c=cfg(S.level),n=c.size*c.size,odd=rnd(n);
+ let norm,oddE,os={};
+ if(c.mode==="cat"){norm=pick(diffEmoji);do{oddE=pick(diffEmoji)}while(oddE===norm)}
+ else if(c.mode==="sim"){const p=pick(pairs).slice();if(Math.random()<.5)p.reverse();norm=p[0];oddE=p[1]}
+ else if(NEW.includes(c.mode)){norm=oddE="";S.A=artInit(c.mode)}
+ else{norm=pick(base);oddE=norm;os=oddStyle(c.mode,S.level)}
+ const g=$("grid");g.innerHTML="";g.className="";
+ g.style.gridTemplateColumns=`repeat(${c.size},1fr)`;
+ const fs=Math.floor(Math.min(520,Math.min(innerWidth-32,520))/c.size*0.6);
+ for(let i=0;i<n;i++){
+  const b=document.createElement("button");b.setAttribute("aria-label","icon");
+  const s=document.createElement("span");if(NEW.includes(c.mode))s.innerHTML=art(i===odd,fs);else s.textContent=(i===odd)?oddE:norm;s.style.fontSize=fs+"px";
+  const jr=((os.jr||0)*(Math.random()*2-1)),jh=((os.jh||0)*(Math.random()*2-1));
+  let tf=(i===odd&&os.t?os.t+" ":"")+(jr?`rotate(${jr.toFixed(1)}deg)`:"");
+  let fl=(i===odd&&os.f?os.f+" ":"")+(jh?`hue-rotate(${jh.toFixed(1)}deg)`:"");
+  if(tf)s.style.transform=tf;if(fl)s.style.filter=fl;
+  if(i===odd)b.dataset.odd="1";
+  b.appendChild(s);b.onclick=()=>answer(i===odd);g.appendChild(b);
+ }
+ clearInterval(S.shuf);
+ if(S.level>=43){S.shuf=setInterval(()=>{if(!S.live)return;const k=[...g.children].sort(()=>Math.random()-.5);k.forEach(x=>g.appendChild(x))},3000)}
+ $("tier").textContent=c.tier;
+ S.limit=c.time*1000;S.t0=performance.now();S.live=true;
+ hud();tick();
+}
+function tick(){
+ if(!S.live)return;
+ const left=S.limit-(performance.now()-S.t0);
+ $("bar").style.width=Math.max(0,left/S.limit*100)+"%";
+ if(left<=0){S.live=false;answer(null,true);return}
+ S.raf=requestAnimationFrame(tick);
+}
+function hud(){
+ $("hLvl").textContent=`Level ${S.level}/${MAXL}`;
+ $("hLives").textContent="❤️".repeat(S.lives)+"🖤".repeat(LIVES-S.lives);
+ $("hScore").textContent="Score "+S.score;
+ $("hAtt").textContent="Attempts "+S.att;
+ if(mode==="duel"){const D=S.duel;$("hLvl").textContent=`Round ${D.round}/${ROUNDS} · Lv ${S.level}`;$("hLives").textContent="🎯 "+D.p[D.turn].name;$("hScore").textContent=D.p[0].name+" "+D.p[0].wins+" – "+D.p[1].wins+" "+D.p[1].name;$("hAtt").textContent="Score "+D.p[D.turn].score}
+ if(mode==="live")sendPres();
+}
+function sendPres(){if(room)room.presence({name:S.name,lvl:S.run?S.level:0,score:S.score,lives:S.lives,att:S.att,done:!!S.done}).catch(()=>{})}
+function drawBoards(){
+ if(!room)return;
+ const ps=[...room.peers()].filter(p=>p.presence&&p.presence.name).sort((a,b)=>(b.presence.score||0)-(a.presence.score||0)||(b.presence.lvl||0)-(a.presence.lvl||0));
+ const h=ps.length?"<table>"+ps.map((p,i)=>`<tr><td>${i+1}. ${esc(String(p.presence.name).slice(0,30))}${p.isMe?" (you)":""}</td><td>${p.presence.lvl?"Level "+Number(p.presence.lvl)+" · ":"waiting · "}${Number(p.presence.score)||0} pts${p.presence.done?" · finished":""}</td></tr>`).join("")+"</table>":"";
+ document.querySelectorAll(".bd").forEach(e=>e.innerHTML=h);
+}
+function answer(ok,timeout){
+ if(!S.live&&!timeout)return;
+ const left=Math.max(0,S.limit-(performance.now()-S.t0));
+ S.live=false;cancelAnimationFrame(S.raf);clearInterval(S.shuf);S.att++;
+ const g=$("grid");
+ if(mode==="duel")return duelAnswer(ok,left,timeout);
+ if(ok){
+  const pts=S.level*10+Math.round(left/S.limit*S.level*10);
+  S.score+=pts;S.cleared++;S.hits++;
+  g.classList.add("flashok");$("msg").textContent=`✅ Correct! +${pts}`;
+  hud();
+  if(S.level>=MAXL){return setTimeout(()=>finish(true),700)}
+  if(S.level%10===0&&S.lives<LIVES){S.lives++;$("msg").textContent+=" ❤️ bonus life!"}
+  S.level++;setTimeout(()=>{$("msg").textContent="";build()},700);
+ }else{
+  S.lives--;
+  g.classList.add("flashbad");
+  const oe=g.querySelector("[data-odd]");if(oe)oe.style.outline="4px solid var(--ok)";
+  $("msg").textContent=timeout?"⏰ Time’s up!":"❌ Not that one!";
+  hud();
+  if(S.lives<=0)return setTimeout(()=>finish(false),1300);
+  setTimeout(()=>{$("msg").textContent="";build()},1300);
+ }
+}
+function finish(won){finish0(won);if(mode!=="duel")saveScore();if(mode==="duel")duelFinish();if(mode==="live"){S.done=true;sendPres();const b=$("bres");b.classList.remove("hide");b.innerHTML="<h1>Live standings</h1><div class=\"bd\"></div>";drawBoards()}}
+function finish0(won){
+ $("play").classList.add("hide");$("end").classList.remove("hide");
+ const acc=S.att?Math.round(S.hits/S.att*100):0;
+ $("eEmoji").textContent=won?"🏆":"🎯";
+ $("eTitle").textContent=won?"All 100 levels complete!":"Game over";
+ $("sName").textContent=S.name;
+ $("sLvl").textContent=`${S.level} of ${MAXL}`;
+ $("sCleared").textContent=S.cleared;
+ $("sAtt").textContent=S.att;
+ $("sAcc").textContent=acc+"%";
+ $("sScore").textContent=S.score;
+ $("sDate").textContent=new Date().toLocaleString();
+ S.text=`Odd One Out summary\nName: ${S.name}\nLevel reached: ${S.level}/${MAXL}\nLevels cleared: ${S.cleared}\nTotal attempts: ${S.att}\nAccuracy: ${acc}%\nFinal score: ${S.score}\nDate: ${new Date().toLocaleString()}`;
+}
+$("go").onclick=()=>{
+ const name=$("nm").value.trim();
+ if(!name){$("nm").focus();$("nm").placeholder="Please enter your name first";return}
+ S={name,level:1,lives:LIVES,score:0,att:0,hits:0,cleared:0,seed:Math.floor(Math.random()*1e9)};
+ $("start").classList.add("hide");$("end").classList.add("hide");$("msg").textContent="";
+ if(mode==="duel"){ROUNDS=+$("fmt").value;S.duel={p:[mk(name),mk($("nm2").value.trim()||"Player 2")],round:1,turn:0,cur:[-2,-2],last:""};return showReady()}
+ if(mode==="live"){const code=$("rm").value.trim().toLowerCase().replace(/[^a-z0-9_.-]/g,"");if(!code){$("start").classList.remove("hide");$("rm").focus();$("rm").placeholder="Enter a room code first";return}return lobby(code)}
+ $("play").classList.remove("hide");build();
+};
+$("nm").addEventListener("keydown",e=>{if(e.key==="Enter")$("go").click()});
+const MD={solo:"Play alone through up to 100 levels.",duel:"Two players share this screen and take turns on the same puzzle. The faster correct answer wins each of 10 rounds, and the puzzles get harder every round.",live:"Everyone joins the same room code on their own device and races through the same puzzles with a live scoreboard. Needs players signed in to Claude with access to this link."};
+document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll("[data-m]").forEach(x=>x.classList.toggle("sel",x===b));$("n2w").classList.toggle("hide",mode!=="duel");$("rmw").classList.toggle("hide",mode!=="live");$("mdesc").textContent=MD[mode]});
+const KEY="oddoneout_scores_v1";
+function loadS(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function renderLb(){
+ const rows=loadS(),lb=$("lb");
+ if(!rows.length){lb.classList.add("hide");return}
+ lb.classList.remove("hide");
+ lb.innerHTML="<b>🏆 Highest scores</b><table>"+rows.map((r,i)=>`<tr><td>${i+1}. ${esc(String(r.name||"").slice(0,30))}</td><td>${Number(r.score)||0} pts · L${Number(r.level)||0}</td></tr>`).join("")+"</table>";
+}
+function saveScore(){
+ if(S.saved)return;S.saved=true;
+ try{
+  const r=loadS(),e={name:S.name.slice(0,30),score:S.score,level:S.level,att:S.att,t:Date.now()};
+  r.push(e);r.sort((a,b)=>b.score-a.score);
+  const top=r.slice(0,10);localStorage.setItem(KEY,JSON.stringify(top));
+  $("cmsg").textContent=(top[0]===e||r[0]===e)?"🎉 New highest score!":`Highest score so far: ${top[0].name} (${top[0].score})`;
+  renderLb();
+ }catch(err){}
+}
+renderLb();
+function showReady(){
+ const D=S.duel,p=D.p[D.turn];S.level=Math.round(D.round*100/ROUNDS);
+ $("play").classList.add("hide");$("ready").classList.remove("hide");
+ $("rTitle").textContent=`${p.name}, you’re up!`;
+ $("rSub").textContent=`${D.last?D.last+". ":""}Round ${D.round} of ${ROUNDS} · Level ${S.level}. Both players get the same puzzle.`;
+ $("rGo").textContent="I’m ready";$("rGo").classList.remove("hide");
+}
+$("rGo").onclick=()=>{
+ if(mode==="live"){if(room)room.emit("go").catch(()=>{});startLive();return}
+ $("ready").classList.add("hide");$("play").classList.remove("hide");$("msg").textContent="";build();
+};
+function duelAnswer(ok,left,to){
+ const D=S.duel,p=D.p[D.turn],g=$("grid");p.att++;
+ if(ok){const pts=S.level*10+Math.round(left/S.limit*S.level*10);p.hits++;p.score+=pts;g.classList.add("flashok");$("msg").textContent=`✅ Found it! +${pts}`}
+ else{g.classList.add("flashbad");const oe=g.querySelector("[data-odd]");if(oe)oe.style.outline="4px solid var(--ok)";$("msg").textContent=to?"⏰ Time’s up!":"❌ Not that one!"}
+ D.cur[D.turn]=ok?left:-1;hud();
+ setTimeout(()=>{$("msg").textContent="";
+  if(D.turn===0){D.turn=1;D.last="";return showReady()}
+  const a=D.cur[0],b=D.cur[1];let w=-1;if(a>b)w=0;else if(b>a)w=1;
+  if(w>=0)D.p[w].wins++;
+  D.last=`Round ${D.round}: ${w<0?"draw":D.p[w].name+" wins the round"}`;
+  D.round++;D.turn=0;D.cur=[-2,-2];
+  if(D.round>ROUNDS||(ROUNDS===3&&Math.max(D.p[0].wins,D.p[1].wins)>=2))finish(true);else showReady();
+ },1400);
+}
+function duelFinish(){
+ const[a,b]=S.duel.p,w=a.wins>b.wins?a:b.wins>a.wins?b:null;
+ $("eEmoji").textContent="⚔️";$("eTitle").textContent=w?`${w.name} wins the battle!`:"It’s a draw!";
+ $("ready").classList.add("hide");
+ $("sName").textContent=`${a.name} vs ${b.name}`;$("sLvl").textContent=`${ROUNDS} rounds (levels 10–100)`;
+ $("sCleared").textContent=`${a.wins} – ${b.wins} (rounds won)`;$("sAtt").textContent=`${a.att} / ${b.att}`;
+ $("sAcc").textContent=`${pc(a)}% / ${pc(b)}%`;$("sScore").textContent=`${a.score} / ${b.score}`;
+ S.text=`Odd One Out DUEL\n${a.name} vs ${b.name}\nRounds won: ${a.wins}-${b.wins}\nAttempts: ${a.att}/${b.att}\nAccuracy: ${pc(a)}%/${pc(b)}%\nScore: ${a.score}/${b.score}\nDate: ${new Date().toLocaleString()}`;
+}
+async function lobby(code){
+ $("ready").classList.remove("hide");$("rGo").classList.add("hide");
+ $("rTitle").textContent="Room: "+code;$("rSub").textContent="Joining…";
+ S.seed=hash(code);
+ try{const r=await claude.use("room");if(r)room=await r.join(code)}catch(e){room=null}
+ if(room){room.onPeers(drawBoards);room.on("go",m=>{if(!m.isMe&&!S.run)startLive()});sendPres();$("rSub").textContent="Share this room code. When everyone is in, press Start."}
+ else $("rSub").textContent="Live rooms only work for people signed in to Claude who have access to this link. You can still start and play the same puzzles, but there is no live scoreboard.";
+ $("rGo").textContent="Start";$("rGo").classList.remove("hide");
+}
+function startLive(){
+ if(S.run)return;S.run=true;S.level=1;
+ $("ready").classList.add("hide");$("play").classList.remove("hide");$("msg").textContent="";build();
+}
+$("again").onclick=()=>{if(room){room.leave();room=null}$("bres").classList.add("hide");$("end").classList.add("hide");$("start").classList.remove("hide");$("cmsg").textContent=""};
+$("copy").onclick=async()=>{
+ try{await navigator.clipboard.writeText(S.text);$("cmsg").textContent="Copied! Paste it to your teacher."}
+ catch(e){$("cmsg").textContent="Couldn’t copy. Take a screenshot of the summary instead."}
+};
+})();
+</script>
+</main><!-- Miss L Gems: link back to the home page -->
+<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#17302a;color:#fff;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
+<style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #e0a63a;outline-offset:2px}</style>
+<script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
+</body></html>

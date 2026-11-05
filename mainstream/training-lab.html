@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Training Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f7f4;--card:#fff;--ink:#14261c;--mute:#5b6e63;--line:#cfdcd3;--brand:#0f7a4f;--brand2:#e8f5ee;--hot:#e4572e;--ok:#1b9a5a;--bad:#d1383d;--gold:#f2b600;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a14;--card:#182720;--ink:#eaf4ee;--mute:#9bb2a5;--line:#2c4337;--brand:#4cd08f;--brand2:#1d3a2c;--hot:#ff8a63;--ok:#4cd08f;--bad:#ff7075;--gold:#ffd23f}}
+:root[data-theme="dark"]{--bg:#0f1a14;--card:#182720;--ink:#eaf4ee;--mute:#9bb2a5;--line:#2c4337;--brand:#4cd08f;--brand2:#1d3a2c;--hot:#ff8a63;--ok:#4cd08f;--bad:#ff7075;--gold:#ffd23f}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:17px/1.5 "Sarabun",system-ui,"Noto Sans Thai","Leelawadee UI",sans-serif}
+main{max-width:640px;margin:0 auto;padding:18px 16px 40px}
+h1{font-size:2rem;line-height:1.1;margin:.2em 0 .3em;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.25rem;margin:0 0 .5em}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.stat{display:flex;gap:14px;font-weight:600;font-size:.95rem}
+.sub{color:var(--mute);margin:0 0 18px}
+.th{color:var(--mute);font-size:.92em}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.menu button{display:block;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;color:var(--ink);font:inherit;cursor:pointer}
+.menu button:hover,.menu button:focus-visible{border-color:var(--brand)}
+.menu b{font-size:1.1rem;display:block}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-weight:800}
+:root[data-theme="dark"] .btn{color:#0f1a14}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0f1a14}}
+.ghost{background:none;border:2px solid var(--line);color:var(--ink);border-radius:12px;padding:8px 14px}
+.term{font-size:2.1rem;font-weight:800;margin:.1em 0}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt.ok{border-color:var(--ok);background:var(--brand2)}
+.opt.bad{border-color:var(--bad)}
+.fb{padding:12px 14px;border-radius:12px;background:var(--brand2);margin:6px 0 12px}
+.flash{min-height:190px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;padding:20px}
+.big{font-size:3rem;margin:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;background:var(--brand2);border-radius:20px;padding:2px 12px;font-size:.85rem;font-weight:600}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+var W=[
+["Specificity","ความเฉพาะเจาะจง","Training must match the sport and the muscles you use.","A swimmer trains the back muscles used in swimming."],
+["Progression","ความก้าวหน้า","Making training harder step by step as your body adapts.","Running 30 minutes this week, 35 next week."],
+["Overload","การเพิ่มภาระ","Doing more than your body is used to, so it must improve.","Lifting 15 kg instead of 10 kg."],
+["Reversibility","การสูญเสียผลการฝึก","You lose fitness if you stop training.","After a long injury, your stamina goes down."],
+["Tedium","ความเบื่อหน่าย","Boredom from doing the same training again and again.","Only jogging every day can make you lose motivation."],
+["Frequency","ความถี่","How often you train.","Training 4 days a week instead of 3."],
+["Intensity","ความหนัก","How hard you train.","Running faster or lifting heavier weights."],
+["Time","ระยะเวลา","How long a training session lasts.","Going from a 30-minute session to 60 minutes."],
+["Overtraining","การฝึกหนักเกินไป","Too much exercise, too quickly, so the body cannot cope.","It can cause injury and heavy tiredness."],
+["Fatigue","ความเมื่อยล้า","Extreme tiredness.","Too much training without rest causes fatigue."],
+["Continuous training","การฝึกต่อเนื่อง","Exercise with no rest, for at least 20 minutes.","Running, cycling or swimming without stopping."],
+["Fartlek","ฟาร์ตเล็ก (เล่นความเร็ว)","Continuous training where you change speed and terrain. It means ‘speed play’.","Jog, sprint, then run uphill."],
+["Circuit training","การฝึกแบบวงจร","A chain of different exercise stations.","Sit-ups, then skipping, then press-ups."],
+["HIIT","การฝึกแบบหนักสลับพัก","Short, very hard work followed by rest.","Sprint 30 seconds, rest 90 seconds."],
+["Weight training","การฝึกด้วยน้ำหนัก","Using weights as resistance to build strength or muscular endurance.","Bicep curls with dumbbells."],
+["Plyometric training","การฝึกพลัยโอเมตริก","Explosive jumping exercises that build power.","Box jumps and squat jumps."],
+["Altitude training","การฝึกบนที่สูง","Training high above sea level so the body makes more red blood cells.","Endurance runners train in the mountains."],
+["Aerobic","แอโรบิก (ใช้ออกซิเจน)","Exercise that uses oxygen, usually long and steady.","Marathon running."],
+["Anaerobic","แอนแอโรบิก (ไม่ใช้ออกซิเจน)","Short, hard exercise without enough oxygen.","A 100 m sprint."],
+["Repetition (rep)","จำนวนครั้ง","One single lift of a weight.","One bicep curl."],
+["Set","เซ็ต","A group of repetitions done in one go.","3 sets of 10 reps."],
+["Spotter","ผู้ช่วยคอยดูแล","A person who watches you lift heavy weights to keep you safe.","Standing behind someone doing a bench press."],
+["RPE","การรับรู้ความหนักของตัวเอง","A scale (6–20) for how hard exercise feels to you.","‘Very hard’ is 17."],
+["Warm-up","การอบอุ่นร่างกาย","Preparation before exercise: pulse raiser, stretches, skills.","Skipping, lunges, then dribbling."],
+["Cool-down","การคลายอุ่น","Gentle exercise and stretching after training.","Light jogging then static stretches."],
+["Pulse raiser","กิจกรรมเพิ่มชีพจร","Light activity that raises your heart rate and body temperature.","Jogging or skipping."],
+["Dynamic stretch","ยืดเหยียดแบบเคลื่อนไหว","Stretching while moving, used in a warm-up.","Lunges, heel flicks."],
+["Static stretch","ยืดค้าง","Stretching and holding still, used in a cool-down.","Holding a hamstring stretch."],
+["Skill familiarisation","การทำความคุ้นเคยกับทักษะ","Practising movements of your sport at the end of a warm-up.","Dribbling in basketball."],
+["Muscle atrophy","กล้ามเนื้อลีบ","Muscles getting smaller and weaker.","It can happen after you stop training."],
+["Red blood cells","เม็ดเลือดแดง","Blood cells that carry oxygen.","Altitude training increases them."],
+["Cardiovascular endurance","ความอดทนของหัวใจและหลอดเลือด","Your heart and lungs’ ability to keep working for a long time.","Needed by a marathon runner."]
+];
+var Q=[
+["Maya trains 3 days a week. Now she trains 4 days a week. Which FITT part did she change?",["Frequency","Intensity","Time","Type"],0,"Frequency means how often you train.","เปลี่ยน ‘ความถี่’ (จำนวนวันต่อสัปดาห์)"],
+["Tom lifts 10 kg, then 15 kg. This is overload by increasing…",["Time","Intensity","Frequency","Tedium"],1,"Heavier weight = harder = higher intensity."],
+["Why should increases in training be gradual?",["To make training boring","To reduce the chance of injury and overtraining","So you never get fitter","Because rest days are forbidden"],1,"The body needs time to adapt to new demands."],
+["A swimmer does exercises for the back muscles used in swimming. Which principle is this?",["Reversibility","Tedium","Specificity","Progression"],2,"The training matches the sport and muscles."],
+["Nok stops training for two months and loses stamina. Which principle?",["Reversibility","Overload","Specificity","Time"],0,"Fitness is lost (reversed) when you stop."],
+["How can a coach avoid tedium?",["Same exercise every day","Use a variety of training methods","Stop training","Train only once"],1,"Variety keeps athletes motivated."],
+["What happens when overload is applied too quickly?",["Overtraining","Perfect fitness","Better sleep","Specificity"],0,"Too much, too fast can cause overuse injury or fatigue."],
+["Which heart-rate zone gives aerobic gains in continuous training? (Max HR = 220 − age)",["20–40% of max","60–80% of max","90–100% of max","10–20% of max"],1,"Work at 60–80% of your maximum heart rate."],
+["Ben is 15. What is his maximum heart rate?",["205","220","235","195"],0,"220 − 15 = 205."],
+["Why is RPE better than heart rate for fartlek?",["Speed keeps changing, so heart rate is hard to monitor","RPE is more expensive","Fartlek has no intensity","Heart rate is always constant"],0,"Pace changes constantly, so heart rate changes constantly."],
+["Which training method is best for a games player needing sprints and recovery?",["Fartlek training","Only static stretching","Sitting still","Walking only"],0,"Fartlek mixes aerobic and anaerobic work."],
+["Why do HIIT sessions include rest periods?",["To remove waste products so intensity can be kept high","To make the session longer","To avoid all sweating","To practise tedium"],0,"Rest removes carbon dioxide and lactic acid."],
+["Which is a disadvantage of weight training?",["High stress on muscles gives a higher injury risk","It cannot build strength","It has no variety","It needs no equipment"],0,"Heavy loads need a spotter and a good warm-up."],
+["Which method builds explosive power for a long jumper?",["Plyometric training","Continuous training","Static stretching","Slow walking"],0,"Box jumps and hurdle jumps develop power."],
+["What does altitude training increase?",["Red blood cell count","Muscle tiredness only","Body fat","Tedium"],0,"More red blood cells carry more oxygen, so VO2 max rises."],
+["Which is a disadvantage of altitude training?",["You can’t train as hard as at sea level","It lowers the number of red blood cells forever","It is cheap and easy for everyone","It makes recovery instant"],0,"Less oxygen means lower intensity, and some people feel dizzy or sick."],
+["Which is the correct order of a warm-up?",["Pulse raiser → stretches → skill practice","Stretches → rest → sleep","Skill practice → cool-down","Static stretch → sprint → stop"],0,"Raise the pulse, stretch, then practise skills."],
+["Which belongs in a cool-down?",["Light jogging then static stretches","Sprint intervals","Heavy lifting","Box jumps"],0,"Slowly lower the heart rate and relax the muscles."],
+["Which is a PSYCHOLOGICAL benefit of a warm-up?",["It focuses the mind on the exercise","It raises body temperature","It increases heart rate","It makes muscles elastic"],0,"Psychological = about the mind."],
+["Which is a PHYSIOLOGICAL benefit of a cool-down?",["It helps remove lactic acid from the muscles","It gives time to reflect","It prepares you mentally","It helps you concentrate"],0,"Physiological = about the body."],
+["Which circuit change makes training harder (progression)?",["Increase repetitions at each station","Shorter session with no work","Longer rest and fewer circuits","Remove all stations"],0,"More reps, more circuits or shorter rests = overload."],
+["Why can static stretching after exercise help?",["It reduces stiffness and helps muscles return to normal range","It raises your heart rate","It replaces the warm-up","It causes muscle atrophy"],0,"Gentle stretching reduces soreness and stiffness."]
+];
+W=W.concat([["Strength","ความแข็งแรง","The most force a muscle can produce in one go.","Lifting a heavy weight once."],["Muscular endurance","ความอดทนของกล้ามเนื้อ","A muscle’s ability to keep working for a long time.","Doing many sit-ups."],["Power","พลัง","Strength and speed together.","A long jump take-off."],["Lactic acid","กรดแลคติก","A waste product made during hard anaerobic exercise.","It is removed during rest periods."],["CHD","โรคหลอดเลือดหัวใจ","Coronary heart disease: a heart problem that regular exercise helps prevent.","Continuous training lowers the risk."],["Shin splints","อาการปวดหน้าแข้ง","Pain in the lower leg, often caused by wrong footwear.","Running in bad shoes."],["VO2 max","ปริมาณออกซิเจนสูงสุด","The most oxygen your body can use in one minute.","It rises after altitude training."],["Terrain","ลักษณะพื้นที่","The type of ground you run or cycle on.","Hills, grass or sand."],["Resistance","แรงต้าน","A force your muscles work against.","A heavy dumbbell."],["Station","สถานี","One exercise place in a circuit.","The skipping station."]]);
+Q=Q.concat([["A marathon runner needs cardiovascular endurance. Which session is best?",["40 minutes of continuous running at 70% max HR","10 box jumps","One heavy lift","Static stretching only"],0,"Continuous training at 60–80% max HR builds aerobic fitness."],["A long jumper needs more power. Which method fits best?",["Plyometric training","Continuous training","Cool-down","Walking"],0,"Explosive jumps develop power."],["What is the main aim of a pulse raiser?",["To increase heart rate and body temperature","To remove lactic acid","To stop sweating","To make you tired"],0,"It prepares the heart and muscles for exercise."],["How long should a continuous training session last at least?",["20 minutes","2 minutes","5 minutes","1 minute"],0,"At least 20 minutes without rest."],["Which is an advantage of circuit training?",["Stations can train different fitness components","It needs no space","It never causes fatigue","It is only for aerobic fitness"],0,"You choose stations to suit the athlete or sport."],["Why can fatigue be a problem in circuit training?",["It can cause poor technique and injury","It makes you taller","It removes tedium","It improves flexibility"],0,"Tired muscles lose good technique."],["Which is a safety rule for weight training?",["Use a spotter","Skip the warm-up","Lift as heavy as possible at first","Train alone with maximum weight"],0,"A spotter keeps you safe with heavy weights."],["Lower weight and more reps mainly build…",["Muscular endurance","Maximum strength","Power","Flexibility"],0,"Higher weight and fewer reps build strength."],["How long do altitude training benefits last after returning to sea level?",["About 2–3 months","One day","Forever","10 years"],0,"The benefits fade after a few months."],["What is the purpose of the skill familiarisation phase?",["To practise movements used in the sport","To cool the body","To rest","To lose red blood cells"],0,"E.g. dribbling in basketball."],["Which RPE range is the target range for exercise?",["12–16","6–8","19–20","0–5"],0,"Somewhat hard to hard. Don’t work at 19–20!"],["Why is HIIT risky if done too often?",["High intensity means a risk of injury and overtraining","It needs a gym","It has no rest","It improves nothing"],0,"Rest and gradual progression are needed."]]);
+var P=[["No rest intervals. Cheap and easy, but can be boring and lacks specificity for games players.","Continuous","No rest, at least 20 min."],["You change speed and terrain. Intensity is measured with the RPE scale.","Fartlek","‘Speed play’."],["A chain of stations that train different fitness components. Needs lots of equipment and space.","Circuit","Many stations."],["Short, very hard bursts followed by rest to remove waste products. Risk of overtraining.","HIIT","Work then rest."],["Uses weights, progression is easy to monitor, but a spotter is needed and injury risk is high.","Weight","Reps and sets."],["Box jumps and clap press-ups. Builds power but gives no aerobic benefit.","Plyometric","Explosive."],["Done in the mountains. More red blood cells, but you can’t train as hard and some people feel dizzy.","Altitude","Over 5000 ft."]];
+var T=[["Overload means making training easier.",false,"Overload means doing more than usual."],["Rest days help prevent overtraining.",true,"Rest lets the body adapt."],["Fartlek training uses the same speed all the time.",false,"Fartlek changes speed and terrain."],["A cool-down helps remove lactic acid.",true,"Light activity keeps blood flowing."],["Static stretches belong in a cool-down.",true,"Hold stretches to restore normal range."],["Tedium means feeling too tired.",false,"Tedium means boredom."],["HIIT has no rest periods.",false,"Rest removes waste products."],["Plyometric training improves aerobic fitness the most.",false,"It builds power, not aerobic fitness."],["Training principles say you keep fitness even if you stop training.",false,"Reversibility: you lose it."],["Max heart rate is roughly 220 minus your age.",true,"A 16-year-old has about 204."],["Altitude training lowers red blood cell count.",false,"It raises it."],["Progression should be gradual.",true,"This reduces injury risk."],["A warm-up raises body temperature.",true,"Warm muscles are more elastic."],["Weight training does not need a spotter.",false,"Heavy lifting needs a spotter."]];
+var app=document.getElementById("app"),S={xp:0,best:0,thai:true,unit:0,ub:{1:0,2:0,3:0},log:[]};
+try{var lg=JSON.parse(localStorage.getItem('trainingLabLog')||'[]');if(Array.isArray(lg))S.log=lg}catch(e){}
+var UN=['Unit 2 · Training','2.1 Principles of training and overload','2.2 Methods of training','2.3 Warming up and cooling down'];
+var UW=[1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,1,2,2,2,2,2,2,2,2,2,2,2,2];
+var UQ=[1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,3,3,3,3,2,3,2,2,3,2,2,2,2,2,2,3,2,2];
+var UT=[1,1,2,3,3,1,2,2,1,2,2,1,3,2];
+var W2=[
+[1,'Training programme','โปรแกรมการฝึก','A plan of exercises to reach a goal.','A one-week plan for stamina.'],
+[1,'Questionnaire','แบบสอบถาม','A list of questions used to collect information.','Health history questions before training.'],
+[1,'Components of fitness','องค์ประกอบของสมรรถภาพทางกาย','Parts of fitness such as strength, speed and endurance.','A sprinter needs speed and power.'],
+[1,'Adaptation','การปรับตัวของร่างกาย','The body changing to cope with training.','Your muscles get stronger.'],
+[1,'Motivation','แรงจูงใจ','The wish and energy to keep training.','Goals and variety help motivation.'],
+[1,'Goal setting','การตั้งเป้าหมาย','Choosing targets to aim for.','Run 5 km in 30 minutes.'],
+[1,'Overuse injury','การบาดเจ็บจากการใช้งานมากเกินไป','Injury caused by too much training.','Knee pain from too much running.'],
+[1,'Muscle groups','กลุ่มกล้ามเนื้อ','Sets of muscles that work together.','Quadriceps and hamstrings.'],
+[1,'Personalised','ปรับให้เหมาะกับแต่ละคน','Made to suit one person’s needs.','A personalised programme.'],
+[1,'Latissimus dorsi','กล้ามเนื้อหลังด้านข้าง (แลต)','A large back muscle used in swimming.','Swimmers train it for specificity.'],
+[1,'Gradual','ค่อยเป็นค่อยไป','Slow and step by step.','Gradual progression lowers injury risk.'],
+[1,'Training aim','เป้าหมายของการฝึก','What you want training to improve.','Aim: stamina.'],
+[2,'Interval','ช่วงเวลา (ทำงาน/พัก)','A period of work followed by a period of rest.','30 s sprint, 90 s rest.'],
+[2,'Isotonic','การหดตัวแบบเปลี่ยนความยาว','Muscle work where the muscle changes length while lifting.','Free weights and kettlebells.'],
+[2,'One rep max (1RM)','น้ำหนักสูงสุดที่ยกได้ 1 ครั้ง','The heaviest weight you can lift once.','Used to set weight training intensity.'],
+[2,'Eccentric phase','ช่วงกล้ามเนื้อยืดออกรับแรง','The short pre-loading stage before an explosive jump.','Landing before a box jump.'],
+[2,'Depth jump','การกระโดดลงแล้วกระโดดขึ้น','Stepping off a box then jumping up straight away.','A plyometric exercise.'],
+[2,'Maximum heart rate','อัตราการเต้นหัวใจสูงสุด','The fastest your heart can beat: 220 minus age.','Age 16: 204.'],
+[2,'Free weights','น้ำหนักอิสระ','Dumbbells and barbells.','Bicep curls.'],
+[2,'Kettlebell','เคตเทิลเบลล์','A ball-shaped weight with a handle.','Used in weight training.'],
+[2,'Overexertion','การออกแรงมากเกินไป','Working too hard.','A risk of HIIT.'],
+[2,'Immune system','ระบบภูมิคุ้มกัน','The body’s defence against illness.','Altitude training can weaken it.'],
+[2,'Games players','นักกีฬาประเภทเกม','Players of sports like netball or football.','They need aerobic and anaerobic fitness.'],
+[3,'Physiological','ด้านร่างกาย','About the body.','Warmer, more elastic muscles.'],
+[3,'Psychological','ด้านจิตใจ','About the mind.','Focusing before a match.'],
+[3,'Oxygen debt','หนี้ออกซิเจน','Extra oxygen the body needs after hard exercise.','A cool-down helps repay it.'],
+[3,'Cardiac output','ปริมาณเลือดที่หัวใจสูบฉีดต่อนาที','Blood pumped by the heart each minute.','It rises in a pulse raiser.'],
+[3,'Stroke volume','ปริมาณเลือดต่อการเต้นหนึ่งครั้ง','Blood pumped by the heart each beat.','It rises in a warm-up.'],
+[3,'Range of motion','ช่วงการเคลื่อนไหวของข้อต่อ','How far a joint can move.','Dynamic stretches increase it.'],
+[3,'Elasticity','ความยืดหยุ่น','Being able to stretch and return to shape.','Warm muscles are more elastic.'],
+[3,'Light motor activity','กิจกรรมเบา ๆ','Easy jogging or walking in a cool-down.','5–10 minutes.'],
+[3,'Breathing exercises','การฝึกหายใจ','Slow, deep breaths to relax.','An optional cool-down phase.'],
+[3,'Muscle soreness','อาการปวดเมื่อยกล้ามเนื้อ','Aching muscles after exercise.','Gentle stretching reduces it.'],
+[3,'Cramp','ตะคริว','A sudden painful tightening of a muscle.','A cool-down helps prevent it.'],
+[3,'Match-readiness','ความพร้อมลงแข่ง','Being mentally and physically ready to play.','A warm-up builds it.'],
+[3,'Relaxation','การผ่อนคลาย','Calming the body and mind.','A psychological cool-down benefit.']];
+var Q2=[
+[1,'Which is NOT part of SPORT?',['Frequency','Specificity','Reversibility','Tedium'],0,'SPORT = Specificity, Progression, Overload, Reversibility, Tedium. Frequency is in FITT.'],
+[1,'What does FITT stand for?',['Frequency, Intensity, Time, Type','Fitness, Intensity, Training, Time','Frequency, Individual, Time, Training','Fast, Intense, Tough, Tiring'],0,'FITT = Frequency, Intensity, Time, Type.'],
+[1,'What should a programme be personalised to?',['Individual needs, goals, fitness and health','Only the coach’s favourite exercises','Only age','The weather'],0,'Everyone is different.'],
+[1,'Why use a questionnaire before designing a programme?',['To gather information about the person','To replace training','To test strength','To remove tedium'],0,'Gathering information is the first step.'],
+[1,'Most progress is made early, then slows at higher fitness. Which principle?',['Progression','Reversibility','Specificity','Tedium'],0,'This is progression.'],
+[1,'A sprinter focuses on power and speed. Which principle?',['Specificity','Tedium','Reversibility','Time'],0,'Training matches the activity.'],
+[1,'Muscle atrophy can happen because of…',['Reversibility after stopping training','Good progression','Variety','Specificity'],0,'Muscles shrink if you stop training.'],
+[1,'Sessions go from 30 to 60 minutes. Which FITT part?',['Time','Type','Frequency','Intensity'],0,'Time = how long you train.'],
+[1,'Swapping jogging for HIIT to improve speed changes which FITT part?',['Type','Time','Frequency','Intensity'],0,'Type = the method of training.'],
+[1,'Running at a faster pace changes which FITT part?',['Intensity','Frequency','Time','Type'],0,'Intensity = how hard.'],
+[1,'Overtraining is…',['More work than the body can handle','A perfect week','Training with variety','Too much rest'],0,'Overload applied too quickly.'],
+[1,'A danger of overtraining is…',['Overuse injury and excessive fatigue','Faster progress','Less tedium','More motivation'],0,'It can then lead to reversibility.'],
+[1,'Goal setting mainly helps with…',['Motivation','Atrophy','Fatigue','Overtraining'],0,'Goals keep athletes motivated.'],
+[1,'Which is an example of overload?',['Adding a session each week','Doing the same routine forever','Skipping sessions','Training less'],0,'Overload = more frequency, intensity or time.'],
+[1,'An athlete is injured. How can a coach avoid reversibility?',['Use alternative training such as swimming','Stop all activity','Train the injury harder','Ignore it'],0,'Keep fitness with other methods.'],
+[2,'Which method means ‘speed play’?',['Fartlek','HIIT','Circuit','Weight'],0,'Fartlek is Swedish for speed play.'],
+[2,'A safety point for continuous running is…',['Suitable footwear','No warm-up','Heavy weights','Sprint at once'],0,'Bad shoes can cause shin splints.'],
+[2,'What sets intensity in weight training?',['One rep max','Shoe size','Time of day','Weather'],0,'Use a percentage of 1RM.'],
+[2,'Plyometric exercises include a short…',['Eccentric (pre-loading) phase','Cool-down','Rest day','Stretch'],0,'Pre-loading gives a powerful jump.'],
+[2,'Who benefits most from plyometrics?',['High jumper','Marathon runner','Snooker player','Chess player'],0,'Athletes needing powerful movements.'],
+[2,'A disadvantage of plyometric training is…',['High stress on muscles raises injury risk','It builds no power','It needs no rest','It only improves aerobic fitness'],0,'Overtraining risk.'],
+[2,'In circuit training, intensity can be changed by…',['Time, reps, circuits, rest or resistance','Only changing shoes','Only weather','Nothing'],0,'Many variables can be changed.'],
+[2,'A disadvantage of circuit training is…',['It does not give long aerobic sessions for endurance','It has no variety','It cannot train strength','It needs no equipment'],0,'Use continuous training for endurance.'],
+[2,'HIIT mainly improves…',['Speed, power and anaerobic fitness','Only flexibility','Only aerobic fitness','Nothing'],0,'Short hard work with rest.'],
+[2,'Which method needs little equipment and can be done almost anywhere?',['HIIT','Altitude training','Weight machines','Box jumps only'],0,'Sprinting needs no kit.'],
+[2,'Why can HIIT become tedious?',['The same work and rest repeats','It has too much variety','It has no intensity','It needs a gym'],0,'Tedium can cause lost motivation.'],
+[2,'Dumbbells and kettlebells are used in…',['Weight training','Fartlek','Altitude training','Cool-downs'],0,'Isotonic weight training.'],
+[2,'Altitude training must be above about…',['5000 ft','100 ft','500 ft','1000 ft'],0,'Over 5000 ft above sea level.'],
+[2,'Why does altitude raise red blood cells?',['Less oxygen, so the body makes more cells to carry it','The air is warmer','There is more oxygen','Muscles get bigger'],0,'This raises VO2 max.'],
+[2,'Continuous training mostly develops…',['Cardiovascular and muscular endurance','Power','Reaction time','Flexibility only'],0,'Long steady work.'],
+[2,'Which method suits a netball player needing aerobic and anaerobic fitness?',['Fartlek','Static stretching','Sitting','One heavy lift'],0,'Speed changes mimic the game.'],
+[2,'Why is continuous training less specific for games players?',['Games involve changes of speed and direction','Games have no running','Games are slow','They need no fitness'],0,'Continuous training has no pace changes.'],
+[2,'What is 70% of a maximum heart rate of 200?',['140','120','160','70'],0,'0.7 × 200 = 140.'],
+[2,'A 20-year-old’s maximum heart rate is 200. What is 60%?',['120','160','100','140'],0,'0.6 × 200 = 120.'],
+[3,'What are the three phases of a warm-up?',['Pulse raiser, stretches, skill familiarisation','Stretch, sleep, eat','Sprint, lift, rest','Cool-down, rest, drink'],0,'In that order.'],
+[3,'Which is a pulse raiser?',['Skipping','Holding a hamstring stretch','Breathing exercise','Sitting'],0,'It raises heart rate and temperature.'],
+[3,'Which is a dynamic stretch?',['Lunges','A 30-second held stretch','Lying down','Slow walking'],0,'Dynamic = moving.'],
+[3,'Why does a warm-up reduce injury risk?',['Warm muscles are more elastic','It makes muscles smaller','It lowers heart rate','It causes fatigue'],0,'Physiological benefit.'],
+[3,'More oxygen reaches the muscles in a warm-up because…',['Heart rate and breathing rate rise','Body temperature drops','Muscles relax','Lactic acid rises'],0,'More energy can be produced.'],
+[3,'Light motor activity in a cool-down lasts about…',['5–10 minutes','30 seconds','1 hour','It is not used'],0,'Jogging or walking.'],
+[3,'Static stretches in a cool-down last about…',['5–10 minutes','1 second','2 hours','They are only for warm-ups'],0,'They restore normal range of movement.'],
+[3,'Which cool-down phase is optional?',['Breathing exercises','Light jogging','Static stretching','None'],0,'It aids relaxation.'],
+[3,'A psychological benefit of a cool-down is…',['A chance to reflect on performance','Removing lactic acid','Lowering heart rate','Preventing cramp'],0,'Also time to calm down.'],
+[3,'Gentle stretching after exercise helps prevent…',['Muscle soreness and cramp','Overload','Tedium','Progression'],0,'Physiological benefit.'],
+[3,'Why should heart rate fall gradually after exercise?',['It keeps oxygen delivery so oxygen debt is repaid efficiently','It stops blood flow','It makes you tired','It builds muscle'],0,'Do not stop suddenly.'],
+[3,'Skill familiarisation for a footballer could be…',['Passing and dribbling drills','Static stretching','A cool-down jog','Sleeping'],0,'Practise sport movements.'],
+[3,'Feeling mentally ready for a match is a … benefit.',['psychological','physiological','chemical','physical only'],0,'Psychological = the mind.'],
+[3,'Dynamic stretches increase…',['Flexibility and joint range of motion','Body fat','Fatigue','Lactic acid'],0,'Used in warm-ups.'],
+[3,'What is oxygen debt?',['Extra oxygen needed after hard exercise','Too much oxygen in the air','Lack of food','A type of stretch'],0,'A cool-down helps pay it back.'],
+[3,'A cool-down helps a performer move to…',['less physical daily activities','a harder session','instant sleep','a sprint'],0,'Psychological benefit.'],
+[3,'Which basketball warm-up is in the best order?',['Jog, lunges, dribbling and shooting','Shooting, then jog','Static stretch, rest, sleep','Lunges then cool-down'],0,'Pulse raiser, stretches, then skills.']];
+var T2=[
+[1,'SPORT includes Tedium.',true,'S-P-O-R-T: the T is Tedium.'],
+[1,'FITT includes Reversibility.',false,'FITT = Frequency, Intensity, Time, Type.'],
+[1,'Progress is slower at higher fitness levels.',true,'Most progress comes early.'],
+[1,'Increasing intensity quickly is the safest way to progress.',false,'Progress should be gradual.'],
+[1,'Overtraining can lead to injury and fatigue.',true,'The body cannot adapt in time.'],
+[1,'Every athlete should follow the same programme.',false,'Programmes are personalised.'],
+[1,'Boredom can cause a loss of motivation.',true,'That is tedium.'],
+[1,'Goal setting can help motivation.',true,'Goals keep athletes working.'],
+[2,'Continuous training lasts at least 20 minutes.',true,'With no rest intervals.'],
+[2,'Fartlek uses RPE because heart rate keeps changing.',true,'Pace changes all the time.'],
+[2,'Circuit training is the best method for long aerobic endurance.',false,'Continuous training is better.'],
+[2,'HIIT rest periods help remove waste products.',true,'Such as lactic acid.'],
+[2,'Weight training for strength uses higher weight and fewer reps.',true,'Low weight and more reps builds endurance.'],
+[2,'At altitude you can train as hard as at sea level.',false,'Less oxygen means lower intensity.'],
+[2,'A kettlebell is used in weight training.',true,'Isotonic training.'],
+[2,'Altitude training benefits last about 2–3 months.',true,'After returning to sea level.'],
+[3,'Warm-ups include pulse raiser, stretches and skill practice.',true,'Three phases.'],
+[3,'Dynamic stretches are used in a warm-up.',true,'E.g. lunges and heel flicks.'],
+[3,'A cool-down should stop all movement at once.',false,'Heart rate should fall gradually.'],
+[3,'A cool-down can reduce muscle soreness.',true,'Gentle stretching helps.'],
+[3,'A warm-up lowers body temperature.',false,'It raises it.'],
+[3,'Light jogging is part of a cool-down.',true,'Light motor activity.'],
+[3,'A cool-down can help a performer relax.',true,'A psychological benefit.'],
+[3,'Warm-ups give practice of skills for the game.',true,'Skill familiarisation.']];
+W.forEach(function(w,i){w.u=UW[i]});Q.forEach(function(q,i){q.u=UQ[i]});T.forEach(function(t,i){t.u=UT[i]});
+W2.forEach(function(r){var x=r.slice(1);x.u=r[0];W.push(x)});Q2.forEach(function(r){var x=r.slice(1);x.u=r[0];Q.push(x)});T2.forEach(function(r){var x=r.slice(1);x.u=r[0];T.push(x)});
+var PR=['Specificity','Progression','Overload','Reversibility','Tedium','Frequency','Intensity','Time','Type'];
+var SP=[['A swimmer trains the muscles used in swimming.','Specificity','Training matches the sport.'],['Sam adds a fourth training day each week.','Frequency','How often.'],['Lena lifts heavier weights.','Intensity','How hard.'],['Kai’s run goes from 30 to 45 minutes.','Time','How long.'],['Jo swaps jogging for circuit training to meet her aim.','Type','The method.'],['Pim adds 5 minutes only when the last week felt easy.','Progression','Gradual steps.'],['Dao stops training for 3 months and his stamina drops.','Reversibility','Fitness is lost.'],['Mali uses circuits, cycling and running to stay interested.','Tedium','Variety beats boredom.'],['Ann increases the load so her body must adapt.','Overload','Do more than usual.'],['A sprinter focuses on power and speed.','Specificity','Matches the activity.'],['Chai goes from 3 sessions a week to 5.','Frequency','How often.'],['Training the same single exercise causes a loss of motivation.','Tedium','Boredom.']];
+var PH=['Pulse raiser','Dynamic stretch','Skill familiarisation','Light motor activity','Static stretch','Breathing exercises'];
+var HP=[['Skipping before a game','Pulse raiser','warm-up'],['Easy jogging at the start','Pulse raiser','warm-up'],['Lunges','Dynamic stretch','warm-up'],['Heel flicks','Dynamic stretch','warm-up'],['Squats while moving','Dynamic stretch','warm-up'],['Dribbling a basketball','Skill familiarisation','warm-up'],['A passing drill','Skill familiarisation','warm-up'],['Walking for 5 minutes after the match','Light motor activity','cool-down'],['A light jog after training','Light motor activity','cool-down'],['Holding a calf stretch','Static stretch','cool-down'],['Holding a hamstring stretch for 20 seconds','Static stretch','cool-down'],['Slow deep breaths to relax','Breathing exercises','cool-down']];
+function fw(){return S.unit?W.filter(function(w){return w.u==S.unit}):W}
+function fq(){return S.unit?Q.filter(function(w){return w.u==S.unit}):Q}
+function ft(){return S.unit?T.filter(function(w){return w.u==S.unit}):T}
+function nn(){return S.unit?10:15}
+function cnt(u,A){return A.filter(function(x){return !u||x.u==u}).length}
+function home(){redraw=home;var h=topbar(false)+'<h1>Hi there! 👋<br>Training Lab</h1><p class="sub">Pick a subunit. Master all three, then take on the whole unit.</p><div class="menu">';
+[1,2,3,0].forEach(function(u){h+='<button onclick="S.unit='+u+';modes()"><b>'+(u?'':'🏁 ')+UN[u]+'</b><span class="th">'+cnt(u,W)+' words · '+cnt(u,Q)+' questions · '+cnt(u,T)+' true/false'+(u?' · ⭐ best '+S.ub[u]:'')+'</span></button>'});
+app.innerHTML=h+'<button onclick="report()"><b>📊 My progress &amp; PDF</b><span class="th">Strengths, what to focus on, save as PDF</span></button></div>'+toggle()}
+var MN={m:'Word match',g:'Fill the gap',e:'Thai to English',q:'Reading challenge',t:'True or false',p:'Which method?',r:'Which principle?',h:'Which phase?'};
+var SK=[['Vocabulary',['m','g','e']],['Reading comprehension',['q']],['True or false',['t']],['Applying ideas',['p','r','h']]];
+var LB={strong:'💪 Strength',focus:'🎯 Focus here',ok:'👍 Getting there',new:'🔍 Play more'};
+var AP={1:'Which principle?',2:'Which method?',3:'Which phase?'};
+var TIP={'Vocabulary':'Revise the flashcards, first with Thai ON, then OFF.','Reading comprehension':'Read each question twice and underline the key words before choosing.','True or false':'For every statement, say in your own words why it is true or false.','Applying ideas':'Replay the scenario games until you can name the principle, method or phase quickly.'};
+function rec(ok){var it=G.items[G.i],u=it.u||({r:1,p:2,h:3})[G.mode]||0;S.log.push({u:u,m:G.mode,l:String(it[0]).slice(0,120),ok:ok});if(S.log.length>600)S.log=S.log.slice(-600);try{localStorage.setItem('trainingLabLog',JSON.stringify(S.log))}catch(e){}}
+function pct(a){return a.length?Math.round(a.filter(function(x){return x.ok}).length*100/a.length):null}
+function lvl(p,n){return n<5?'new':p>=80?'strong':p<65?'focus':'ok'}
+function data(){var L2=S.log,d={n:L2.length,tot:pct(L2),units:[],skills:[],strengths:[],focus:[],plan:[]};
+[1,2,3].forEach(function(u){var a=L2.filter(function(x){return x.u==u}),c={},last={};a.forEach(function(x){last[x.l]=x.ok;if(!x.ok)c[x.l]=(c[x.l]||0)+1});
+var miss=Object.keys(last).filter(function(k){return !last[k]}).sort(function(a,b){return c[b]-c[a]}).slice(0,6),p=pct(a);d.units.push({u:u,n:a.length,p:p,l:lvl(p,a.length),miss:miss})});
+SK.forEach(function(s){var a=L2.filter(function(x){return s[1].indexOf(x.m)>-1}),p=pct(a);d.skills.push({name:s[0],n:a.length,p:p,l:lvl(p,a.length)})});
+d.units.forEach(function(x){var t=UN[x.u]+' ('+x.p+'%)';if(x.l=='strong')d.strengths.push(t);if(x.l=='focus')d.focus.push(t);
+if(x.l=='focus')d.plan.push('Replay the '+UN[x.u]+' flashcards, then the "'+AP[x.u]+'" game.');
+if(x.miss.length&&x.l!='strong')d.plan.push('Review: '+x.miss.join('; ')+'.');
+if(x.l=='new')d.plan.push('Play '+UN[x.u]+'. There are not enough answers yet.')});
+d.skills.forEach(function(x){var t=x.name+' ('+x.p+'%)';if(x.l=='strong')d.strengths.push(t);if(x.l=='focus'){d.focus.push(t);d.plan.push(TIP[x.name])}});
+if(!d.focus.length&&d.n>=5)d.plan.push('Great work! Try the whole-unit mix (15 questions) to stay sharp.');return d}
+function msg(t){var e=document.getElementById('pm');if(e)e.innerHTML='<div class="fb">'+t+'</div>'}
+function clearLog(){S.log=[];try{localStorage.removeItem('trainingLabLog')}catch(e){}report()}
+function report(){redraw=report;var d=data(),h=topbar(true).replace('onclick="modes()"','onclick="home()"')+'<h1>My progress 📊</h1>';
+if(d.n<5){app.innerHTML=h+'<div class="card">Answer at least 5 questions in any game, then come back to see your strengths and what to focus on.</div>'+toggle();return}
+h+='<div class="card"><h2>Overall: '+d.tot+'% <span class="th">('+d.n+' answers)</span></h2></div>';
+h+='<div class="card"><h2>💪 Strengths</h2>'+(d.strengths.length?'<ul>'+d.strengths.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ul>':'<span class="th">Keep playing. Strengths show at 80% or more.</span>')+'</div>';
+h+='<div class="card"><h2>🎯 What to focus on</h2>'+(d.focus.length?'<ul>'+d.focus.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ul>':'<span class="th">Nothing urgent. Keep it up!</span>')+'</div>';
+h+='<div class="card"><h2>By subunit</h2>';d.units.forEach(function(x){h+='<p style="margin:.4em 0 .2em"><b>'+UN[x.u]+'</b> <span class="pill">'+LB[x.l]+'</span></p><div class="bar"><i style="width:'+(x.p||0)+'%"></i></div><div class="th">'+(x.n?x.p+'% · '+x.n+' answers':'Not played yet')+'</div>'});h+='</div>';
+h+='<div class="card"><h2>By skill</h2>';d.skills.forEach(function(x){h+='<p style="margin:.4em 0 .2em"><b>'+x.name+'</b> <span class="pill">'+LB[x.l]+'</span></p><div class="bar"><i style="width:'+(x.p||0)+'%"></i></div>'});h+='</div>';
+var rv=[];d.units.forEach(function(x){x.miss.forEach(function(m){rv.push('<li><span class="th">'+x.u+'</span> '+m.replace(/</g,'&lt;')+'</li>')})});
+h+='<div class="card"><h2>🔁 Review these</h2>'+(rv.length?'<ul>'+rv.join('')+'</ul>':'<span class="th">No missed items right now.</span>')+'</div>';
+h+='<div class="card"><h2>📋 Study plan</h2><ol>'+d.plan.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol></div>';
+app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()}
+function savePdf(){var J=window.jspdf;if(!J){msg('The PDF tool did not load. Please check your internet and try again.');return}
+var d=data(),doc=new J.jsPDF({unit:'mm',format:'a4'}),y=18;
+function A(t){return String(t).replace(/[\u2018\u2019]/g,"'").replace(/[\u2013\u2014]/g,'-').replace(/\u2192/g,'to').replace(/[^\x20-\x7E]/g,'').trim()}
+function ln(t,s,b,c){doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(s);c=c||[20,38,28];doc.setTextColor(c[0],c[1],c[2]);doc.splitTextToSize(A(t),178).forEach(function(r){if(y>280){doc.addPage();y=18}doc.text(r,16,y);y+=s*.42+1.6})}
+function bar(p){if(y>270){doc.addPage();y=18}doc.setDrawColor(180);doc.rect(16,y-3,100,4);doc.setFillColor(15,122,79);if(p)doc.rect(16,y-3,p,4,'F');y+=6}
+function sec(t,a,e){y+=3;ln(t,13,1);(a.length?a:[e]).forEach(function(s){ln('- '+s,10)})}
+ln("Training Lab Report - Y10 MYP PHE Unit 2",16,1,[15,122,79]);
+ln(new Date().toLocaleDateString('en-GB')+'  |  '+d.n+' answers  |  Overall '+d.tot+'%',10);
+sec('Strengths',d.strengths,'Keep playing to find your strengths (80% or more).');
+sec('What to focus on',d.focus,'Nothing urgent. Keep it up!');
+y+=3;ln('By subunit',13,1);d.units.forEach(function(x){ln(UN[x.u]+': '+(x.n?x.p+'% ('+x.n+' answers) - '+LB[x.l]:'not played yet'),10);bar(x.p||0)});
+ln('By skill',13,1);d.skills.forEach(function(x){ln(x.name+': '+(x.n?x.p+'% - '+LB[x.l]:'not played yet'),10);bar(x.p||0)});
+var rv=[];d.units.forEach(function(x){x.miss.forEach(function(m){rv.push('['+UN[x.u].split(' ')[0]+'] '+m)})});
+sec('Words and questions to review',rv,'No missed items right now.');
+sec('Study plan',d.plan,'Keep practising with the whole-unit mix.');
+var fn='PHE-Unit2-Progress.pdf';
+if(!(window.claude&&claude.use)){doc.save(fn);return}
+var blob=doc.output('blob');
+claude.use('downloads').then(function(dl){if(!dl){msg('Saving is not available here. Open this page in claude.ai to save the PDF.');return}
+return dl.save({filename:fn,data:blob}).then(function(){msg('Saved! ✅')})}).catch(function(e){msg(e&&e.code=='declined'?'Save cancelled.':'Could not save the PDF. Please try again.')})}
+function prin(){start('r');G.items=sh(SP).slice(0,nn());redraw=rq;rq()}
+function rq(){var p=G.items[G.i],o=sh(sh(PR.filter(function(x){return x!==p[1]})).slice(0,3).concat([p[1]]));G.ans=p[1];ask('Which principle?','<p><b>'+p[0]+'</b></p>',o,null,p[1]+': '+p[2])}
+function phase(){start('h');G.items=sh(HP).slice(0,nn());redraw=hq;hq()}
+function hq(){var p=G.items[G.i],o=sh(sh(PH.filter(function(x){return x!==p[1]})).slice(0,3).concat([p[1]]));G.ans=p[1];ask('Which phase?','<p><b>'+p[0]+'</b></p>',o,null,p[1]+' (a '+p[2]+' phase)')}
+
+try{var b=localStorage.getItem("trainingLabBest");if(b)S.best=+b||0}catch(e){}
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function th(t){return S.thai&&t?'<div class="th">'+t+'</div>':''}
+function topbar(back){return '<div class="top">'+(back?'<button class="ghost" onclick="modes()">← Menu</button>':'<span class="pill">Y10 PHE · Unit 2</span>')+'<div class="stat"><span>⭐ '+S.xp+'</span><span>🏆 '+S.best+'</span></div></div>'}
+function toggle(){return '<button class="ghost" onclick="S.thai=!S.thai;redraw()">'+(S.thai?'ไทย: ON':'ไทย: OFF')+'</button>'}
+var redraw=function(){home()};
+function modes(){redraw=modes;app.innerHTML=topbar(false).replace('<span class="pill">Y10 PHE · Unit 2</span>','<button class="ghost" onclick="home()">← Units</button>')+'<h1>'+UN[S.unit]+'</h1><p class="sub">Choose a game.</p>'+
+'<div class="menu"><button onclick="learn()"><b>📇 1. Learn the words</b><span class="th">Flashcards · tap to flip · มีคำแปลภาษาไทย</span></button>'+
+'<button onclick="match()"><b>🎯 2. Word match</b><span class="th">Choose the right meaning · 10 rounds</span></button>'+
+'<button onclick="quiz()"><b>🏃 3. Reading challenge</b><span class="th">Real exam-style questions · 10 rounds</span></button>'+
+'<button onclick="gap()"><b>✍️ 4. Fill the gap</b><span class="th">Finish the sentence with the right word</span></button>'+
+(S.unit==0||S.unit==2?'<button onclick="pros()"><b>⚖️ 5. Which method?</b><span class="th">Match pros and cons to the training method</span></button>':'')+(S.unit==0||S.unit==1?'<button onclick="prin()"><b>🧩 Which principle?</b><span class="th">SPORT and FITT in real situations</span></button>':'')+(S.unit==0||S.unit==3?'<button onclick="phase()"><b>🔥 Which phase?</b><span class="th">Sort activities into warm-up and cool-down phases</span></button>':'')+
+'<button onclick="tf()"><b>✅ 6. True or false</b><span class="th">Quick fire · 10 rounds</span></button>'+
+'<button onclick="thai()"><b>🇹🇭 7. Thai → English</b><span class="th">ดูคำไทย เลือกคำศัพท์ภาษาอังกฤษ</span></button></div>'+toggle()}
+var L=[],li=0,flip=false;
+function learn(){L=sh(fw());li=0;flip=false;redraw=card;card()}
+function card(){var w=L[li];app.innerHTML=topbar(true)+'<div class="bar"><i style="width:'+((li+1)/L.length*100)+'%"></i></div><div class="card flash" onclick="flip=!flip;card()" tabindex="0" role="button">'+
+(flip?'<p>'+w[2]+'</p>'+th(w[1])+'<p class="th"><i>Example: '+w[3]+'</i></p>':'<p class="term">'+w[0]+'</p>'+th(w[1])+'<p class="th">Tap to see the meaning</p>')+'</div>'+
+'<div class="row"><button class="ghost" onclick="if(li>0){li--;flip=false;card()}">Back</button><button class="btn" onclick="if(li<L.length-1){li++;flip=false;card()}else modes()">'+(li<L.length-1?'Next':'Finish')+'</button><span class="th">'+(li+1)+' / '+L.length+'</span>'+toggle()+'</div>'}
+var G;
+function pros(){start("p");G.items=sh(P);redraw=pq;pq()}
+function pq(){var p=G.items[G.i],M=["Continuous","Fartlek","Circuit","HIIT","Weight","Plyometric","Altitude"],o=sh(sh(M.filter(function(x){return x!==p[1]})).slice(0,3).concat([p[1]]));G.ans=p[1];ask('Which training method?','<p><b>'+p[0]+'</b></p>',o,null,p[1]+': '+p[2])}
+function tf(){start("t");G.items=sh(ft()).slice(0,nn());redraw=tq;tq()}
+function tq(){var t=G.items[G.i];G.ans=t[1]?"True":"False";ask('True or false?','<p><b>'+t[0]+'</b></p>',["True","False"],null,t[2])}
+function thai(){start("e");G.items=sh(fw()).slice(0,nn());redraw=eq;eq()}
+function eq(){var w=G.items[G.i],d=sh(W.filter(function(x){return x!==w})).slice(0,3).map(function(x){return x[0]}),o=sh(d.concat([w[0]]));G.ans=w[0];ask('Thai → English','<p class="term" style="font-size:1.6rem">'+w[1]+'</p>',o,null,w[0]+': '+w[2])}
+function start(mode){G={mode:mode,i:0,score:0,streak:0,items:[]};}
+function match(){start("m");G.items=sh(fw()).slice(0,nn());redraw=mq;mq()}
+function mq(){var w=G.items[G.i],d=sh(W.filter(function(x){return x!==w})).slice(0,3).map(function(x){return x[2]}),o=sh(d.concat([w[2]]));
+G.ans=w[2];ask('What does this mean?','<p class="term">'+w[0]+'</p>'+th(w[1]),o,function(o){return o},w[3]?'Example: '+w[3]:'')}
+function quiz(){start("q");G.items=sh(fq()).slice(0,nn());redraw=qq;qq()}
+function qq(){var q=G.items[G.i],o=q[1].map(function(t,i){return{t:t,c:i===q[2]}});o=sh(o);G.ans=q[1][q[2]];
+ask('Read and choose',"<p><b>"+q[0]+"</b></p>",o.map(function(x){return x.t}),null,q[3]+(S.thai&&q[4]?' · '+q[4]:''))}
+function gap(){start("g");G.items=sh(fw()).slice(0,nn());redraw=gq;gq()}
+function gq(){var w=G.items[G.i],d=sh(W.filter(function(x){return x!==w})).slice(0,3).map(function(x){return x[0]}),o=sh(d.concat([w[0]]));
+G.ans=w[0];ask('Which word fits the gap?','<p><b>_____ = '+w[2]+'</b></p><p class="th">Example: '+w[3]+'</p>',o,null,w[0]+' = '+w[1])}
+function ask(label,body,opts,f,fb){var n=G.items.length,h='';
+opts.forEach(function(t,i){h+='<button class="opt" data-i="'+i+'">'+t+'</button>'});
+app.innerHTML=topbar(true)+'<div class="bar"><i style="width:'+(G.i/n*100)+'%"></i></div><div class="card"><div class="th">'+label+' · '+(G.i+1)+'/'+n+(G.streak>1?' · 🔥 '+G.streak:'')+'</div>'+body+'</div>'+h+'<div id="fb"></div>';
+var bs=app.querySelectorAll(".opt");
+bs.forEach(function(b){b.onclick=function(){var right=opts[+b.dataset.i]===G.ans;rec(right);
+bs.forEach(function(x){x.disabled=true;if(opts[+x.dataset.i]===G.ans)x.classList.add("ok")});
+if(right){G.score++;G.streak++;S.xp+=10+Math.min(G.streak,5)}else{b.classList.add("bad");G.streak=0}
+document.getElementById("fb").innerHTML='<div class="fb">'+(right?'✅ Correct! ':'❌ Not quite. ')+(fb||'')+'</div><button class="btn" id="nx">'+(G.i<n-1?'Next':'See result')+'</button>';
+document.getElementById("nx").onclick=function(){G.i++;if(G.i<n){({m:mq,q:qq,g:gq,p:pq,t:tq,e:eq,r:rq,h:hq})[G.mode]()}else done()}}})}
+function done(){var n=G.items.length,p=G.score/n,st=p>=.9?'🌟🌟🌟':p>=.6?'🌟🌟':'🌟';
+if(S.unit&&G.score>S.ub[S.unit])S.ub[S.unit]=G.score;if(G.score>S.best){S.best=G.score;try{localStorage.setItem("trainingLabBest",S.best)}catch(e){}}
+redraw=modes;app.innerHTML=topbar(true)+'<div class="card" style="text-align:center"><p class="big">'+st+'</p><h2>'+G.score+' / '+n+'</h2><p>'+(p>=.9?'Excellent! Ready for the exam.':p>=.6?'Good work! Try again to get 3 stars.':'Keep going! Use the flashcards, then try again.')+'</p>'+
+(S.thai?'<p class="th">'+(p>=.9?'เยี่ยมมาก อชิ!':p>=.6?'ดีมาก ลองอีกครั้งเพื่อให้ได้ 3 ดาว':'สู้ๆ ลองทบทวนบัตรคำแล้วเล่นใหม่')+'</p>':'')+
+'<div class="row" style="justify-content:center"><button class="btn" onclick="'+({m:'match',q:'quiz',g:'gap',p:'pros',t:'tf',e:'thai',r:'prin',h:'phase'})[G.mode]+'()">Play again</button><button class="ghost" onclick="modes()">Menu</button><button class="ghost" onclick="report()">📊 Progress</button></div></div>'}
+home();
+</script>
+<!-- Miss L Gems: link back to the home page -->
+<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#17302a;color:#fff;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
+<style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #e0a63a;outline-offset:2px}</style>
+<script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
+</body>
+</html>

@@ -1,619 +1,201 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#20382f">
-  <meta name="description" content="Academic English resources for secondary learners.">
-  <title>Faye's EAL Resource Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --green: #20382f;
-      --green-light: #365447;
-      --gold: #b8955b;
-      --ink: #26332d;
-      --muted: #747a72;
-      --paper: #f7f6f2;
-      --white: #ffffff;
-      --line: #e5e2da;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    a { color: inherit; }
-
-    .container {
-      width: min(1060px, calc(100% - 40px));
-      margin: 0 auto;
-    }
-
-    .navbar {
-      background: var(--white);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .nav-inner {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand-mark {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      background: var(--green);
-      color: #f7f3e9;
-      font-size: 22px;
-    }
-
-    .brand-name {
-      font-family: 'Manrope', sans-serif;
-      font-weight: 800;
-      font-size: 14px;
-      letter-spacing: 0.035em;
-    }
-
-    .brand-subtitle {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.13em;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      margin-top: 32px;
-      padding: 58px 52px;
-      border-radius: 10px;
-      color: var(--white);
-      background: linear-gradient(115deg, #1b3028 0%, #29483b 62%, #3c5a49 100%);
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 330px;
-      height: 330px;
-      right: -135px;
-      top: -170px;
-      border: 1px solid rgba(221, 201, 162, 0.24);
-      border-radius: 50%;
-      box-shadow: 0 0 0 38px rgba(221, 201, 162, 0.045),
-                  0 0 0 76px rgba(221, 201, 162, 0.035);
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      margin: 0 0 16px;
-      color: #d4b982;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Manrope', sans-serif;
-      line-height: 1.3;
-    }
-
-    h1 {
-      max-width: 650px;
-      margin: 0 0 18px;
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      letter-spacing: -0.045em;
-    }
-
-    .hero-description {
-      max-width: 590px;
-      margin: 0 0 28px;
-      color: #e0e6df;
-      font-size: 16px;
-    }
-
-    .hero-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 17px;
-      border: 1px solid rgba(255, 255, 255, 0.34);
-      border-radius: 5px;
-      color: white;
-      background: rgba(255, 255, 255, 0.07);
-      font-weight: 600;
-      font-size: 13px;
-      text-decoration: none;
-      transition: background 0.2s ease;
-    }
-
-    .hero-button:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    main { padding: 48px 0 64px; }
-
-    .section-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 20px;
-      margin-bottom: 22px;
-    }
-
-    .section-top h2 {
-      margin: 0 0 7px;
-      font-size: 25px;
-      letter-spacing: -0.035em;
-    }
-
-    .section-top p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .section-index {
-      color: #8d8068;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.13em;
-      white-space: nowrap;
-    }
-
-    .resource-list {
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--white);
-    }
-
-    .resource-item {
-      display: grid;
-      grid-template-columns: 54px minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 20px;
-      padding: 23px 25px;
-      border-bottom: 1px solid var(--line);
-      transition: background 0.2s ease;
-    }
-
-    .resource-item:last-child { border-bottom: none; }
-    .resource-item:hover { background: #faf9f6; }
-
-    .resource-number {
-      color: var(--gold);
-      font-family: 'Manrope', sans-serif;
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .resource-title {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin: 0 0 5px;
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .resource-description {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .resource-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      color: #747a72;
-      font-size: 11px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .resource-status::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #aaa99e;
-    }
-
-    .resource-status.available { color: #35654a; }
-    .resource-status.available::before { background: #477b58; }
-
-    .resource-link {
-      display: inline-block;
-      margin-top: 10px;
-      color: #35654a;
-      font-size: 12px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .resource-link:hover { text-decoration: underline; }
-
-    .vocabulary-section,
-    .games-section {
-      margin-top: 48px;
-    }
-
-    .vocabulary-card {
-      padding: 30px;
-      border: 1px solid var(--line);
-      border-top: 3px solid var(--green);
-      border-radius: 6px;
-      background: var(--white);
-      margin-bottom: 18px;
-    }
-
-    .vocabulary-card:last-child { margin-bottom: 0; }
-
-    .vocabulary-card h3 {
-      margin: 0 0 23px;
-      font-size: 20px;
-    }
-
-    .word-list {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-    }
-
-    .word {
-      padding-left: 15px;
-      border-left: 2px solid #c4ad82;
-    }
-
-    .word strong {
-      display: block;
-      margin-bottom: 6px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px;
-    }
-
-    .word p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .vocabulary-card .resource-link {
-      margin-top: 18px;
-    }
-
-    .resource-meta {
-      margin: -12px 0 18px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .game-card {
-      display: grid;
-      grid-template-columns: 64px minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 20px;
-      padding: 25px;
-      border: 1px solid var(--line);
-      border-left: 3px solid var(--gold);
-      border-radius: 7px;
-      background: var(--white);
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .game-card:hover {
-      background: #faf9f6;
-      transform: translateY(-2px);
-    }
-
-    .game-icon {
-      display: grid;
-      place-items: center;
-      width: 58px;
-      height: 58px;
-      border-radius: 8px;
-      background: #f1eee6;
-      font-size: 29px;
-    }
-
-    .game-card h3 {
-      margin: 0 0 5px;
-      font-size: 17px;
-    }
-
-    .game-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .game-link {
-      display: inline-block;
-      padding: 10px 15px;
-      border-radius: 5px;
-      background: var(--green);
-      color: white;
-      font-size: 12px;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: background 0.2s ease;
-    }
-
-    .game-link:hover { background: var(--green-light); }
-
-    footer {
-      padding: 25px 0;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 12px;
-      text-align: center;
-    }
-
-    @media (max-width: 650px) {
-      .container { width: calc(100% - 28px); }
-      .nav-inner { min-height: 72px; }
-      .brand-name { font-size: 12px; }
-      .brand-subtitle { font-size: 9px; }
-
-      .hero {
-        margin-top: 20px;
-        padding: 38px 25px;
-      }
-
-      .hero-description { font-size: 14px; }
-      main { padding-top: 35px; }
-      .section-top { align-items: start; }
-      .section-top h2 { font-size: 22px; }
-
-      .resource-item {
-        grid-template-columns: 34px minmax(0, 1fr);
-        gap: 13px;
-        padding: 20px 16px;
-      }
-
-      .resource-status {
-        grid-column: 2;
-        white-space: normal;
-      }
-
-      .resource-title { font-size: 15px; }
-
-      .word-list {
-        grid-template-columns: 1fr;
-        gap: 19px;
-      }
-
-      .vocabulary-card { padding: 23px 19px; }
-
-      .game-card {
-        grid-template-columns: 48px minmax(0, 1fr);
-        gap: 14px;
-        padding: 19px 16px;
-      }
-
-      .game-icon {
-        width: 46px;
-        height: 46px;
-        font-size: 23px;
-      }
-
-      .game-card h3 { font-size: 15px; }
-
-      .game-link {
-        grid-column: 2;
-        justify-self: start;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after {
-        transition: none !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Miss L Gems</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Interactive games, quizzes and practice for secondary students: EAL, mainstream subjects and other activities.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap">
+<style>
+/* Layout: a jeweller's tray. Three cut stones open the page and act as the way in; each collection below keeps its stone's colour. */
+:root{
+  --bg:#f1f4f3; --surface:#ffffff; --fg:#17262a; --muted:#566468; --line:#d5dddb;
+  --emerald:#0d6b52; --sapphire:#1f4f91; --amber:#9a5c08;
+  --on-accent:#ffffff;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121a1c; --surface:#1a2528; --fg:#e8eeed; --muted:#a3b1b2; --line:#30403f;
+  --emerald:#46c29d; --sapphire:#83adf0; --amber:#e6a94a; --on-accent:#10181a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121a1c; --surface:#1a2528; --fg:#e8eeed; --muted:#a3b1b2; --line:#30403f;
+  --emerald:#46c29d; --sapphire:#83adf0; --amber:#e6a94a; --on-accent:#10181a; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tray a,.tray svg{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1rem/1.55 var(--body)}
+.wrap{max-width:1040px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+a:focus-visible{outline:3px solid var(--fg);outline-offset:3px;border-radius:3px}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+
+.hero{padding-block:clamp(40px,8vw,84px) clamp(28px,5vw,48px)}
+h1{font-size:clamp(3.2rem,11vw,6.6rem);line-height:1;letter-spacing:-.015em}
+.lede{font-size:clamp(1.1rem,2.4vw,1.35rem);max-width:34em;margin:18px 0 0;color:var(--muted)}
+
+.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,3vw,28px);margin-top:clamp(32px,6vw,56px)}
+.tray a{display:grid;gap:10px;align-content:start;text-decoration:none;min-width:0}
+.tray svg{display:block;width:100%;max-width:190px;height:auto;transition:transform .25s ease}
+.tray a:hover svg{transform:translateY(-5px) rotate(-3deg)}
+.tray strong{font:400 clamp(1.1rem,2.6vw,1.55rem)/1.2 var(--display)}
+.tray span{color:var(--muted);font-size:.94rem;line-height:1.4}
+
+.collection{border-top:1px solid var(--line);padding-block:clamp(36px,6vw,60px);scroll-margin-top:12px}
+.head{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start;margin-bottom:26px}
+.head svg{width:44px;height:auto}
+h2{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.1;color:var(--c)}
+.sub{margin:6px 0 0;font-size:1.1rem;color:var(--muted);max-width:40em}
+#eal{--c:var(--emerald)} #mainstream{--c:var(--sapphire)} #other{--c:var(--amber)}
+
+h3{font:700 .95rem/1.3 var(--body);color:var(--c);margin:30px 0 10px}
+h3:first-of-type{margin-top:0}
+.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.list>li+li{border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;padding:20px clamp(16px,3vw,24px);align-items:center}
+.name{font:600 1.2rem/1.3 var(--body);margin:0 0 8px}
+.name small{font-weight:500;font-size:.88rem;color:var(--muted);margin-left:6px;white-space:nowrap}
+dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px 12px;font-size:.96rem}
+dt{font-weight:600}
+dd{margin:0;color:var(--muted)}
+.go{display:inline-block;padding:9px 16px;border-radius:4px;background:var(--c);color:var(--on-accent);font-weight:600;font-size:.95rem;text-decoration:none;white-space:nowrap}
+.go:hover{text-decoration:underline}
+
+.words{padding:18px clamp(16px,3vw,24px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.words-title{grid-column:1/-1;margin:0;font-weight:600}
+.words b{display:block;font-size:1.05rem}
+.words span{color:var(--muted);font-size:.94rem}
+.soon{margin:30px 0 0;color:var(--muted);font-size:.96rem}
+.soon b{color:var(--fg);font-weight:600}
+
+footer{border-top:1px solid var(--line);padding-block:26px 34px;color:var(--muted);font-size:.92rem}
+footer b{font:400 1.05rem var(--display);color:var(--fg);margin-right:8px}
+
+@media (max-width:640px){
+  .item{grid-template-columns:minmax(0,1fr)}
+  .go{justify-self:start;margin-top:8px}
+  .words{grid-template-columns:minmax(0,1fr)}
+  .tray span{display:none}
+  .name small{display:block;margin:2px 0 0}
+}
+</style>
 </head>
-
 <body>
-  <header class="navbar">
-    <div class="container nav-inner">
-      <div class="brand-mark" aria-hidden="true">📚</div>
-      <div>
-        <div class="brand-name">FAYE'S EAL RESOURCE HUB</div>
-        <div class="brand-subtitle">SECONDARY ENGLISH LANGUAGE LEARNING</div>
-      </div>
-    </div>
-  </header>
 
-  <div class="container">
-    <section class="hero">
-      <p class="eyebrow">Learn with purpose</p>
-      <h1>Find your words. Build your voice.</h1>
-      <p class="hero-description">
-        Develop your academic English, strengthen essential skills,
-        and become a more confident and independent learner.
-      </p>
-      <a class="hero-button" href="#learning-areas">
-        Explore learning areas <span aria-hidden="true">↓</span>
-      </a>
-    </section>
+<header class="hero wrap">
+  <h1>Miss L Gems</h1>
+  <p class="lede">Games, quizzes and practice for secondary students. Small activities, polished until they shine.</p>
+  <nav class="tray" aria-label="Collections">
+    <a href="#eal">
+      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#0d6b52"/><polygon points="44,8 156,8 136,38 64,38" fill="#3fb48f"/><polygon points="156,8 192,44 162,58 136,38" fill="#1c8a6b"/><polygon points="192,44 192,106 162,92 162,58" fill="#0b5c47"/><polygon points="192,106 156,142 136,112 162,92" fill="#084a39"/><polygon points="156,142 44,142 64,112 136,112" fill="#0a5541"/><polygon points="44,142 8,106 38,92 64,112" fill="#127a5e"/><polygon points="8,106 8,44 38,58 38,92" fill="#2aa17e"/><polygon points="8,44 44,8 64,38 38,58" fill="#5cc9a6"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#169071"/><polygon points="64,38 110,38 62,112 38,92 38,58" fill="#3fb48f" opacity=".55"/></svg>
+      <strong>EAL</strong><span>Find your words. Build your voice.</span>
+    </a>
+    <a href="#mainstream">
+      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#1f4f91"/><polygon points="52,10 148,10 128,54 72,54" fill="#79a7e6"/><polygon points="52,10 72,54 8,54" fill="#4a7dc6"/><polygon points="148,10 192,54 128,54" fill="#2c62ad"/><polygon points="8,54 72,54 100,144" fill="#2c62ad"/><polygon points="72,54 128,54 100,144" fill="#3f78c9"/><polygon points="128,54 192,54 100,144" fill="#173f76"/></svg>
+      <strong>Mainstream Subjects</strong><span>The language of every lesson, made clear.</span>
+    </a>
+    <a href="#other">
+      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#b9730f"/><polygon points="50,10 150,10 125,42 75,42" fill="#f4c877"/><polygon points="150,10 194,75 152,75 125,42" fill="#d48f24"/><polygon points="194,75 150,140 125,108 152,75" fill="#8a5208"/><polygon points="150,140 50,140 75,108 125,108" fill="#a8650f"/><polygon points="50,140 6,75 48,75 75,108" fill="#c27e18"/><polygon points="6,75 50,10 75,42 48,75" fill="#ecb65c"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#e6a94a"/><polygon points="75,42 112,42 70,102 48,75" fill="#f8dca0" opacity=".6"/></svg>
+      <strong>Other Activities</strong><span>For form time, free time and fresh thinking.</span>
+    </a>
+  </nav>
+</header>
+
+<main>
+
+<section class="collection" id="eal"><div class="wrap">
+  <div class="head">
+    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#0d6b52"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#3fb48f"/></svg>
+    <div><h2>EAL</h2><p class="sub">Find your words. Build your voice. Academic English for learners growing in confidence and independence.</p></div>
   </div>
 
-  <main class="container">
-    <section id="learning-areas">
-      <div class="section-top">
-        <div>
-          <h2>Explore learning areas</h2>
-          <p>Choose a skill and continue building your English.</p>
-        </div>
-        <span class="section-index">01 — 05</span>
-      </div>
+  <h3>Vocabulary</h3>
+  <ul class="list">
+    <li class="item">
+      <div><p class="name">Map Detective</p>
+      <dl><dt>Skill focus</dt><dd>Vocabulary, grammar and sentence writing</dd><dt>Topic focus</dt><dd>Map language: location, change over time and linking words</dd></dl></div>
+      <a class="go" href="eal/map-detective.html">Play</a>
+    </li>
+    <li class="words">
+      <p class="words-title">Three academic words to know</p>
+      <div><b>Analyze</b><span>To examine something carefully to understand it.</span></div>
+      <div><b>Compare</b><span>To identify similarities and differences.</span></div>
+      <div><b>Evaluate</b><span>To judge the value, quality or effectiveness of something.</span></div>
+    </li>
+  </ul>
 
-      <div class="resource-list">
-        <article class="resource-item">
-          <div class="resource-number">01</div>
-          <div>
-            <h3 class="resource-title">📚 Vocabulary</h3>
-            <p class="resource-description">
-              Academic words and subject-specific language.
-            </p>
-            <a class="resource-link" href="#academic-vocabulary">
-              Explore vocabulary bank →
-            </a>
-          </div>
-          <span class="resource-status available">Available</span>
-        </article>
+  <h3>Listening</h3>
+  <ul class="list">
+    <li class="item">
+      <div><p class="name">Sound Detective <small>Tricky Words, Level 1</small></p>
+      <dl><dt>Skill focus</dt><dd>Listening and pronunciation</dd><dt>Topic focus</dt><dd>Tricky sound patterns: cc, sc, soft c, vowels and consonant groups</dd></dl></div>
+      <a class="go" href="eal/sound-detective.html">Start</a>
+    </li>
+  </ul>
 
-        <article class="resource-item">
-          <div class="resource-number">02</div>
-          <div>
-            <h3 class="resource-title">🎧 Listening</h3>
-            <p class="resource-description">
-              Listening comprehension and identifying key information.
-            </p>
-            <a class="resource-link" href="Listening%20Skills%20Tricky%20Words%20Level%201.html">
-              🔤 Tricky Words — Level 1 →
-            </a>
-          </div>
-          <span class="resource-status available">Available</span>
-        </article>
+  <h3>Writing</h3>
+  <ul class="list">
+    <li class="item">
+      <div><p class="name">Sentence Sorter <small>Years 10 and 11</small></p>
+      <dl><dt>Skill focus</dt><dd>Sentence writing and editing</dd><dt>Topic focus</dt><dd>Fragments and run-on sentences</dd></dl></div>
+      <a class="go" href="eal/sentence-sorter.html">Play</a>
+    </li>
+  </ul>
 
-        <article class="resource-item">
-          <div class="resource-number">03</div>
-          <div>
-            <h3 class="resource-title">🔎 Reading</h3>
-            <p class="resource-description">
-              Reading comprehension, inference and critical analysis.
-            </p>
-          </div>
-          <span class="resource-status">Coming soon</span>
-        </article>
+  <p class="soon"><b>Coming soon:</b> Reading and IELTS Preparation</p>
+</div></section>
 
-        <article class="resource-item">
-          <div class="resource-number">04</div>
-          <div>
-            <h3 class="resource-title">✍️ Writing</h3>
-            <p class="resource-description">
-              Develop accurate sentences through grammar and sentence-editing practice.
-            </p>
-            <a class="resource-link" href="Sentence%20Structure%20Fragments%20and%20Run-ons.html">
-              Sentence Structure: Fragments &amp; Run-ons →
-            </a>
-          </div>
-          <span class="resource-status available">Available</span>
-        </article>
+<section class="collection" id="mainstream"><div class="wrap">
+  <div class="head">
+    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#1f4f91"/><polygon points="52,10 148,10 128,54 72,54" fill="#79a7e6"/></svg>
+    <div><h2>Mainstream Subjects</h2><p class="sub">The language of every lesson, made clear. Key terms and revision for the subjects you study.</p></div>
+  </div>
 
-        <article class="resource-item">
-          <div class="resource-number">05</div>
-          <div>
-            <h3 class="resource-title">🎓 IELTS Preparation</h3>
-            <p class="resource-description">
-              Academic English, exam strategies and guided practice.
-            </p>
-          </div>
-          <span class="resource-status">Coming soon</span>
-        </article>
-      </div>
-    </section>
+  <h3>Mathematics</h3>
+  <ul class="list">
+    <li class="item">
+      <div><p class="name">Maths Word Lab <small>Year 11</small></p>
+      <dl><dt>Skill focus</dt><dd>Subject vocabulary and exam command words</dd><dt>Topic focus</dt><dd>Circles and algebra</dd></dl></div>
+      <a class="go" href="mainstream/maths-word-lab.html">Start</a>
+    </li>
+  </ul>
 
-    <section class="vocabulary-section" id="academic-vocabulary">
-      <div class="section-top">
-        <div>
-          <h2>Academic Vocabulary Bank</h2>
-          <p>Essential words for learning across subjects.</p>
-        </div>
-        <span class="section-index">VOCABULARY</span>
-      </div>
+  <h3>Physical and Health Education</h3>
+  <ul class="list">
+    <li class="item">
+      <div><p class="name">Training Lab <small>Year 10, Unit 2</small></p>
+      <dl><dt>Skill focus</dt><dd>Key terms, recall and exam revision</dd><dt>Topic focus</dt><dd>Principles of training, training methods, warming up and cooling down</dd></dl></div>
+      <a class="go" href="mainstream/training-lab.html">Start</a>
+    </li>
+  </ul>
+</div></section>
 
-      <div class="vocabulary-card">
-        <h3>Three words to know</h3>
-        <div class="word-list">
-          <div class="word">
-            <strong>Analyze</strong>
-            <p>To examine something carefully to understand it.</p>
-          </div>
+<section class="collection" id="other"><div class="wrap">
+  <div class="head">
+    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#b9730f"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#f4c877"/></svg>
+    <div><h2>Other Activities</h2><p class="sub">For form time, free time and fresh thinking. Pick one up whenever you have a few minutes.</p></div>
+  </div>
 
-          <div class="word">
-            <strong>Compare</strong>
-            <p>To identify similarities and differences.</p>
-          </div>
+  <ul class="list">
+    <li class="item">
+      <div><p class="name">The Courtesy Book <small>Chapter quizzes</small></p>
+      <dl><dt>Skill focus</dt><dd>Reading comprehension and writing a clear sentence</dd><dt>Topic focus</dt><dd>Good manners, from conversation to shopping</dd></dl></div>
+      <a class="go" href="activities/the-courtesy-book.html">Start</a>
+    </li>
+    <li class="item">
+      <div><p class="name">Odd One Out <small>Year 9 challenge</small></p>
+      <dl><dt>Skill focus</dt><dd>Visual attention and concentration</dd><dt>Topic focus</dt><dd>Spot the different icon across 100 levels</dd></dl></div>
+      <a class="go" href="activities/odd-one-out.html">Play</a>
+    </li>
+  </ul>
+</div></section>
 
-          <div class="word">
-            <strong>Evaluate</strong>
-            <p>To judge the value, quality or effectiveness of something.</p>
-          </div>
-        </div>
-      </div>
+</main>
 
-      <!-- MATHS VOCABULARY RESOURCE -->
-      <div class="vocabulary-card">
-        <h3>🔢 Maths Word Lab</h3>
-        <p class="resource-meta">4 November 2026 · Term 1</p>
-        <p class="resource-description">
-          Build mathematical vocabulary and develop confidence in understanding
-          and using key maths terminology.
-        </p>
-        <a class="resource-link" href="Maths%20Word%20Lab%20November%204%2C%202026.html">
-          Open Maths Word Lab →
-        </a>
-      </div>
-    </section>
+<footer><div class="wrap"><b>Miss L Gems</b>Interactive learning for secondary students.</div></footer>
 
-    <!-- GAMES & INTERACTIVE LEARNING -->
-    <section class="games-section" id="games">
-      <div class="section-top">
-        <div>
-          <h2>🎮 Games &amp; Interactive Learning</h2>
-          <p>Practise English through engaging interactive challenges.</p>
-        </div>
-        <span class="section-index">GAMES</span>
-      </div>
-
-      <article class="game-card">
-        <div class="game-icon" aria-hidden="true">🗺️</div>
-        <div>
-          <h3>Map Detective</h3>
-          <p>
-            Explore maps, follow clues and practise reading carefully
-            to solve challenges.
-          </p>
-        </div>
-
-        <a class="game-link" href="Map%20Detective.html">
-          Play Map Detective →
-        </a>
-      </article>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">
-      Faye's EAL Resource Hub · Learn with purpose. Progress with confidence.
-    </div>
-  </footer>
 </body>
 </html>
