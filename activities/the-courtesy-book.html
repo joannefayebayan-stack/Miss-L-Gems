@@ -3,8 +3,8 @@
 <style>
 /* Book-cover burgundy and page gold, with the Word Lab's game components */
 :root{--frz:#160d0f;--bg:#faf6ee;--card:#fff;--tx:#2b2a28;--mut:#6b675f;--ac:#7a2e3a;--acd:#5b1f2a;--acl:#f4e6e4;--acx:#fff;--go:#b87f24;--god:#8f6115;--ok:#1f7a45;--okb:#e5f5e9;--bad:#b3261e;--bab:#fcebea;--bd:#e2dccd;--display:Georgia,"Times New Roman",serif;--body:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1b18;--card:#292622;--tx:#f1ece2;--mut:#b2ab9d;--ac:#e4a0ac;--acd:#b86f7c;--acl:#3a2529;--acx:#2b1a1e;--go:#e0b264;--god:#a57f3d;--ok:#6fd39a;--okb:#16341f;--bad:#ff9a90;--bab:#3a1c1a;--bd:#3f3a33;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#1d1b18;--card:#292622;--tx:#f1ece2;--mut:#b2ab9d;--ac:#e4a0ac;--acd:#b86f7c;--acl:#3a2529;--acx:#2b1a1e;--go:#e0b264;--god:#a57f3d;--ok:#6fd39a;--okb:#16341f;--bad:#ff9a90;--bab:#3a1c1a;--bd:#3f3a33;color-scheme:dark}
+
+
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 0,var(--acl),transparent 45%),var(--bg);color:var(--tx);font:16px/1.5 var(--body);padding-block:20px 48px;padding-inline:16px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,[data-allow]{-webkit-user-select:text;user-select:text}
@@ -32,6 +32,24 @@ input[type=text],select,textarea{width:100%;font:inherit;padding:10px 12px;borde
 .acb{background:var(--card);color:var(--tx);border-radius:18px;padding:1.4rem;max-width:420px;border:2px solid var(--go)}.acb h3{margin:0 0 8px}
 @keyframes pop{50%{transform:scale(1.05)}}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(180deg);opacity:0}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<style id="mlg-pastel">
+:root{color-scheme:light;--bg:#FFFBF7;--card:#fff;--w:#fff;--ink:#2F3A4A;--tx:#2F3A4A;--mut:#5F6B7A;--mute:#5F6B7A;--mu:#5F6B7A;--muted:#5F6B7A;--bd:#F3E2D2;--line:#F3E2D2;
+--teal:#EDB387;--t:#EDB387;--ac:#EDB387;--acc:#EDB387;--brand:#EDB387;--td:#6B4316;--teal-d:#6B4316;--tealD:#6B4316;--acd:#6B4316;--acc2:#F0C49B;
+--tl:#FCEFE3;--teal-l:#FCEFE3;--tealL:#FCEFE3;--acl:#FCEFE3;--brand2:#FCEFE3;--purple:#6B4316;--purple-l:#FCEFE3;--acx:#6B4316;
+--or:#F5C49A;--o:#F5C49A;--orange:#F5C49A;--go:#F5C49A;--gold:#F5C49A;--hot:#E8A39B;--od:#8A5A24;--god:#8A5A24;
+--ok:#1F6B45;--okt:#1F6B45;--okb:#E3F5EA;--ok-bg:#E3F5EA;--bad:#A63A32;--bat:#A63A32;--badt:#A63A32;--bab:#FCEBE8;--badb:#FCEBE8;--bad-bg:#FCEBE8}
+.btn,.btn.o,button.btn,.next,.go,.start,.play,.vid{background:#F9D9BC!important;color:#6B4316!important;box-shadow:0 3px 0 #F0C49B}
+.btn:hover,.next:hover,.go:hover,.start:hover,.play:hover,.vid:hover{background:#F0C49B!important}
+.btn.s{background:#fff!important;color:#6B4316!important;border-color:#EDB387;box-shadow:0 3px 0 #F3E2D2}
+.sec,.pick,.ghost,button.alt{background:#fff;color:#6B4316;border-color:#EDB387}
+.sel{background:#F9D9BC!important;border-color:#F0C49B!important;color:#6B4316!important}
+.seg-b.on{background:#F9D9BC;border-color:#F0C49B;color:#6B4316}
+.sbr .rk,.ho.ok b{background:#F9D9BC;color:#6B4316}
+.fb,.toast{color:inherit}.toast{color:#1F6B45}
+.pg i,.bar i,.fill{background:#EDB387!important}
+.pod .p1{background:#F9D9BC}
+:focus-visible{outline:3px solid #6B4316;outline-offset:2px}
 </style>
 <div class="wrap" translate="no"><div class="eye">Chapter Quizzes</div><h1>📖 The Courtesy Book</h1><p class="sub">Key ideas · details · write it</p>
 <div class="card" id="g"></div></div><div id="ac" role="alertdialog" aria-live="assertive"></div><div id="fs" aria-hidden="true"></div>
@@ -243,7 +261,7 @@ intro();
 </script>
 
 <!-- Miss L Gems: link back to the home page -->
-<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#141e2b;color:#efe6d0;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
+<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#FFFFFF;color:#2F3A4A;border:1px solid #D9DEE7;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
 <style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #cdb078;outline-offset:2px}</style>
 <script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
 </body></html>

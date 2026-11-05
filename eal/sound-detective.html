@@ -6,8 +6,8 @@
 <title>Sound Detective: Listen, Choose, Record</title>
 <style>
 :root{--teal:#0F766E;--tealD:#0B5C56;--tealL:#E3F3F1;--or:#E08E45;--ink:#1F2937;--mut:#5B6572;--bg:#F6FAF9;--card:#fff;--bd:#DCEAE7;--okb:#E5F5E9;--okt:#1F7A3D;--badb:#FCEBEA;--badt:#B23B32;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--teal:#2DB5A8;--tealD:#7FD6CC;--tealL:#173936;--ink:#E6EDF0;--mut:#9AA7AD;--bg:#0F1719;--card:#162226;--bd:#2A3B40;--okb:#173A25;--okt:#7FD69A;--badb:#40201E;--badt:#F0968E}}
-:root[data-theme="dark"]{--teal:#2DB5A8;--tealD:#7FD6CC;--tealL:#173936;--ink:#E6EDF0;--mut:#9AA7AD;--bg:#0F1719;--card:#162226;--bd:#2A3B40;--okb:#173A25;--okt:#7FD69A;--badb:#40201E;--badt:#F0968E}
+
+
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans Thai","Noto Sans SC",sans-serif;line-height:1.5;padding:1.5rem 1rem}
 .wrap{max-width:700px;margin:0 auto}
@@ -51,6 +51,24 @@ audio{height:34px;max-width:230px}
 .rsrow{text-align:center;margin-top:12px}
 #sheet table{font-size:13.5px}#sheet a{color:var(--tealD)}
 @media print{body{background:#fff!important;color:#000!important;padding:0}.vbar,.rsrow,.noprint,.modal,h1,.sub{display:none!important}.card{border:0!important;padding:0!important;background:#fff!important}#sheet,#sheet *{color:#000!important;background:transparent!important}#sheet table{font-size:11pt}#sheet tr{page-break-inside:avoid}#sheet th,#sheet td{border-bottom:1px solid #999}}
+</style>
+<style id="mlg-pastel">
+:root{color-scheme:light;--bg:#F7FCFA;--card:#fff;--w:#fff;--ink:#2F3A4A;--tx:#2F3A4A;--mut:#5F6B7A;--mute:#5F6B7A;--mu:#5F6B7A;--muted:#5F6B7A;--bd:#D5EBE1;--line:#D5EBE1;
+--teal:#7CC4A9;--t:#7CC4A9;--ac:#7CC4A9;--acc:#7CC4A9;--brand:#7CC4A9;--td:#1F4D40;--teal-d:#1F4D40;--tealD:#1F4D40;--acd:#1F4D40;--acc2:#9FD3BE;
+--tl:#E4F5EE;--teal-l:#E4F5EE;--tealL:#E4F5EE;--acl:#E4F5EE;--brand2:#E4F5EE;--purple:#1F4D40;--purple-l:#E4F5EE;--acx:#1F4D40;
+--or:#F5C49A;--o:#F5C49A;--orange:#F5C49A;--go:#F5C49A;--gold:#F5C49A;--hot:#E8A39B;--od:#8A5A24;--god:#8A5A24;
+--ok:#1F6B45;--okt:#1F6B45;--okb:#E3F5EA;--ok-bg:#E3F5EA;--bad:#A63A32;--bat:#A63A32;--badt:#A63A32;--bab:#FCEBE8;--badb:#FCEBE8;--bad-bg:#FCEBE8}
+.btn,.btn.o,button.btn,.next,.go,.start,.play,.vid{background:#BFE6D6!important;color:#1F4D40!important;box-shadow:0 3px 0 #9FD3BE}
+.btn:hover,.next:hover,.go:hover,.start:hover,.play:hover,.vid:hover{background:#9FD3BE!important}
+.btn.s{background:#fff!important;color:#1F4D40!important;border-color:#7CC4A9;box-shadow:0 3px 0 #D5EBE1}
+.sec,.pick,.ghost,button.alt{background:#fff;color:#1F4D40;border-color:#7CC4A9}
+.sel{background:#BFE6D6!important;border-color:#9FD3BE!important;color:#1F4D40!important}
+.seg-b.on{background:#BFE6D6;border-color:#9FD3BE;color:#1F4D40}
+.sbr .rk,.ho.ok b{background:#BFE6D6;color:#1F4D40}
+.fb,.toast{color:inherit}.toast{color:#1F6B45}
+.pg i,.bar i,.fill{background:#7CC4A9!important}
+.pod .p1{background:#BFE6D6}
+:focus-visible{outline:3px solid #1F4D40;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -349,7 +367,7 @@ window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida};
 })();
 </script>
 <!-- Miss L Gems: link back to the home page -->
-<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#141e2b;color:#efe6d0;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
+<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#FFFFFF;color:#2F3A4A;border:1px solid #D9DEE7;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
 <style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #cdb078;outline-offset:2px}</style>
 <script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
 </body>
