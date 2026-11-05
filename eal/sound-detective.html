@@ -6,8 +6,8 @@
 <title>Sound Detective: Listen, Choose, Record</title>
 <style>
 :root{--teal:#0F766E;--tealD:#0B5C56;--tealL:#E3F3F1;--or:#E08E45;--ink:#1F2937;--mut:#5B6572;--bg:#F6FAF9;--card:#fff;--bd:#DCEAE7;--okb:#E5F5E9;--okt:#1F7A3D;--badb:#FCEBEA;--badt:#B23B32;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--teal:#2DB5A8;--tealD:#7FD6CC;--tealL:#173936;--ink:#E6EDF0;--mut:#9AA7AD;--bg:#0F1719;--card:#162226;--bd:#2A3B40;--okb:#173A25;--okt:#7FD69A;--badb:#40201E;--badt:#F0968E}}
-:root[data-theme="dark"]{--teal:#2DB5A8;--tealD:#7FD6CC;--tealL:#173936;--ink:#E6EDF0;--mut:#9AA7AD;--bg:#0F1719;--card:#162226;--bd:#2A3B40;--okb:#173A25;--okt:#7FD69A;--badb:#40201E;--badt:#F0968E}
+
+
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans Thai","Noto Sans SC",sans-serif;line-height:1.5;padding:1.5rem 1rem}
 .wrap{max-width:700px;margin:0 auto}
@@ -51,11 +51,11 @@ audio{height:34px;max-width:230px}
 .rsrow{text-align:center;margin-top:12px}
 #sheet table{font-size:13.5px}#sheet a{color:var(--tealD)}
 @media print{body{background:#fff!important;color:#000!important;padding:0}.vbar,.rsrow,.noprint,.modal,h1,.sub{display:none!important}.card{border:0!important;padding:0!important;background:#fff!important}#sheet,#sheet *{color:#000!important;background:transparent!important}#sheet table{font-size:11pt}#sheet tr{page-break-inside:avoid}#sheet th,#sheet td{border-bottom:1px solid #999}}
-</style>
+</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="../assets/mlg.css">
 </head>
-<body>
+<body class="mlg-act">
 <div class="wrap">
-<h1>🎧 Sound Detective</h1>
+<h1>Sound Detective</h1>
 <p class="sub">Listen to three pronunciations. Which one is correct? Then record yourself.</p>
 <div class="vbar" id="vbar"><label>Voice <select id="vs"></select></label><label>Speed <select id="rt"><option value=".55">Slow</option><option value=".75" selected>Normal</option><option value="1">Fast</option></select></label><button class="sec" id="vt">🔊 Test voice</button></div>
 <div class="card" id="app"></div>
@@ -246,15 +246,15 @@ intro();
 /* Miss L Gems report PDF engine. No outside files needed. */
 (function(){
 var W={"R":[278,278,355,556,556,889,667,222,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,222,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584],"B":[278,333,474,556,556,889,722,278,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,278,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584],"T":[250,333,555,500,500,1000,833,333,333,333,500,570,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,570,570,570,500,930,722,667,722,722,667,611,778,778,389,500,778,667,944,722,778,611,778,722,556,667,722,722,1000,722,722,667,333,278,333,581,500,333,500,556,444,556,444,333,500,556,278,333,556,278,833,556,500,556,556,444,389,333,556,500,722,500,500,444,394,220,394,520]};
-var TH={eal:[29,90,72],mainstream:[39,71,125],other:[134,98,42]};
-var INK=[27,36,48],MUT=[93,100,112],LINE=[224,217,200],BAND=[20,30,43],GOLD=[205,176,120],WARM=[248,246,241],OK=[30,107,58],OKB=[230,243,232],BAD=[154,46,34],BADB=[251,231,227],AMB=[138,90,10],AMBB=[252,241,218];
+var TH={eal:[36,99,235],mainstream:[36,99,235],other:[36,99,235]};
+var INK=[38,52,71],MUT=[100,116,139],LINE=[226,232,240],BAND=[20,43,74],GOLD=[36,99,235],WARM=[247,249,252],OK=[14,124,102],OKB=[232,246,242],BAD=[184,58,69],BADB=[251,236,238],AMB=[138,92,11],AMBB=[253,244,227];
 var PW=595,PH=842,M=44,CW=PW-2*M,TOP=PH-44,BOT=52;
 function cl(s){return String(s==null?"":s).replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,"-").replace(/\u2026/g,"...").replace(/\u2192/g,"to").replace(/[\u00B7\u2022]/g,"-").replace(/[\u2265]/g,">=").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu,"").replace(/[^\x20-\x7E\n]+/g,"?").replace(/[ \t]+/g," ").trim()}
-function tw(t,f,z){var a=f=="B"?W.B:f=="T"?W.T:W.R,n=0;for(var i=0;i<t.length;i++)n+=a[t.charCodeAt(i)-32]||556;return n*z/1000}
+function tw(t,f,z){var a=f=="B"||f=="T"?W.B:W.R,n=0;for(var i=0;i<t.length;i++)n+=a[t.charCodeAt(i)-32]||556;return n*z/1000}
 function wrap(t,f,z,w){var o=[];cl(t).split("\n").forEach(function(p){var l="";p.split(" ").forEach(function(x){while(tw(x,f,z)>w&&x.length>1){var k=x.length-1;while(k>1&&tw(x.slice(0,k),f,z)>w)k--;if(l){o.push(l);l=""}o.push(x.slice(0,k));x=x.slice(k)}var c=l?l+" "+x:x;if(l&&tw(c,f,z)>w){o.push(l);l=x}else l=c});o.push(l)});return o}
 function pe(s){return s.replace(/([\\()])/g,"\\$1")}
 var LV=[[246,213,208,109,31,21],[251,223,186,107,61,0],[245,236,170,87,80,0],[207,233,200,29,84,36],[198,229,236,14,78,94],[217,211,240,61,47,128]],LVN=["Entering","Emerging","Developing","Expanding","Bridging","Reaching"];
-var FN={R:"F1",B:"F2",I:"F3",T:"F4",J:"F5"};
+var FN={R:"F1",B:"F2",I:"F3",T:"F2",J:"F3"};
 function Doc(theme,foot){this.a=TH[theme]||TH.eal;this.foot=foot||"";this.pg=[];this.add()}
 Doc.prototype={
  add:function(){this.c=[];this.pg.push(this.c);this.y=TOP},
@@ -266,8 +266,8 @@ Doc.prototype={
  need:function(h){if(this.y-h<BOT){this.add();return true}return false},
  lines:function(ls,x,f,z,c,lh){var s=this;ls.forEach(function(l){s.need(lh);s.y-=lh;if(l)s.text(l,x,s.y,f,z,c)})},
  head:function(d){var ti=wrap(d.title||"Report","T",25,CW-40),su=d.subtitle?cl(d.subtitle):"",h=30+ti.length*28+(su?18:0);
-  this.rect(0,PH-h-6,PW,h+6,BAND);this.rect(0,PH-h-9,PW,3,GOLD);var y=PH-34,s=this;this.text("MISS L GEMS",PW-M-tw("MISS L GEMS","B",8),PH-20,"B",8,GOLD);
-  ti.forEach(function(l){y-=2;s.text(l,M,y-14,"T",25,[255,255,255]);y-=26});if(su)this.text(su,M,y-8,"J",13,GOLD);this.y=PH-h-26},
+  this.rect(0,PH-h-6,PW,h+6,BAND);this.rect(0,PH-h-9,PW,3,GOLD);var y=PH-34,s=this;this.text("MISS L GEMS",PW-M-tw("MISS L GEMS","B",8),PH-20,"B",8,[234,241,255]);
+  ti.forEach(function(l){y-=2;s.text(l,M,y-14,"T",25,[255,255,255]);y-=26});if(su)this.text(su,M,y-8,"J",13,[234,241,255]);this.y=PH-h-26},
  kv:function(p){var s=this,per=Math.min(3,p.length)||1,cw=CW/per,rows=[];for(var i=0;i<p.length;i+=per)rows.push(p.slice(i,i+per));
   rows.forEach(function(r){var ls=r.map(function(x){return wrap(x[1]||"-","R",9.5,cw-14)}),h=14+Math.max.apply(0,ls.map(function(l){return l.length}))*12;s.need(h+2);
    r.forEach(function(x,i){var X=M+i*cw;s.text(cl(x[0]).toUpperCase(),X,s.y-9,"B",6.8,MUT);ls[i].forEach(function(l,k){s.text(l,X,s.y-20-k*12,"R",9.5,INK)})});s.y-=h+1});this.y-=5},
@@ -286,7 +286,7 @@ Doc.prototype={
    if(s.y-h<BOT){s.add();hdr()}if(ri%2)s.rect(M,s.y-h,CW,h,WARM);var x=M;cells.forEach(function(c,i){var col=INK;if(c.v.c=="ok"){s.rect(x,s.y-h,cw[i],h,OKB);col=OK}if(c.v.c=="bad"){s.rect(x,s.y-h,cw[i],h,BADB);col=BAD}if(c.v.c=="amb"){s.rect(x,s.y-h,cw[i],h,AMBB);col=AMB}if(c.v.c=="mut")col=MUT;
      c.ls.forEach(function(l,k){s.text(l,x+pad,s.y-z-2-k*lh,c.f,z,col)});if(c.v.bar!=null){var bw=cw[i]-pad*2,by=s.y-h+3.5;s.rect(x+pad,by,bw,3,LINE);s.rect(x+pad,by,bw*Math.min(1,c.v.bar/100),3,c.v.bar>=80?OK:c.v.bar>=50?AMB:BAD)}x+=cw[i]});
    s.y-=h;s.line(M,s.y,M+CW,LINE,.4)});this.y-=11},
- level:function(n,t){var c=LV[(n||1)-1],s=this,ls=wrap(t,"B",10.5,CW-22),h=11+ls.length*14;this.need(h+6);this.rect(M,this.y-h,CW,h,c.slice(0,3));ls.forEach(function(l,k){s.text(l,M+11,s.y-15-k*14,"B",10.5,c.slice(3))});this.y-=h+8},
+ level:function(n,t,k){var c=k=="ok"?OKB.concat(OK):k=="bad"?BADB.concat(BAD):AMBB.concat(AMB),s=this,ls=wrap(t,"B",10.5,CW-22),h=11+ls.length*14;this.need(h+6);this.rect(M,this.y-h,CW,h,c.slice(0,3));ls.forEach(function(l,k){s.text(l,M+11,s.y-15-k*14,"B",10.5,c.slice(3))});this.y-=h+8},
  h3:function(t,c){this.need(32);this.y-=15;this.text(cl(t),M,this.y,"B",10.5,c||this.a);this.y-=3},
  out:function(){var o=[],n=8,kids=[],s=this,N=this.pg.length;o[1]="<</Type/Catalog/Pages 2 0 R>>";["Helvetica","Helvetica-Bold","Helvetica-Oblique","Times-Bold","Times-Italic"].forEach(function(b,i){o[3+i]="<</Type/Font/Subtype/Type1/BaseFont/"+b+"/Encoding/WinAnsiEncoding>>"});
   this.pg.forEach(function(p,i){var f=[];s.c=f;s.line(M,38,M+CW,LINE,.5);s.text(wrap(s.foot||"","R",7.5,CW-70)[0]||"",M,27,"R",7.5,MUT);var pn="Page "+(i+1)+" of "+N;s.text(pn,M+CW-tw(pn,"R",7.5),27,"R",7.5,MUT);var st=p.concat(f).join("\n");
@@ -296,11 +296,11 @@ Doc.prototype={
   return new Blob([Uint8Array.from(b,function(c){return c.charCodeAt(0)&255})],{type:"application/pdf"})}
 };
 function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
- (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
+ (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1],b.level[2]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
 function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";
  var nm=cl(o.name||"This student"),b=[{h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."}];
  b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
- b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
+ b.push({level:[n,st+": Level "+n+" "+LVN[n-1],met?"ok":near?"amb":"bad"]});
  var at=met||near||!o.below?o.at:o.below[1];
  b.push({p:o.opening});
  b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""});
@@ -348,9 +348,8 @@ function deliver(blob,fn){return (async function(){var d=null;try{d=window.claud
 window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida};
 })();
 </script>
-<!-- Miss L Gems: link back to the home page -->
-<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#141e2b;color:#efe6d0;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
-<style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #cdb078;outline-offset:2px}</style>
+<!-- Miss L Gems: top bar and link back to the home page -->
+<header class="mlg-bar"><div><span class="mlg-brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#142B4A" d="M7 3h10l5 6-10 12L2 9z"/><path fill="#2463EB" d="M7 3l5 6 5-6zM2 9h20L12 21z" opacity=".85"/><path fill="#EAF1FF" d="M12 9l-3.6 0L12 19l3.6-10z" opacity=".55"/></svg>Miss L Gems</span><span class="mlg-crumb">EAL</span><a id="mlg-home" href="../index.html">All activities</a></div></header>
 <script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
 </body>
 </html>

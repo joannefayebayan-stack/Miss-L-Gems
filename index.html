@@ -5,200 +5,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Miss L Gems</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Interactive games, quizzes and practice for secondary students: EAL, mainstream subjects and other activities.">
+<meta name="description" content="Interactive English language and subject resources for secondary students and their teachers.">
+<meta name="theme-color" content="#142B4A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Jost:wght@400;500&display=swap">
-<style>
-/* Layout: a jeweller's case. A midnight band holds three cut stones; each collection below takes its stone's colour. */
-:root{
-  --bg:#f8f6f1; --surface:#fffefb; --fg:#1b2430; --muted:#5d6470; --line:#e0d9c8;
-  --gold:#80632a; --emerald:#1d5a48; --sapphire:#27477d; --bronze:#86622a;
-  --hero:#141e2b; --hero-fg:#f6f1e4; --hero-muted:#c9c3b3; --hero-gold:#cdb078;
-  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-  --body:"Jost","Century Gothic",system-ui,sans-serif;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#10171f; --surface:#18212c; --fg:#ece7da; --muted:#a8acb0; --line:#323c47;
-  --gold:#cdb078; --emerald:#7cc5ab; --sapphire:#9db8e6; --bronze:#d8b476; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#10171f; --surface:#18212c; --fg:#ece7da; --muted:#a8acb0; --line:#323c47;
-  --gold:#cdb078; --emerald:#7cc5ab; --sapphire:#9db8e6; --bronze:#d8b476; color-scheme:dark}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tray svg{transition:none!important}}
-body{margin:0;background:var(--bg);color:var(--fg);font:400 1.02rem/1.6 var(--body)}
-.wrap{max-width:1000px;margin-inline:auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-a{color:inherit}
-a:focus-visible{outline:2px solid var(--hero-gold);outline-offset:3px}
-h1,h2{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0}
-
-.hero{background:var(--hero);color:var(--hero-fg);text-align:center;padding-block:clamp(52px,9vw,96px) clamp(40px,6vw,64px)}
-h1{font-size:clamp(3.4rem,11vw,6.8rem);line-height:1;letter-spacing:.005em}
-.lede{font:italic 400 clamp(1.25rem,2.8vw,1.6rem)/1.35 var(--display);max-width:30em;margin:20px auto 0;color:var(--hero-muted);text-wrap:balance}
-.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,4vw,44px);margin-top:clamp(36px,6vw,60px);padding-top:clamp(32px,5vw,48px);border-top:1px solid color-mix(in srgb,var(--hero-gold) 45%,transparent)}
-.tray a{display:grid;gap:8px;justify-items:center;align-content:start;text-decoration:none;min-width:0}
-.tray svg{display:block;width:100%;max-width:120px;height:auto;margin-bottom:8px;transition:transform .3s ease}
-.tray a:hover svg{transform:translateY(-4px)}
-.tray strong{font:500 clamp(1.2rem,2.8vw,1.65rem)/1.15 var(--display);color:var(--hero-fg)}
-.tray span{color:var(--hero-muted);font-size:.92rem;line-height:1.45}
-
-.collection{padding-block:clamp(44px,7vw,76px);scroll-margin-top:12px}
-.collection+.collection{border-top:1px solid var(--line)}
-.head{display:grid;grid-template-columns:40px minmax(0,1fr);gap:18px;align-items:start;margin-bottom:30px}
-.head svg{width:40px;height:auto;margin-top:8px}
-h2{font-size:clamp(2.2rem,5.5vw,3.2rem);line-height:1.08;color:var(--c)}
-.sub{margin:8px 0 0;font-size:1.08rem;color:var(--muted);max-width:40em}
-#eal{--c:var(--emerald)} #mainstream{--c:var(--sapphire)} #other{--c:var(--bronze)}
-
-h3{font:500 .82rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:34px 0 12px}
-h3:first-of-type{margin-top:0}
-.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line)}
-.list>li+li{border-top:1px solid var(--line)}
-.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 28px;padding:24px clamp(18px,3vw,30px);align-items:center}
-.name{font:600 clamp(1.4rem,3vw,1.65rem)/1.2 var(--display);margin:0 0 10px}
-.name small{font:400 .88rem var(--body);color:var(--muted);margin-left:8px;white-space:nowrap}
-dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px 14px;font-size:.96rem}
-dt{font-weight:500}
-dd{margin:0;color:var(--muted)}
-.w{margin-top:6px}
-.go{display:inline-block;padding:9px 22px;border:1px solid var(--c);color:var(--c);font-weight:500;font-size:.86rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s}
-.go:hover{background:var(--c);color:var(--surface)}
-.go:focus-visible{outline-color:var(--c)}
-
-.words{padding:22px clamp(18px,3vw,30px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.words-title{grid-column:1/-1;margin:0;font:italic 500 1.2rem var(--display)}
-.words b{display:block;font-weight:500}
-.words span{color:var(--muted);font-size:.94rem}
-.soon{margin:30px 0 0;color:var(--muted);font-size:.96rem}
-.soon b{color:var(--fg);font-weight:500}
-
-footer{background:var(--hero);color:var(--hero-muted);padding-block:30px 36px;text-align:center;font-size:.92rem}
-footer .teacher{display:block;width:fit-content;margin:12px auto 0;color:var(--hero-gold);text-underline-offset:3px}
-footer b{display:block;font:500 1.35rem var(--display);color:var(--hero-fg);margin-bottom:2px}
-
-@media (max-width:640px){
-  .item{grid-template-columns:minmax(0,1fr)}
-  .go{justify-self:start;margin-top:10px}
-  .words{grid-template-columns:minmax(0,1fr)}
-  .tray span{display:none}
-  .name small{display:block;margin:3px 0 0}
-}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/mlg.css">
 </head>
-<body>
+<body class="mlg-page">
 
-<header class="hero"><div class="wrap">
-  <h1>Miss L Gems</h1>
-  <p class="lede">Games, quizzes and practice for secondary students. Small activities, polished until they shine.</p>
-  <nav class="tray" aria-label="Collections">
-    <a href="#eal">
-      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#17614c"/><polygon points="44,8 156,8 136,38 64,38" fill="#4f9e84"/><polygon points="156,8 192,44 162,58 136,38" fill="#23795f"/><polygon points="192,44 192,106 162,92 162,58" fill="#134f3f"/><polygon points="192,106 156,142 136,112 162,92" fill="#0e4133"/><polygon points="156,142 44,142 64,112 136,112" fill="#124a3b"/><polygon points="44,142 8,106 38,92 64,112" fill="#1c6b55"/><polygon points="8,106 8,44 38,58 38,92" fill="#378a70"/><polygon points="8,44 44,8 64,38 38,58" fill="#79bfa7"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#2a8469"/><polygon points="64,38 110,38 62,112 38,92 38,58" fill="#4f9e84" opacity=".55"/></svg>
-      <strong>EAL</strong><span>Find your words. Build your voice.</span>
-    </a>
-    <a href="#mainstream">
-      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#2d5796"/><polygon points="52,10 148,10 128,54 72,54" fill="#8fabd8"/><polygon points="52,10 72,54 8,54" fill="#5a7db5"/><polygon points="148,10 192,54 128,54" fill="#35609f"/><polygon points="8,54 72,54 100,144" fill="#35609f"/><polygon points="72,54 128,54 100,144" fill="#4a73b0"/><polygon points="128,54 192,54 100,144" fill="#234679"/></svg>
-      <strong>Mainstream Subjects</strong><span>The language of every lesson, made clear.</span>
-    </a>
-    <a href="#other">
-      <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#a67c38"/><polygon points="50,10 150,10 125,42 75,42" fill="#efdcae"/><polygon points="150,10 194,75 152,75 125,42" fill="#bd944e"/><polygon points="194,75 150,140 125,108 152,75" fill="#7a5a26"/><polygon points="150,140 50,140 75,108 125,108" fill="#8f6a2e"/><polygon points="50,140 6,75 48,75 75,108" fill="#ab8440"/><polygon points="6,75 50,10 75,42 48,75" fill="#dcc286"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#cdb078"/><polygon points="75,42 112,42 70,102 48,75" fill="#f7ecd0" opacity=".6"/></svg>
-      <strong>Other Activities</strong><span>For form time, free time and fresh thinking.</span>
-    </a>
-  </nav>
+<header class="mlg-nav"><div class="mlg-w">
+  <a class="mlg-brand" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#142B4A" d="M7 3h10l5 6-10 12L2 9z"/><path fill="#2463EB" d="M7 3l5 6 5-6zM2 9h20L12 21z" opacity=".85"/><path fill="#EAF1FF" d="M12 9l-3.6 0L12 19l3.6-10z" opacity=".55"/></svg>Miss L Gems</a>
+  <nav aria-label="Main"><ul class="mlg-links">
+    <li><a href="#eal">EAL</a></li>
+    <li><a href="#mainstream">Mainstream</a></li>
+    <li><a href="#other">Other Activities</a></li>
+    <li><a href="https://claude.ai/artifact/CGkaUsXLvEQi52k9y6McRc" target="_blank" rel="noopener">WIDA Tracker (teacher)</a></li>
+  </ul></nav>
 </div></header>
 
-<main>
-
-<section class="collection" id="eal"><div class="wrap">
-  <div class="head">
-    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="44,8 156,8 192,44 192,106 156,142 44,142 8,106 8,44" fill="#17614c"/><polygon points="64,38 136,38 162,58 162,92 136,112 64,112 38,92 38,58" fill="#4f9e84"/></svg>
-    <div><h2>EAL</h2><p class="sub">Find your words. Build your voice. Academic English for learners growing in confidence and independence.</p></div>
-  </div>
-
-  <h3>Vocabulary</h3>
-  <ul class="list">
-    <li class="item">
-      <div><p class="name">Map Detective</p>
-      <dl><dt>Skill focus</dt><dd>Vocabulary, grammar and sentence writing</dd><dt>Topic focus</dt><dd>Map language: location, change over time and linking words</dd><dt class="w">WIDA focus</dt><dd class="w">Social and Instructional Language, Explain, writing, Level 3 Developing</dd><dt>WIDA descriptor</dt><dd>Choosing words and phrases to provide precise details, descriptions, comparisons, and ordered procedures</dd></dl></div>
-      <a class="go" href="eal/map-detective.html">Play</a>
-    </li>
-    <li class="words">
-      <p class="words-title">Three academic words to know</p>
-      <div><b>Analyze</b><span>To examine something carefully to understand it.</span></div>
-      <div><b>Compare</b><span>To identify similarities and differences.</span></div>
-      <div><b>Evaluate</b><span>To judge the value, quality or effectiveness of something.</span></div>
-    </li>
-  </ul>
-
-  <h3>Listening</h3>
-  <ul class="list">
-    <li class="item">
-      <div><p class="name">Sound Detective <small>Tricky Words, Level 1</small></p>
-      <dl><dt>Skill focus</dt><dd>Listening and pronunciation</dd><dt>Topic focus</dt><dd>Tricky sound patterns: cc, sc, soft c, vowels and consonant groups</dd><dt class="w">WIDA focus</dt><dd class="w">Social and Instructional Language, Recount, listening, Level 1 Entering</dd><dt>WIDA descriptor</dt><dd>Matching everyday oral content related words and phrases to pictures, diagrams, or photographs</dd></dl></div>
-      <a class="go" href="eal/sound-detective.html">Start</a>
-    </li>
-  </ul>
-
-  <h3>Writing</h3>
-  <ul class="list">
-    <li class="item">
-      <div><p class="name">Sentence Sorter <small>Years 10 and 11</small></p>
-      <dl><dt>Skill focus</dt><dd>Sentence writing and editing</dd><dt>Topic focus</dt><dd>Fragments and run-on sentences</dd><dt class="w">WIDA focus</dt><dd class="w">Language Arts, writing, Level 3 Developing</dd><dt>WIDA descriptor</dt><dd>Reflect on use of newly acquired language or language patterns (e.g., through self-assessment checklists) and share with a partner</dd></dl></div>
-      <a class="go" href="eal/sentence-sorter.html">Play</a>
-    </li>
-  </ul>
-
-  <p class="soon"><b>Coming soon:</b> Reading and IELTS Preparation</p>
+<main id="top">
+<section class="mlg-hero"><div class="mlg-w">
+  <span class="mlg-eyebrow">For secondary students and their teachers</span>
+  <h1>Find your words. Build your voice.</h1>
+  <p>Interactive games, quizzes and practice for English language learners, with subject language for mainstream lessons. Each resource shows its skill, topic and WIDA focus.</p>
+  <a class="mlg-cta" href="#eal">Browse resources</a>
 </div></section>
 
-<section class="collection" id="mainstream"><div class="wrap">
-  <div class="head">
-    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="52,10 148,10 192,54 100,144 8,54" fill="#2d5796"/><polygon points="52,10 148,10 128,54 72,54" fill="#8fabd8"/></svg>
-    <div><h2>Mainstream Subjects</h2><p class="sub">The language of every lesson, made clear. Key terms and revision for the subjects you study.</p></div>
+<div class="mlg-w"><nav class="mlg-cats" aria-label="Resource categories">
+  <a class="mlg-cat" href="#eal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/><path d="M8 10h8M8 14h5"/></svg><b>EAL</b><span>Vocabulary, listening and writing practice for academic English.</span><small>4 resources</small></a>
+  <a class="mlg-cat" href="#mainstream"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-2v15c3 0 6 .5 8 2 2-1.500 5-2 8-2V4c-3 0-6 .5-8 2z"/><path d="M12 6v15"/></svg><b>Mainstream Subjects</b><span>The language of every lesson, made clear.</span><small>2 resources</small></a>
+  <a class="mlg-cat" href="#other"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3h4v3a2 2 0 1 0 4 0h3v5h-3a2 2 0 1 0 0 4h3v6h-6v-3a2 2 0 1 0-4 0v3H4v-6h3a2 2 0 1 0 0-4H4V6h6z"/></svg><b>Other Activities</b><span>For form time, free time and fresh thinking.</span><small>2 resources</small></a>
+</nav></div>
+
+<section class="mlg-sec" aria-labelledby="f"><div class="mlg-w">
+  <h2 id="f">Featured</h2>
+  <p class="mlg-lead">Three good places to start.</p>
+  <div class="mlg-grid three">
+    <a class="mlg-mini" href="eal/map-detective-live-host.html"><b>Map Detective Live</b><span>Play together as a class, on one teacher screen.</span></a>
+    <a class="mlg-mini" href="eal/sentence-sorter.html"><b>Sentence Sorter</b><span>Fix fragments and run-ons, then write your own.</span></a>
+    <a class="mlg-mini" href="mainstream/maths-word-lab.html"><b>Maths Word Lab</b><span>Key words for circles and algebra.</span></a>
   </div>
-
-  <h3>Mathematics</h3>
-  <ul class="list">
-    <li class="item">
-      <div><p class="name">Maths Word Lab <small>Year 11</small></p>
-      <dl><dt>Skill focus</dt><dd>Subject vocabulary and exam command words</dd><dt>Topic focus</dt><dd>Circles and algebra</dd><dt class="w">WIDA focus</dt><dd class="w">Language for Mathematics, Explain, writing, Level 2 Emerging</dd><dt>WIDA descriptor</dt><dd>Choosing everyday or technical language to describe phenomena</dd></dl></div>
-      <a class="go" href="mainstream/maths-word-lab.html">Start</a>
-    </li>
-  </ul>
-
-  <h3>Physical and Health Education</h3>
-  <ul class="list">
-    <li class="item">
-      <div><p class="name">Training Lab <small>Year 10, Unit 2</small></p>
-      <dl><dt>Skill focus</dt><dd>Key terms, recall and exam revision</dd><dt>Topic focus</dt><dd>Principles of training, training methods, warming up and cooling down</dd><dt class="w">WIDA focus</dt><dd class="w">Language for Science, Explain, reading, Level 1 Entering</dd><dt>WIDA descriptor</dt><dd>Identifying key words and phrases that describe the topics or phenomena</dd></dl></div>
-      <a class="go" href="mainstream/training-lab.html">Start</a>
-    </li>
-  </ul>
 </div></section>
 
-<section class="collection" id="other"><div class="wrap">
-  <div class="head">
-    <svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="50,10 150,10 194,75 150,140 50,140 6,75" fill="#a67c38"/><polygon points="75,42 125,42 152,75 125,108 75,108 48,75" fill="#efdcae"/></svg>
-    <div><h2>Other Activities</h2><p class="sub">For form time, free time and fresh thinking. Pick one up whenever you have a few minutes.</p></div>
+<section class="mlg-sec" id="eal" aria-labelledby="h-eal"><div class="mlg-w">
+  <h2 id="h-eal">EAL</h2>
+  <p class="mlg-lead">Academic English for learners growing in confidence and independence.</p>
+  <h3 class="mlg-sub">Vocabulary</h3>
+  <div class="mlg-grid"><article class="mlg-res"><ul class="mlg-tags"><li>Vocabulary</li><li>Game and writing</li><li class="lv">WIDA Level 3</li></ul><h3>Map Detective</h3><p>Solve 50 clues across 5 missions, then write about how a map has changed.</p>
+      <dl><dt>Skill focus</dt><dd>Vocabulary, grammar and sentence writing</dd><dt>Topic focus</dt><dd>Map language: location, change over time and linking words</dd><dt>WIDA focus</dt><dd>Social and Instructional Language, Explain, writing, Level 3 Developing</dd><dt>WIDA descriptor</dt><dd>Choosing words and phrases to provide precise details, descriptions, comparisons, and ordered procedures</dd></dl>
+      <a class="mlg-open" href="eal/map-detective.html">Play Map Detective</a></article><article class="mlg-res"><ul class="mlg-tags"><li>Vocabulary</li><li>Class game</li><li class="lv">WIDA Level 3</li></ul><h3>Map Detective Live</h3><p>A class game for one teacher screen. Students join on their own devices and answer together.</p>
+      <dl><dt>Skill focus</dt><dd>Vocabulary and grammar</dd><dt>Topic focus</dt><dd>Map language: location, change over time and linking words</dd><dt>WIDA focus</dt><dd>Social and Instructional Language, Explain, Level 3 Developing</dd><dt>WIDA descriptor</dt><dd>Choosing words and phrases to provide precise details, descriptions, comparisons, and ordered procedures</dd></dl>
+      <a class="mlg-open" href="eal/map-detective-live-host.html">Host a class game</a></article></div>
+  <h3 class="mlg-sub">Three academic words to know</h3>
+  <div class="mlg-words">
+    <div><b>Analyze</b><span>To examine something carefully to understand it.</span></div>
+    <div><b>Compare</b><span>To identify similarities and differences.</span></div>
+    <div><b>Evaluate</b><span>To judge the value, quality or effectiveness of something.</span></div>
   </div>
-
-  <ul class="list">
-    <li class="item">
-      <div><p class="name">The Courtesy Book <small>Chapter quizzes</small></p>
-      <dl><dt>Skill focus</dt><dd>Reading comprehension and writing a clear sentence</dd><dt>Topic focus</dt><dd>Good manners, from conversation to shopping</dd></dl></div>
-      <a class="go" href="activities/the-courtesy-book.html">Start</a>
-    </li>
-    <li class="item">
-      <div><p class="name">Odd One Out <small>Year 9 challenge</small></p>
-      <dl><dt>Skill focus</dt><dd>Visual attention and concentration</dd><dt>Topic focus</dt><dd>Spot the different icon across 100 levels</dd></dl></div>
-      <a class="go" href="activities/odd-one-out.html">Play</a>
-    </li>
-  </ul>
+  <h3 class="mlg-sub">Listening and writing</h3>
+  <div class="mlg-grid"><article class="mlg-res"><ul class="mlg-tags"><li>Listening</li><li>Pronunciation practice</li><li class="lv">WIDA Level 1</li></ul><h3>Sound Detective</h3><p>Tricky Words, Level 1. Hear three pronunciations of 40 words, choose the correct one, then record yourself.</p>
+      <dl><dt>Skill focus</dt><dd>Listening and pronunciation</dd><dt>Topic focus</dt><dd>Tricky sound patterns: cc, sc, soft c, vowels and consonant groups</dd><dt>WIDA focus</dt><dd>Social and Instructional Language, Recount, listening, Level 1 Entering</dd><dt>WIDA descriptor</dt><dd>Matching everyday oral content related words and phrases to pictures, diagrams, or photographs</dd></dl>
+      <a class="mlg-open" href="eal/sound-detective.html">Start Sound Detective</a></article><article class="mlg-res"><ul class="mlg-tags"><li>Writing</li><li>Game and writing</li><li class="lv">WIDA Level 3</li></ul><h3>Sentence Sorter</h3><p>For Years 10 and 11. Find fragments and run-ons, fix them, and write your own sentences and a paragraph.</p>
+      <dl><dt>Skill focus</dt><dd>Sentence writing and editing</dd><dt>Topic focus</dt><dd>Fragments and run-on sentences</dd><dt>WIDA focus</dt><dd>Language Arts, writing, Level 3 Developing</dd><dt>WIDA descriptor</dt><dd>Reflect on use of newly acquired language or language patterns (e.g., through self-assessment checklists) and share with a partner</dd></dl>
+      <a class="mlg-open" href="eal/sentence-sorter.html">Play Sentence Sorter</a></article></div>
+  <p class="mlg-soon"><b>Coming soon:</b> Reading and IELTS Preparation</p>
 </div></section>
 
+<section class="mlg-sec" id="mainstream" aria-labelledby="h-main"><div class="mlg-w">
+  <h2 id="h-main">Mainstream Subjects</h2>
+  <p class="mlg-lead">Key terms and revision for the subjects you study.</p>
+  <div class="mlg-grid"><article class="mlg-res"><ul class="mlg-tags"><li>Mathematics</li><li>Word lab</li><li class="lv">WIDA Level 2</li></ul><h3>Maths Word Lab</h3><p>For Year 11. Build and use 19 key maths words so you can read, follow and explain maths in English.</p>
+      <dl><dt>Skill focus</dt><dd>Subject vocabulary and exam command words</dd><dt>Topic focus</dt><dd>Circles and algebra</dd><dt>WIDA focus</dt><dd>Language for Mathematics, Explain, writing, Level 2 Emerging</dd><dt>WIDA descriptor</dt><dd>Choosing everyday or technical language to describe phenomena</dd></dl>
+      <a class="mlg-open" href="mainstream/maths-word-lab.html">Start Maths Word Lab</a></article><article class="mlg-res"><ul class="mlg-tags"><li>Physical and Health Education</li><li>Revision lab</li><li class="lv">WIDA Level 1</li></ul><h3>Training Lab</h3><p>For Year 10 PHE, Unit 2. Practise key terms with flashcards, games and quizzes, then see your progress.</p>
+      <dl><dt>Skill focus</dt><dd>Key terms, recall and exam revision</dd><dt>Topic focus</dt><dd>Principles of training, training methods, warming up and cooling down</dd><dt>WIDA focus</dt><dd>Language for Science, Explain, reading, Level 1 Entering</dd><dt>WIDA descriptor</dt><dd>Identifying key words and phrases that describe the topics or phenomena</dd></dl>
+      <a class="mlg-open" href="mainstream/training-lab.html">Start Training Lab</a></article></div>
+</div></section>
+
+<section class="mlg-sec" id="other" aria-labelledby="h-other"><div class="mlg-w">
+  <h2 id="h-other">Other Activities</h2>
+  <p class="mlg-lead">Pick one up whenever you have a few minutes.</p>
+  <div class="mlg-grid"><article class="mlg-res"><ul class="mlg-tags"><li>Reading</li><li>Chapter quizzes</li></ul><h3>The Courtesy Book</h3><p>Read a chapter, answer quiz questions about it, and write about good manners in clear English.</p>
+      <dl><dt>Skill focus</dt><dd>Reading comprehension and writing a clear sentence</dd><dt>Topic focus</dt><dd>Good manners, from conversation to shopping</dd></dl>
+      <a class="mlg-open" href="activities/the-courtesy-book.html">Start The Courtesy Book</a></article><article class="mlg-res"><ul class="mlg-tags"><li>Concentration</li><li>Game</li></ul><h3>Odd One Out</h3><p>Year 9 challenge. Find the icon that is different before the clock runs out, across 100 levels.</p>
+      <dl><dt>Skill focus</dt><dd>Visual attention and concentration</dd><dt>Topic focus</dt><dd>Spot the different icon across 100 levels</dd></dl>
+      <a class="mlg-open" href="activities/odd-one-out.html">Play Odd One Out</a></article></div>
+</div></section>
 </main>
 
-<footer><div class="wrap"><b>Miss L Gems</b>Interactive learning for secondary students. WIDA focus and descriptors are matched to the WIDA ELD Standards Framework.<a class="teacher" href="https://claude.ai/artifact/CGkaUsXLvEQi52k9y6McRc" target="_blank" rel="noopener">Teacher sign-in: WIDA Tracker</a></div></footer>
-
+<footer class="mlg-foot"><div class="mlg-w">
+  <div><b>Miss L Gems</b>Interactive learning for secondary students. WIDA focus and descriptors are matched to the WIDA ELD Standards Framework.</div>
+  <a href="https://claude.ai/artifact/CGkaUsXLvEQi52k9y6McRc" target="_blank" rel="noopener">Teacher sign-in: WIDA Tracker</a>
+</div></footer>
 </body>
 </html>
