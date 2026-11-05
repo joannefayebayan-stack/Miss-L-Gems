@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no" class="notranslate">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"><meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sound Detective: Listen, Choose, Record</title>
 <style>
@@ -81,6 +81,34 @@ h1,h2,.box b,.fbk b,.stat b,.ltr,.eyebrow,.eye,.task h4,.end h2{color:#1F4D40}
 <div class="rsrow"><button class="sec" id="reset">↺ Reset activity</button></div>
 <div class="modal" id="modal" hidden><div class="mbox" role="alertdialog" aria-modal="true" aria-labelledby="mt" aria-describedby="mp"><h3 id="mt"></h3><p id="mp"></p><p id="mn" style="font-size:12.5px;color:var(--mut)"></p><div class="row" id="mb" style="justify-content:center"></div></div></div>
 </div>
+<script id="mlg-guard">
+/* Miss L Gems activity protections: discreet, and browser-limited like all such checks. */
+window.MLGGuard=function(o){var SHOT=false,LN=false,PK=0,FST=0,AW=false,ST=0,$=function(i){return document.getElementById(i)};
+var st=document.createElement("style");st.textContent="body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea,[data-allow]{-webkit-user-select:text;user-select:text}#mlg-fs{display:none;position:fixed;inset:0;z-index:60;background:#0E1716}#mlg-ac{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:1rem}#mlg-ac>div{background:#fff;color:#2F3A4A;border-radius:18px;padding:1.4rem;max-width:420px;border:2px solid #F5C49A}#mlg-ac h3{margin:0 0 8px}#mlg-ac button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 20px;cursor:pointer;background:#F5C49A;color:#2F3A4A}@media print{#mlg-fs,#mlg-ac{display:none!important}}";document.head.appendChild(st);
+var fs=document.createElement("div");fs.id="mlg-fs";fs.setAttribute("role","dialog");fs.setAttribute("aria-modal","true");fs.setAttribute("aria-label","Paused");var ac=document.createElement("div");ac.id="mlg-ac";ac.setAttribute("role","alertdialog");document.body.appendChild(ac);document.body.appendChild(fs);
+var wrap=function(){return document.querySelector(o.wrap)};
+var FSE=function(){return document.fullscreenElement||document.webkitFullscreenElement};
+var sizeOk=function(){var lw=innerWidth>=innerHeight,m=Math.max(screen.width,screen.height),n=Math.min(screen.width,screen.height),SW=lw?m:n,SH=lw?n:m,a=document.activeElement,ty=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName),ok=innerWidth>=SW*.95&&(ty||innerHeight>=SH*.75),pm=Math.max(innerWidth,innerHeight)*(devicePixelRatio||1);if(ok&&pm>PK)PK=pm;return ok&&(ty||pm>=PK*.9)};
+var ex=function(){return !!(o.exempt&&o.exempt())};
+var need=function(){return SHOT||(o.active()&&!ex()&&!FSE()&&!sizeOk())};
+function gate(){var w=wrap();LN=need();if(!LN){fs.style.display="none";if(w){w.inert=false;w.removeAttribute("aria-hidden")}return}if(w){w.inert=true;w.setAttribute("aria-hidden","true")}fs.style.display="block"}
+function enter(){var e=document.documentElement,f=e.requestFullscreen||e.webkitRequestFullscreen;FST=Date.now();if(f&&document.fullscreenEnabled!==false){try{Promise.resolve(f.call(e)).catch(function(){})}catch(x){}}}
+fs.onclick=function(){if(SHOT){SHOT=false;gate()}if(need())enter()};
+function check(){if(need()!==LN)gate()}
+function onfs(){FST=Date.now();check()}
+document.addEventListener("fullscreenchange",onfs);document.addEventListener("webkitfullscreenchange",onfs);window.addEventListener("resize",check);document.addEventListener("focusin",check);document.addEventListener("focusout",function(){setTimeout(check,50)});setInterval(check,400);window.addEventListener("orientationchange",function(){setTimeout(check,150)});
+var scKey=function(e){var c=e.code||"",k=e.key||"";if(c=="PrintScreen"||k=="PrintScreen"||k=="Snapshot")return 1;if(e.metaKey&&e.shiftKey&&/^(Digit|Numpad)[3-6]$/.test(c))return 1;if(e.metaKey&&e.shiftKey&&c=="KeyS")return 1;return 0};
+["keydown","keyup"].forEach(function(t){document.addEventListener(t,function(e){if(scKey(e)&&!SHOT){SHOT=true;gate()}},true)});
+var allow=function(e){return e.target&&e.target.closest&&e.target.closest("[data-allow]")};
+["copy","cut","paste","drop","contextmenu","dragstart"].forEach(function(t){document.addEventListener(t,function(e){if(t=="copy"&&allow(e))return;e.preventDefault()})});
+document.addEventListener("selectstart",function(e){var n=e.target.nodeType==3?e.target.parentNode:e.target;if(!(n.closest&&n.closest("input,textarea,[data-allow]")))e.preventDefault()});
+document.addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase();if(((e.ctrlKey||e.metaKey)&&["c","x","v","insert"].indexOf(k)>-1)||(e.shiftKey&&["insert","delete"].indexOf(k)>-1)){if(k=="c"&&allow(e))return;e.preventDefault()}});
+function modal(h,m){ac.innerHTML="<div><h3>"+h+"</h3><p>"+m+"</p><button id=\"mlg-ok\">OK</button></div>";ac.style.display="flex";$("mlg-ok").onclick=function(){ac.style.display="none"};$("mlg-ok").focus()}
+function away(){if(!o.active()||AW||ex()||Date.now()-FST<1500)return;AW=true}
+function back(){if(!AW)return;AW=false;if(!o.active())return;ST=Math.min(ST+1,2);if(o.onDeparture)o.onDeparture();if(ST>=2){o.restart();modal("Part restarted","You left the activity a second time. Your answers for "+o.part+" were cleared and it restarted. Your other answers are safe. Stay on this page and work on your own.")}else modal("Notice","Warning: you left the activity page. Stay on this page. If you leave again, your answers for "+o.part+" will be cleared and it will restart.")}
+document.addEventListener("visibilitychange",function(){document.hidden?away():back()});window.addEventListener("blur",away);window.addEventListener("focus",back);
+gate();return{enter:enter,check:check,reset:function(){ST=0;AW=false}}};
+</script>
 <script>
 // category, word, Thai, Mandarin, wrong respelling 1, wrong respelling 2 (read aloud by the voice to sound "incorrect")
 const ALL=[
@@ -137,27 +165,30 @@ function loadVoices(){if(!TTS)return;const vs=speechSynthesis.getVoices().filter
 function speak(t,done){if(!TTS){if(done)done();return}speechSynthesis.cancel();setTimeout(()=>{const u=new SpeechSynthesisUtterance(t);u.lang=vSel?vSel.lang:"en-GB";if(vSel)u.voice=vSel;u.rate=rate;if(done){u.onend=done;u.onerror=done}speechSynthesis.speak(u)},80)}
 function playAll(){let k=0;const nx=()=>{document.querySelectorAll(".opt").forEach((e,x)=>e.classList.toggle("now",x===k-1&&k<=3));if(k>=3){setTimeout(()=>document.querySelectorAll(".opt").forEach(e=>e.classList.remove("now")),900);return}const j=k++;document.querySelectorAll(".opt").forEach((e,x)=>e.classList.toggle("now",x===j));speak(opts[j].t,()=>setTimeout(nx,600))};nx()}
 function intro(){active=false;
- app.innerHTML=`<p>You will see <b>${W.length} words</b> from 8 sound groups. For each word:</p>
+ app.innerHTML=`<div class="note"><b>Learning Goal</b><br>Hear and say 40 tricky English words correctly.</div>
+ <div class="note"><b>Learning Objectives</b> By the end I can:<br>• choose the correct pronunciation from three,<br>• say each word and compare it with the correct one,<br>• notice 8 sound patterns.</div>
+ <div class="note"><b>Success Criteria</b> 80% or more correct, and a recording for each word.</div>
+ <p>You will see <b>${W.length} words</b> from 8 sound groups. For each word:</p>
  <div class="note"><b>1.</b> Press ▶ A, B and C to hear three pronunciations (only one is correct).<br><b>2.</b> Choose the correct one.<br><b>3.</b> Record yourself reading the word and listen back.</div>
- <div class="note">⚠️ Please stay on this page. If you leave it once, you will get a warning. If you leave a second time, the activity restarts and your answers are cleared. (This check can’t catch everything, and some interruptions may be counted by mistake.)</div>
  <div class="note">Not ready for a word? Press <b>Skip for now</b>. Skipped words come back at the end. If you still skip a word, it is shown as unanswered on your Final Review.</div>
  <div class="note">Groups: cc · sc · soft c (s sound) · a_e · a · u · 3–4 vowels together · 3–4 consonants together.<br>Thai and Chinese meanings are shown for each word.</div>
  ${TTS?"":'<div class="note">Your browser can’t play the audio voice. Please open this page in Chrome, Edge or Safari.</div>'}
- <label for="n"><b>Your name</b> (required)</label><input type="text" id="n" placeholder="e.g. Amina K." aria-required="true"><label for="cn" style="display:block;margin-top:10px"><b>Your class / form</b> (required)</label><input type="text" id="cn" placeholder="e.g. Year 10A" aria-required="true"><p class="fb r" id="er" style="margin:8px 0 0;min-height:20px"></p>
+ <label for="n"><b>English Name</b></label><input type="text" id="n" aria-required="true"><label for="yg" style="display:block;margin-top:10px"><b>Year Group</b></label><input type="text" id="yg" placeholder="e.g. Year 10" aria-required="true"><label for="cn" style="display:block;margin-top:10px"><b>Form Group</b></label><input type="text" id="cn" placeholder="e.g. 10A" aria-required="true"><p class="fb r" id="er" style="margin:8px 0 0;min-height:20px"></p>
  <button class="start" id="go" style="margin-top:6px">Start listening</button>`;
  const nI=document.getElementById("n"),cI=document.getElementById("cn"),eE=document.getElementById("er");
  [nI,cI].forEach(x=>x.oninput=()=>{x.style.borderColor="";eE.textContent=""});
  document.getElementById("go").onclick=()=>{const nn=nI.value.trim(),cc=cI.value.trim();
   if(!nn||!cc){eE.textContent="⚠️ "+(!nn&&!cc?"Please type your name and your class to start.":!nn?"Please type your name to start.":"Please type your class to start.");if(!nn)nI.style.borderColor="var(--badt)";if(!cc)cI.style.borderColor="var(--badt)";(!nn?nI:cI).focus();return}
-  name=nn;cls=cc;W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=true;begin()};
+  const yy=document.getElementById("yg").value.trim();if(!yy){eE.textContent="Please type your Year Group.";return}yg=yy;TG.enter();TG.reset();name=nn;cls=cc;W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=true;begin()};
 }
 let queue=[],qp=0;
-function begin(){Object.values(log).forEach(l=>l.skipped=false);queue=W.map((_,k)=>k);qp=0;q()}
+function begin(){Object.values(log).forEach(l=>l.skipped=false);const gs=[...new Set(W.map(w=>w[0]))];queue=gs.flatMap(g=>sh(W.map((w,k)=>w[0]===g?k:-1).filter(k=>k>=0)));qp=0;q()}
+function resetPart(){if(TTS)speechSynthesis.cancel();if(mr&&mr.state==="recording"){mr.onstop=null;mr.stop()}if(stream)stream.getTracks().forEach(t=>t.stop());const g=W[i][0],ks=W.map((w,k)=>w[0]===g?k:-1).filter(k=>k>=0);ks.forEach(k=>{const w=W[k][1],l=log[w];if(l&&l.url)URL.revokeObjectURL(l.url);delete log[w];delete res[k];if(recs[k])URL.revokeObjectURL(recs[k]);delete recs[k]});const seen=queue.slice(0,qp).filter(k=>!ks.includes(k)),rest=queue.slice(qp).filter(k=>!ks.includes(k));queue=[...new Set(seen)].concat(sh(ks),[...new Set(rest)]);qp=[...new Set(seen)].length;q()}
 function q(){
  if(qp>=queue.length)return summary();i=queue[qp];
  const [c,w,th,zh,x,y]=W[i];done=false;
  opts=sh([{t:w,ok:1},{t:x,ok:0},{t:y,ok:0}]);
- app.innerHTML=`<div class="row" style="justify-content:space-between"><span><span class="badge">${c}</span> ${log[w]&&log[w].skipped?'<span class="badge">↩ Skipped earlier</span>':""}</span><span style="font-size:13px;color:var(--mut)">Word ${i+1} of ${W.length}</span></div>
+ app.innerHTML=`<div class="row" style="justify-content:space-between"><span><span class="badge">${c}</span> ${log[w]&&log[w].skipped?'<span class="badge">↩ Skipped earlier</span>':""}</span><span style="font-size:13px;color:var(--mut)">Word ${Math.min(qp+1,W.length)} of ${W.length}</span></div>
  <div class="bar"><i style="width:${W.filter((x,k)=>res[k]!==undefined).length/W.length*100}%"></i></div>
  <div class="word">${w}</div>
  <div class="tr"><span><small>ไทย</small>${th}</span><span><small>中文</small>${zh}</span></div>
@@ -216,27 +247,22 @@ function summary(){
  app.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>speak(b.dataset.w));
  document.getElementById("rv").onclick=review;document.getElementById("again").onclick=intro;
 }
-let sw=0,active=false,away=false,micAsk=false,log={};
+let sw=0,active=false,away=false,micAsk=false,log={},yg="";
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $=id=>document.getElementById(id);
 function modal(t,p,btns,note){$("mt").textContent=t;$("mp").textContent=p;$("mn").textContent=note||"";const b=$("mb");b.innerHTML="";btns.forEach(([l,f,c])=>{const x=document.createElement("button");x.textContent=l;x.className=c||"sec";x.onclick=()=>{$("modal").hidden=true;if(f)f()};b.appendChild(x)});$("modal").hidden=false;if(b.firstChild)b.firstChild.focus()}
 // ---- tab-departure check: 1st = warning, 2nd = restart ----
-function leave(){if(active&&!away&&!micAsk)away=true}
-function back(){if(!away)return;away=false;if(!active)return;sw++;
- if(sw===1)modal("⚠️ Warning","Warning: You left the activity page. If you leave again, your activity will restart and your answers will be cleared.",[["I understand",null,"sec"]],"This check is not perfect. Browser limits and some interruptions (such as pop-ups) can affect it.");
- else resetAll("You left the activity page for a second time, so the activity has restarted and your answers have been cleared. Please start again and stay on this page.")}
-document.addEventListener("visibilitychange",()=>{document.hidden?leave():back()});
-window.addEventListener("blur",()=>setTimeout(()=>{if(active&&!document.hidden&&!document.hasFocus())leave()},300));
-window.addEventListener("focus",()=>{if(!document.hidden)back()});
-function resetAll(msg){if(TTS)speechSynthesis.cancel();if(mr&&mr.state==="recording"){mr.onstop=null;mr.stop()}if(stream)stream.getTracks().forEach(t=>t.stop());Object.values(recs).forEach(u=>URL.revokeObjectURL(u));Object.values(log).forEach(l=>{if(l.url)URL.revokeObjectURL(l.url)});W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=false;intro();if(msg)modal("Activity restarted",msg,[["OK",null,"sec"]])}
+const TG=MLGGuard({wrap:".wrap",part:"this sound group",active:()=>active,exempt:()=>micAsk,restart:resetPart,onDeparture:()=>{sw++}});
+function resetAll(msg){if(TTS)speechSynthesis.cancel();if(mr&&mr.state==="recording"){mr.onstop=null;mr.stop()}if(stream)stream.getTracks().forEach(t=>t.stop());Object.values(recs).forEach(u=>URL.revokeObjectURL(u));Object.values(log).forEach(l=>{if(l.url)URL.revokeObjectURL(l.url)});W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=false;TG.reset();intro();if(msg)modal("Activity restarted",msg,[["OK",null,"sec"]])}
 $("reset").onclick=()=>modal("Reset the activity?","Your score, recordings, answers and tab-switch count will be cleared and you will return to the start.",[["Cancel",null,"sec"],["Yes, reset",()=>resetAll(),"sec"]]);
 // ---- Final Review + PDF (browser print → Save as PDF) ----
 function soundPdf(n,c,dt,dep){const L=w=>log[w[1]]||{},ans=ALL.filter(w=>L(w).answered),okN=ans.filter(w=>L(w).ok).length,rec=ALL.filter(w=>L(w).url).length,pc=ALL.length?Math.round(100*okN/ALL.length):0,gs=[...new Set(ALL.map(w=>w[0]))],gr=gs.map(g=>{const a=ALL.filter(w=>w[0]===g);return[g,a.filter(w=>L(w).ok).length,a.length]}),st=[],dv=[],nx=[];
 gr.forEach(x=>{(x[2]&&x[1]/x[2]>=.8?st:dv).push('Sound group "'+x[0]+'": '+x[1]+" of "+x[2]+" correct.")});if(rec)st.push("Recorded "+rec+" of "+ALL.length+" words for speaking practice.");else dv.push("No recordings were made, so spoken pronunciation has no evidence.");
 const tricky=ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>w[1]);if(tricky.length)nx.push("Listen again and repeat these words: "+tricky.slice(0,10).join(", ")+".");gr.filter(x=>x[2]&&x[1]/x[2]<.8).slice(0,2).forEach(x=>nx.push('Practise the "'+x[0]+'" pattern with minimal pairs and short read-aloud sentences.'));nx.push("Listen to the student's recordings, or hear them read aloud, to confirm pronunciation.");
 const rows=ALL.map((w,k)=>{const l=L(w);return[String(k+1),w[0],{t:w[1],b:1},l.answered?"Audio "+l.sel+": "+l.selText:(l.skipped?"Skipped":"Not answered"),l.answered?(l.ok?{t:"Correct",c:"ok",b:1}:{t:"Not yet",c:"bad",b:1}):{t:"No answer",c:"amb",b:1},l.url?"Recorded":{t:"None",c:"mut"}]});
-const wb=MLGPDF.wida({name:n,standard:"Social and Instructional Language",use:"Recount",domain:"Listening and pronunciation",pct:pc,target:1,at:"Matching everyday oral content related words and phrases to pictures, diagrams, or photographs",next:[2,"Matching oral descriptions of characters or main events in content related topics"],opening:n+" chose the correct pronunciation for "+okN+" of "+ALL.length+" words ("+pc+"%) and made "+rec+" recording"+(rec==1?"":"s")+".",strengths:st,develop:dv,steps:nx,limits:"Based on one Sound Detective attempt at word level. WIDA has no pronunciation descriptor, so this is the closest match. Recordings are not included in the PDF, so the teacher should confirm spoken accuracy."});
-return MLGPDF.build({theme:"eal",title:"Sound Detective",subtitle:"Tricky Words, Level 1: Final Review",foot:"Sound Detective - "+n+" ("+c+")",meta:[["Student",n],["Class / form",c],["Date",dt]],tiles:[[okN+"/"+ALL.length,"Correct ("+pc+"%)"],[ans.length+"/"+ALL.length,"Answered"],[rec+"/"+ALL.length,"Recordings"],[String(dep),"Page departures"]],blocks:wb.concat([{h:"Score by Sound Group"},{table:{head:["Sound group","Result"],w:[60,40],rows:gr.map(x=>[x[0],{t:x[1]+" of "+x[2],bar:x[2]?Math.round(100*x[1]/x[2]):0}])}},{h:"All Words"},{table:{head:["#","Sound group","Word","Answer selected","Result","Recording"],w:[5,18,17,30,13,12],rows:rows,z:8.3}},{p:"Audio recordings cannot be included in the PDF.",o:{f:"I",z:8.5,c:[93,100,112]}}])})}
+const grd=gr.filter(x=>x[2]).slice().sort((a,b)=>b[1]/b[2]-a[1]/a[2]),pat=[];if(grd.length){pat.push('Most correct answers: the "'+grd[0][0]+'" sound group ('+grd[0][1]+" of "+grd[0][2]+").");const lw=grd[grd.length-1];if(lw!==grd[0]&&lw[1]<lw[2])pat.push('Most incorrect answers: the "'+lw[0]+'" sound group ('+lw[1]+" of "+lw[2]+").")}const un=ALL.length-ans.length;if(un)pat.push(un+" word"+(un==1?" was":"s were")+" not answered.");
+const wb=MLGPDF.wida({counts:[okN,ans.length-okN,un],patterns:pat,incorrectHead:["Word","Sound group","What I chose"],incorrectW:[30,30,40],incorrect:ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>[w[1],w[0],"Audio "+L(w).sel+": "+L(w).selText]),noWriting:"This activity has no writing task. Spoken recordings cannot be included in a PDF.",name:n,standard:"Social and Instructional Language",use:"Recount",domain:"Listening and pronunciation",pct:pc,target:1,at:"Matching everyday oral content related words and phrases to pictures, diagrams, or photographs",next:[2,"Matching oral descriptions of characters or main events in content related topics"],opening:n+" chose the correct pronunciation for "+okN+" of "+ALL.length+" words ("+pc+"%) and made "+rec+" recording"+(rec==1?"":"s")+".",strengths:st,develop:dv,steps:nx,limits:"Based on one Sound Detective attempt at word level. WIDA has no pronunciation descriptor, so this is the closest match. Recordings are not included in the PDF, so the teacher should confirm spoken accuracy."});
+return MLGPDF.build({theme:"eal",title:"Sound Detective",subtitle:"Tricky Words, Level 1: Final Review",foot:"Sound Detective - "+n+" ("+c+")",meta:[["English Name",n],["Year Group",yg||"-"],["Form Group",c],["Date",dt]],tiles:[[okN+"/"+ALL.length,"Correct ("+pc+"%)"],[ans.length+"/"+ALL.length,"Answered"],[rec+"/"+ALL.length,"Recordings"],[String(dep),"Page departures"]],blocks:wb.concat([{h:"Score by Sound Group"},{table:{head:["Sound group","Result"],w:[60,40],rows:gr.map(x=>[x[0],{t:x[1]+" of "+x[2],bar:x[2]?Math.round(100*x[1]/x[2]):0}])}},{h:"All Words"},{table:{head:["#","Sound group","Word","Answer selected","Result","Recording"],w:[5,18,17,30,13,12],rows:rows,z:8.3}},{p:"Audio recordings cannot be included in the PDF.",o:{f:"I",z:8.5,c:[93,100,112]}}])})}
 function review(){
  active=false;
  const L=w=>log[w[1]]||{},ans=ALL.filter(w=>L(w).answered).length,rec=ALL.filter(w=>L(w).url).length,d=new Date(),iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
@@ -316,13 +342,13 @@ Doc.prototype={
 };
 function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
  (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
-function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";
- var nm=cl(o.name||"This student"),b=[{h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."}];
+function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";if(o.fixed){var fb0=[{h:"WIDA Report",sub:o.fixed.sub}];}
+ var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:"None. Every answer was correct."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
  b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
- b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
+ if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Indicative writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}});b.push({p:o.opening});if(o.fixed.text)b.push({p:o.fixed.text})}else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
  var at=met||near||!o.below?o.at:o.below[1];
  b.push({p:o.opening});
- b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""});
+ b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""})}
  if(o.strengths&&o.strengths.length){b.push({h3:"Strengths",c:OK});b.push({list:o.strengths})}
  if(o.develop&&o.develop.length){b.push({h3:"Areas to develop",c:BAD});b.push({list:o.develop})}
  if(o.steps&&o.steps.length){b.push({h3:"Next steps"});b.push({list:o.steps,num:1})}
@@ -337,7 +363,7 @@ function headOf(l){var t=l.trim();var m=/^([A-Z][A-Z0-9 ,&'\-\/]{3,})(?:\s*\(([^
 function titleCase(s){return s.toLowerCase().replace(/(^|[\s\-\/])([a-z])/g,function(m,p,c){return p+c.toUpperCase()}).replace(/\b(By|In|The|Of|On|And|To)\b/g,function(c){return c.toLowerCase()}).replace(/^./,function(c){return c.toUpperCase()})}
 function resCell(p){var t=p.trim(),m;if(/^(CORRECT|Correct)(\s*\(.*\))?$/.test(t))return{res:{t:t.replace(/^CORRECT/,"Correct"),c:"ok",b:1}};if(/^INCORRECT/.test(t))return{res:{t:"Incorrect",c:"bad",b:1}};
  m=/^Not yet\.?\s*Correct answer:\s*(.*?)(\s*\(.*\))?$/.exec(t);if(m)return{res:{t:"Not yet"+(m[2]||""),c:"bad",b:1},cor:m[1]};if(/^\[?(SKIPPED|NOT ANSWERED|no answer|not recorded)/i.test(t))return{res:{t:t,c:"bad",b:1}};return null}
-function rowsTable(items){var keys=[],rows=items.map(function(it){var r={plain:[],kv:{},res:null};it.parts.forEach(function(p){var c=resCell(p);if(c){r.res=c.res;if(c.cor)r.kv["Correct answer"]=c.cor;return}var m=/^([A-Z][A-Za-z' \-]{1,22}|shown|student|correct):\s*(.*)$/.exec(p.trim());if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1);if(k=="Correct"&&/\d+ of \d+/.test(m[2]))k="Class correct";if(k=="Correct")k="Correct answer";r.kv[k]=m[2];if(keys.indexOf(k)<0)keys.push(k)}else r.plain.push(p.trim())});return r});
+function rowsTable(items){var keys=[],rows=items.map(function(it){var r={plain:[],kv:{},res:null};it.parts.forEach(function(p){var c=resCell(p);if(c){r.res=c.res;if(c.cor)r.kv["Correct answer"]=c.cor;return}var m=/^(My answer|Word|Meaning|Correct answer|Student answer|Correct|shown|student|correct):\s*(.*)$/.exec(p.trim());if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1);if(k=="Correct"&&/\d+ of \d+/.test(m[2]))k="Class correct";if(k=="Correct")k="Correct answer";r.kv[k]=m[2];if(keys.indexOf(k)<0)keys.push(k)}else r.plain.push(p.trim())});return r});
  if(rows.some(function(r){return r.kv["Correct answer"]})&&keys.indexOf("Correct answer")<0)keys.push("Correct answer");
  var mp=Math.max.apply(0,rows.map(function(r){return r.plain.length})),hasRes=rows.some(function(r){return r.res}),head=["#"],w=[4];
  var pl=mp==1?["Question"]:mp==2?["Stage","Question"]:mp==0?[]:["Stage","Question"].concat(Array(mp-2).fill(""));pl.forEach(function(p){head.push(p);w.push(p=="Question"?30:p=="Stage"?13:12)});

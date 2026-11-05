@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no" class="notranslate">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Training Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;800&display=swap" rel="stylesheet">
@@ -65,6 +65,34 @@ h1,h2,.box b,.fbk b,.stat b,.ltr,.eyebrow,.eye,.task h4,.end h2{color:#24406E}
 </head>
 <body>
 <main id="app"></main>
+<script id="mlg-guard">
+/* Miss L Gems activity protections: discreet, and browser-limited like all such checks. */
+window.MLGGuard=function(o){var SHOT=false,LN=false,PK=0,FST=0,AW=false,ST=0,$=function(i){return document.getElementById(i)};
+var st=document.createElement("style");st.textContent="body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea,[data-allow]{-webkit-user-select:text;user-select:text}#mlg-fs{display:none;position:fixed;inset:0;z-index:60;background:#0E1716}#mlg-ac{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:1rem}#mlg-ac>div{background:#fff;color:#2F3A4A;border-radius:18px;padding:1.4rem;max-width:420px;border:2px solid #F5C49A}#mlg-ac h3{margin:0 0 8px}#mlg-ac button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 20px;cursor:pointer;background:#F5C49A;color:#2F3A4A}@media print{#mlg-fs,#mlg-ac{display:none!important}}";document.head.appendChild(st);
+var fs=document.createElement("div");fs.id="mlg-fs";fs.setAttribute("role","dialog");fs.setAttribute("aria-modal","true");fs.setAttribute("aria-label","Paused");var ac=document.createElement("div");ac.id="mlg-ac";ac.setAttribute("role","alertdialog");document.body.appendChild(ac);document.body.appendChild(fs);
+var wrap=function(){return document.querySelector(o.wrap)};
+var FSE=function(){return document.fullscreenElement||document.webkitFullscreenElement};
+var sizeOk=function(){var lw=innerWidth>=innerHeight,m=Math.max(screen.width,screen.height),n=Math.min(screen.width,screen.height),SW=lw?m:n,SH=lw?n:m,a=document.activeElement,ty=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName),ok=innerWidth>=SW*.95&&(ty||innerHeight>=SH*.75),pm=Math.max(innerWidth,innerHeight)*(devicePixelRatio||1);if(ok&&pm>PK)PK=pm;return ok&&(ty||pm>=PK*.9)};
+var ex=function(){return !!(o.exempt&&o.exempt())};
+var need=function(){return SHOT||(o.active()&&!ex()&&!FSE()&&!sizeOk())};
+function gate(){var w=wrap();LN=need();if(!LN){fs.style.display="none";if(w){w.inert=false;w.removeAttribute("aria-hidden")}return}if(w){w.inert=true;w.setAttribute("aria-hidden","true")}fs.style.display="block"}
+function enter(){var e=document.documentElement,f=e.requestFullscreen||e.webkitRequestFullscreen;FST=Date.now();if(f&&document.fullscreenEnabled!==false){try{Promise.resolve(f.call(e)).catch(function(){})}catch(x){}}}
+fs.onclick=function(){if(SHOT){SHOT=false;gate()}if(need())enter()};
+function check(){if(need()!==LN)gate()}
+function onfs(){FST=Date.now();check()}
+document.addEventListener("fullscreenchange",onfs);document.addEventListener("webkitfullscreenchange",onfs);window.addEventListener("resize",check);document.addEventListener("focusin",check);document.addEventListener("focusout",function(){setTimeout(check,50)});setInterval(check,400);window.addEventListener("orientationchange",function(){setTimeout(check,150)});
+var scKey=function(e){var c=e.code||"",k=e.key||"";if(c=="PrintScreen"||k=="PrintScreen"||k=="Snapshot")return 1;if(e.metaKey&&e.shiftKey&&/^(Digit|Numpad)[3-6]$/.test(c))return 1;if(e.metaKey&&e.shiftKey&&c=="KeyS")return 1;return 0};
+["keydown","keyup"].forEach(function(t){document.addEventListener(t,function(e){if(scKey(e)&&!SHOT){SHOT=true;gate()}},true)});
+var allow=function(e){return e.target&&e.target.closest&&e.target.closest("[data-allow]")};
+["copy","cut","paste","drop","contextmenu","dragstart"].forEach(function(t){document.addEventListener(t,function(e){if(t=="copy"&&allow(e))return;e.preventDefault()})});
+document.addEventListener("selectstart",function(e){var n=e.target.nodeType==3?e.target.parentNode:e.target;if(!(n.closest&&n.closest("input,textarea,[data-allow]")))e.preventDefault()});
+document.addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase();if(((e.ctrlKey||e.metaKey)&&["c","x","v","insert"].indexOf(k)>-1)||(e.shiftKey&&["insert","delete"].indexOf(k)>-1)){if(k=="c"&&allow(e))return;e.preventDefault()}});
+function modal(h,m){ac.innerHTML="<div><h3>"+h+"</h3><p>"+m+"</p><button id=\"mlg-ok\">OK</button></div>";ac.style.display="flex";$("mlg-ok").onclick=function(){ac.style.display="none"};$("mlg-ok").focus()}
+function away(){if(!o.active()||AW||ex()||Date.now()-FST<1500)return;AW=true}
+function back(){if(!AW)return;AW=false;if(!o.active())return;ST=Math.min(ST+1,2);if(o.onDeparture)o.onDeparture();if(ST>=2){o.restart();modal("Part restarted","You left the activity a second time. Your answers for "+o.part+" were cleared and it restarted. Your other answers are safe. Stay on this page and work on your own.")}else modal("Notice","Warning: you left the activity page. Stay on this page. If you leave again, your answers for "+o.part+" will be cleared and it will restart.")}
+document.addEventListener("visibilitychange",function(){document.hidden?away():back()});window.addEventListener("blur",away);window.addEventListener("focus",back);
+gate();return{enter:enter,check:check,reset:function(){ST=0;AW=false}}};
+</script>
 <script>
 var W=[
 ["Specificity","ความเฉพาะเจาะจง","Training must match the sport and the muscles you use.","A swimmer trains the back muscles used in swimming."],
@@ -259,7 +287,7 @@ function fq(){return S.unit?Q.filter(function(w){return w.u==S.unit}):Q}
 function ft(){return S.unit?T.filter(function(w){return w.u==S.unit}):T}
 function nn(){return S.unit?10:15}
 function cnt(u,A){return A.filter(function(x){return !u||x.u==u}).length}
-function home(){redraw=home;var h=topbar(false)+'<h1>Hi there! 👋<br>Training Lab</h1><p class="sub">Pick a subunit. Master all three, then take on the whole unit.</p><div class="menu">';
+function home(){GA=false;redraw=home;var h=topbar(false)+'<h1>Hi there! 👋<br>Training Lab</h1><p class="sub">Pick a subunit. Master all three, then take on the whole unit.</p><div class="menu">';
 [1,2,3,0].forEach(function(u){h+='<button onclick="S.unit='+u+';modes()"><b>'+(u?'':'🏁 ')+UN[u]+'</b><span class="th">'+cnt(u,W)+' words · '+cnt(u,Q)+' questions · '+cnt(u,T)+' true/false'+(u?' · ⭐ best '+S.ub[u]:'')+'</span></button>'});
 app.innerHTML=h+'<button onclick="report()"><b>📊 My progress &amp; PDF</b><span class="th">Strengths, what to focus on, save as PDF</span></button></div>'+toggle()}
 var MN={m:'Word match',g:'Fill the gap',e:'Thai to English',q:'Reading challenge',t:'True or false',p:'Which method?',r:'Which principle?',h:'Which phase?'};
@@ -282,7 +310,7 @@ d.skills.forEach(function(x){var t=x.name+' ('+x.p+'%)';if(x.l=='strong')d.stren
 if(!d.focus.length&&d.n>=5)d.plan.push('Great work! Try the whole-unit mix (15 questions) to stay sharp.');return d}
 function msg(t){var e=document.getElementById('pm');if(e)e.innerHTML='<div class="fb">'+t+'</div>'}
 function clearLog(){S.log=[];try{localStorage.removeItem('trainingLabLog')}catch(e){}report()}
-function report(){redraw=report;var d=data(),h=topbar(true).replace('onclick="modes()"','onclick="home()"')+'<h1>My progress 📊</h1>';
+function report(){GA=false;redraw=report;var d=data(),h=topbar(true).replace('onclick="modes()"','onclick="home()"')+'<h1>My progress 📊</h1>';
 if(d.n<5){app.innerHTML=h+'<div class="card">Answer at least 5 questions in any game, then come back to see your strengths and what to focus on.</div>'+toggle();return}
 h+='<div class="card"><h2>Overall: '+d.tot+'% <span class="th">('+d.n+' answers)</span></h2></div>';
 h+='<div class="card"><h2>💪 Strengths</h2>'+(d.strengths.length?'<ul>'+d.strengths.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ul>':'<span class="th">Keep playing. Strengths show at 80% or more.</span>')+'</div>';
@@ -292,16 +320,13 @@ h+='<div class="card"><h2>By skill</h2>';d.skills.forEach(function(x){h+='<p sty
 var rv=[];d.units.forEach(function(x){x.miss.forEach(function(m){rv.push('<li><span class="th">'+x.u+'</span> '+m.replace(/</g,'&lt;')+'</li>')})});
 h+='<div class="card"><h2>🔁 Review these</h2>'+(rv.length?'<ul>'+rv.join('')+'</ul>':'<span class="th">No missed items right now.</span>')+'</div>';
 h+='<div class="card"><h2>📋 Study plan</h2><ol>'+d.plan.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol></div>';
-var pn='',pf='';try{pn=localStorage.getItem('trainingLabName')||'';pf=localStorage.getItem('trainingLabForm')||''}catch(e){}
-h+='<div class="card"><h2>Your details for the PDF</h2><p style="margin:.3em 0"><label for="pname"><b>Name</b></label><br><input id="pname" type="text" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1px solid #c5d3cb;border-radius:8px"></p><p style="margin:.6em 0 .2em"><label for="pform"><b>Form group</b></label><br><input id="pform" type="text" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1px solid #c5d3cb;border-radius:8px"></p></div>';
-app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()
-document.getElementById('pname').value=pn;document.getElementById('pform').value=pf}
-function savePdf(){var ne=document.getElementById('pname'),fe=document.getElementById('pform'),nm=ne?ne.value.trim():'',fm=fe?fe.value.trim():'';if(!nm){msg('Type your name first, so your teacher knows whose report this is.');if(ne)ne.focus();return}
-try{localStorage.setItem('trainingLabName',nm);localStorage.setItem('trainingLabForm',fm)}catch(e){}
+app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()}
+function savePdf(){var w=S.who||{},nm=w.name||'',fm=w.fg||'',yr=w.yg||'';
 var d=data(),nu=function(t){return String(t).replace(/^[^\x20-\x7E]+\s*/,'')},cell=function(x){return x.n?{t:x.p+'% ('+x.n+' answers)',bar:x.p}:{t:'Not played yet',c:'mut'}},lab=function(x){var c=x.l=='strong'?'ok':x.l=='focus'?'bad':x.l=='ok'?'amb':'mut';return{t:nu(LB[x.l]),c:c,b:1}};
 var rev=[];d.units.forEach(function(x){x.miss.forEach(function(m){rev.push([UN[x.u].split(' ')[0],m])})});
-var wb=MLGPDF.wida({name:nm,standard:'Language for Science (nearest match for PHE)',use:'Explain',domain:'Reading and subject vocabulary',pct:d.tot,target:1,at:'Identifying key words and phrases that describe the topics or phenomena',next:[2,'Differentiating between technical and everyday vocabulary that describe phenomena'],opening:nm+' has answered '+d.n+' questions in Year 10 PHE Unit 2, with '+d.tot+'% correct overall.',strengths:d.strengths,develop:d.focus,steps:d.plan,limits:'Based on Training Lab answers saved on this device. WIDA has no PHE standard, and quiz scores show recognition more than independent language use, so the teacher should confirm with written or spoken work.'});
-var blob=MLGPDF.build({theme:'mainstream',title:'Training Lab',subtitle:'Year 10 PHE, Unit 2: Training Report',foot:'Training Lab - '+nm+(fm?' ('+fm+')':''),meta:[['Name',nm],['Form group',fm||'-'],['Date',new Date().toLocaleDateString('en-GB')]],tiles:[[d.tot+'%','Overall'],[String(d.n),'Answers'],[String(d.strengths.length),'Strengths'],[String(d.focus.length),'Areas to focus on']],blocks:wb.concat([{h:'By Subunit'},{table:{head:['Subunit','Result','Status'],w:[52,28,20],rows:d.units.map(function(x){return[UN[x.u],cell(x),lab(x)]})}},{h:'By Skill'},{table:{head:['Skill','Result','Status'],w:[52,28,20],rows:d.skills.map(function(x){return[x.name,cell(x),lab(x)]})}},{h:'Words and Questions to Review'}],rev.length?[{table:{head:['Subunit','Item'],w:[14,86],rows:rev}}]:[{p:'No missed items right now.'}])});
+var okL=S.log.filter(function(x){return x.ok}).length,us=d.units.filter(function(x){return x.n}).sort(function(a,b){return b.p-a.p}),sks=d.skills.filter(function(x){return x.n}).sort(function(a,b){return b.p-a.p}),pat=[];if(us.length){pat.push('Strongest subunit: '+UN[us[0].u]+' ('+us[0].p+'%).');if(us.length>1)pat.push('Weakest subunit: '+UN[us[us.length-1].u]+' ('+us[us.length-1].p+'%).')}if(sks.length){pat.push('Strongest skill: '+sks[0].name+' ('+sks[0].p+'%).');if(sks.length>1)pat.push('Weakest skill: '+sks[sks.length-1].name+' ('+sks[sks.length-1].p+'%).')}
+var wb=MLGPDF.wida({counts:[okL,d.n-okL,0],patterns:pat,incorrectHead:['Subunit','Word or question to review'],incorrectW:[14,86],incorrect:rev,noWriting:'This activity has no writing task.',name:nm,standard:'Language for Science (nearest match for PHE)',use:'Explain',domain:'Reading and subject vocabulary',pct:d.tot,target:1,at:'Identifying key words and phrases that describe the topics or phenomena',next:[2,'Differentiating between technical and everyday vocabulary that describe phenomena'],opening:nm+' has answered '+d.n+' questions in Year 10 PHE Unit 2, with '+d.tot+'% correct overall.',strengths:d.strengths,develop:d.focus,steps:d.plan,limits:'Based on Training Lab answers saved on this device. WIDA has no PHE standard, and quiz scores show recognition more than independent language use, so the teacher should confirm with written or spoken work.'});
+var blob=MLGPDF.build({theme:'mainstream',title:'Training Lab',subtitle:'Year 10 PHE, Unit 2: Training Report',foot:'Training Lab - '+nm+(fm?' ('+fm+')':''),meta:[['English Name',nm],['Year Group',yr||'-'],['Form Group',fm||'-'],['Date',new Date().toLocaleDateString('en-GB')]],tiles:[[d.tot+'%','Overall'],[String(d.n),'Answers'],[String(d.strengths.length),'Strengths'],[String(d.focus.length),'Areas to focus on']],blocks:wb.concat([{h:'By Subunit'},{table:{head:['Subunit','Result','Status'],w:[52,28,20],rows:d.units.map(function(x){return[UN[x.u],cell(x),lab(x)]})}},{h:'By Skill'},{table:{head:['Skill','Result','Status'],w:[52,28,20],rows:d.skills.map(function(x){return[x.name,cell(x),lab(x)]})}}])});
 MLGPDF.deliver(blob,'PHE-Unit2-'+nm.replace(/[^A-Za-z0-9]+/g,'_')+'.pdf').then(function(){msg('Saved! ✅')}).catch(function(e){msg(e&&e.code=='declined'?'Save cancelled.':'Could not save the PDF. Please try again.')})}
 function prin(){start('r');G.items=sh(SP).slice(0,nn());redraw=rq;rq()}
 function rq(){var p=G.items[G.i],o=sh(sh(PR.filter(function(x){return x!==p[1]})).slice(0,3).concat([p[1]]));G.ans=p[1];ask('Which principle?','<p><b>'+p[0]+'</b></p>',o,null,p[1]+': '+p[2])}
@@ -314,7 +339,7 @@ function th(t){return S.thai&&t?'<div class="th">'+t+'</div>':''}
 function topbar(back){return '<div class="top">'+(back?'<button class="ghost" onclick="modes()">← Menu</button>':'<span class="pill">Y10 PHE · Unit 2</span>')+'<div class="stat"><span>⭐ '+S.xp+'</span><span>🏆 '+S.best+'</span></div></div>'}
 function toggle(){return '<button class="ghost" onclick="S.thai=!S.thai;redraw()">'+(S.thai?'ไทย: ON':'ไทย: OFF')+'</button>'}
 var redraw=function(){home()};
-function modes(){redraw=modes;app.innerHTML=topbar(false).replace('<span class="pill">Y10 PHE · Unit 2</span>','<button class="ghost" onclick="home()">← Units</button>')+'<h1>'+UN[S.unit]+'</h1><p class="sub">Choose a game.</p>'+
+function modes(){GA=false;redraw=modes;app.innerHTML=topbar(false).replace('<span class="pill">Y10 PHE · Unit 2</span>','<button class="ghost" onclick="home()">← Units</button>')+'<h1>'+UN[S.unit]+'</h1><p class="sub">Choose a game.</p>'+
 '<div class="menu"><button onclick="learn()"><b>📇 1. Learn the words</b><span class="th">Flashcards · tap to flip · มีคำแปลภาษาไทย</span></button>'+
 '<button onclick="match()"><b>🎯 2. Word match</b><span class="th">Choose the right meaning · 10 rounds</span></button>'+
 '<button onclick="quiz()"><b>🏃 3. Reading challenge</b><span class="th">Real exam-style questions · 10 rounds</span></button>'+
@@ -323,7 +348,7 @@ function modes(){redraw=modes;app.innerHTML=topbar(false).replace('<span class="
 '<button onclick="tf()"><b>✅ 6. True or false</b><span class="th">Quick fire · 10 rounds</span></button>'+
 '<button onclick="thai()"><b>🇹🇭 7. Thai → English</b><span class="th">ดูคำไทย เลือกคำศัพท์ภาษาอังกฤษ</span></button></div>'+toggle()}
 var L=[],li=0,flip=false;
-function learn(){L=sh(fw());li=0;flip=false;redraw=card;card()}
+function learn(){begin0(learn);L=sh(fw());li=0;flip=false;redraw=card;card()}
 function card(){var w=L[li];app.innerHTML=topbar(true)+'<div class="bar"><i style="width:'+((li+1)/L.length*100)+'%"></i></div><div class="card flash" onclick="flip=!flip;card()" tabindex="0" role="button">'+
 (flip?'<p>'+w[2]+'</p>'+th(w[1])+'<p class="th"><i>Example: '+w[3]+'</i></p>':'<p class="term">'+w[0]+'</p>'+th(w[1])+'<p class="th">Tap to see the meaning</p>')+'</div>'+
 '<div class="row"><button class="ghost" onclick="if(li>0){li--;flip=false;card()}">Back</button><button class="btn" onclick="if(li<L.length-1){li++;flip=false;card()}else modes()">'+(li<L.length-1?'Next':'Finish')+'</button><span class="th">'+(li+1)+' / '+L.length+'</span>'+toggle()+'</div>'}
@@ -334,7 +359,8 @@ function tf(){start("t");G.items=sh(ft()).slice(0,nn());redraw=tq;tq()}
 function tq(){var t=G.items[G.i];G.ans=t[1]?"True":"False";ask('True or false?','<p><b>'+t[0]+'</b></p>',["True","False"],null,t[2])}
 function thai(){start("e");G.items=sh(fw()).slice(0,nn());redraw=eq;eq()}
 function eq(){var w=G.items[G.i],d=sh(W.filter(function(x){return x!==w})).slice(0,3).map(function(x){return x[0]}),o=sh(d.concat([w[0]]));G.ans=w[0];ask('Thai → English','<p class="term" style="font-size:1.6rem">'+w[1]+'</p>',o,null,w[0]+': '+w[2])}
-function start(mode){G={mode:mode,i:0,score:0,streak:0,items:[]};}
+var GA=false,LS=0,XP=0,RS=null,TG=null;function begin0(fn){GA=true;RS=fn;LS=S.log.length;XP=S.xp;if(TG)TG.enter()}
+function start(mode){begin0(({m:match,q:quiz,g:gap,p:pros,t:tf,e:thai,r:prin,h:phase})[mode]);G={mode:mode,i:0,score:0,streak:0,items:[]};}
 function match(){start("m");G.items=sh(fw()).slice(0,nn());redraw=mq;mq()}
 function mq(){var w=G.items[G.i],d=sh(W.filter(function(x){return x!==w})).slice(0,3).map(function(x){return x[2]}),o=sh(d.concat([w[2]]));
 G.ans=w[2];ask('What does this mean?','<p class="term">'+w[0]+'</p>'+th(w[1]),o,function(o){return o},w[3]?'Example: '+w[3]:'')}
@@ -353,12 +379,17 @@ bs.forEach(function(x){x.disabled=true;if(opts[+x.dataset.i]===G.ans)x.classList
 if(right){G.score++;G.streak++;S.xp+=10+Math.min(G.streak,5)}else{b.classList.add("bad");G.streak=0}
 document.getElementById("fb").innerHTML='<div class="fb">'+(right?'✅ Correct! ':'❌ Not quite. ')+(fb||'')+'</div><button class="btn" id="nx">'+(G.i<n-1?'Next':'See result')+'</button>';
 document.getElementById("nx").onclick=function(){G.i++;if(G.i<n){({m:mq,q:qq,g:gq,p:pq,t:tq,e:eq,r:rq,h:hq})[G.mode]()}else done()}}})}
-function done(){var n=G.items.length,p=G.score/n,st=p>=.9?'🌟🌟🌟':p>=.6?'🌟🌟':'🌟';
+function done(){GA=false;var n=G.items.length,p=G.score/n,st=p>=.9?'🌟🌟🌟':p>=.6?'🌟🌟':'🌟';
 if(S.unit&&G.score>S.ub[S.unit])S.ub[S.unit]=G.score;if(G.score>S.best){S.best=G.score;try{localStorage.setItem("trainingLabBest",S.best)}catch(e){}}
 redraw=modes;app.innerHTML=topbar(true)+'<div class="card" style="text-align:center"><p class="big">'+st+'</p><h2>'+G.score+' / '+n+'</h2><p>'+(p>=.9?'Excellent! Ready for the exam.':p>=.6?'Good work! Try again to get 3 stars.':'Keep going! Use the flashcards, then try again.')+'</p>'+
-(S.thai?'<p class="th">'+(p>=.9?'เยี่ยมมาก อชิ!':p>=.6?'ดีมาก ลองอีกครั้งเพื่อให้ได้ 3 ดาว':'สู้ๆ ลองทบทวนบัตรคำแล้วเล่นใหม่')+'</p>':'')+
+(S.thai?'<p class="th">'+(p>=.9?'เยี่ยมมาก!':p>=.6?'ดีมาก ลองอีกครั้งเพื่อให้ได้ 3 ดาว':'สู้ๆ ลองทบทวนบัตรคำแล้วเล่นใหม่')+'</p>':'')+
 '<div class="row" style="justify-content:center"><button class="btn" onclick="'+({m:'match',q:'quiz',g:'gap',p:'pros',t:'tf',e:'thai',r:'prin',h:'phase'})[G.mode]+'()">Play again</button><button class="ghost" onclick="modes()">Menu</button><button class="ghost" onclick="report()">📊 Progress</button></div></div>'}
-home();
+function welcome(){var w={name:'',yg:'',fg:''};try{w=JSON.parse(localStorage.getItem('trainingLabWho'))||w}catch(e){}
+app.innerHTML='<h1>Training Lab</h1><p class="sub">Year 10 PHE, Unit 2</p><div class="card"><h2>Learning Goal</h2><p>Learn the key words of Unit 2 so you can read and answer exam-style questions in English.</p><h2>Learning Objectives</h2><p>By the end I can:</p><ul><li>explain the principles of training and overload,</li><li>describe the methods of training,</li><li>explain warming up and cooling down.</li></ul><h2>Success Criteria</h2><p>80% or more in each subunit.</p></div><div class="card"><p style="margin:.3em 0"><label for="pname"><b>English Name</b></label><br><input id="pname" type="text" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1.5px solid var(--line);border-radius:8px"></p><p style="margin:.6em 0"><label for="pyear"><b>Year Group</b></label><br><input id="pyear" type="text" placeholder="e.g. Year 10" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1.5px solid var(--line);border-radius:8px"></p><p style="margin:.6em 0"><label for="pform"><b>Form Group</b></label><br><input id="pform" type="text" placeholder="e.g. 10A" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1.5px solid var(--line);border-radius:8px"></p><p class="fb" id="wer" hidden>Please fill in your English Name, Year Group and Form Group.</p><button class="btn" id="wgo">Start</button></div>';
+document.getElementById('pname').value=w.name||'';document.getElementById('pyear').value=w.yg||'';document.getElementById('pform').value=w.fg||'';
+document.getElementById('wgo').onclick=function(){var n=document.getElementById('pname').value.trim(),y=document.getElementById('pyear').value.trim(),f=document.getElementById('pform').value.trim();if(!n||!y||!f){document.getElementById('wer').hidden=false;return}S.who={name:n,yg:y,fg:f};try{localStorage.setItem('trainingLabWho',JSON.stringify(S.who))}catch(e){}TG.enter();home()}}
+TG=MLGGuard({wrap:"#app",part:"this game",active:function(){return GA},restart:function(){S.log.length=LS;S.xp=XP;try{localStorage.setItem('trainingLabLog',JSON.stringify(S.log))}catch(e){}RS()}});
+welcome();
 </script>
 <script id="mlg-pdf">
 /* Miss L Gems report PDF engine. No outside files needed. */
@@ -415,13 +446,13 @@ Doc.prototype={
 };
 function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
  (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
-function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";
- var nm=cl(o.name||"This student"),b=[{h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."}];
+function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";if(o.fixed){var fb0=[{h:"WIDA Report",sub:o.fixed.sub}];}
+ var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:"None. Every answer was correct."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
  b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
- b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
+ if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Indicative writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}});b.push({p:o.opening});if(o.fixed.text)b.push({p:o.fixed.text})}else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
  var at=met||near||!o.below?o.at:o.below[1];
  b.push({p:o.opening});
- b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""});
+ b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""})}
  if(o.strengths&&o.strengths.length){b.push({h3:"Strengths",c:OK});b.push({list:o.strengths})}
  if(o.develop&&o.develop.length){b.push({h3:"Areas to develop",c:BAD});b.push({list:o.develop})}
  if(o.steps&&o.steps.length){b.push({h3:"Next steps"});b.push({list:o.steps,num:1})}
@@ -436,7 +467,7 @@ function headOf(l){var t=l.trim();var m=/^([A-Z][A-Z0-9 ,&'\-\/]{3,})(?:\s*\(([^
 function titleCase(s){return s.toLowerCase().replace(/(^|[\s\-\/])([a-z])/g,function(m,p,c){return p+c.toUpperCase()}).replace(/\b(By|In|The|Of|On|And|To)\b/g,function(c){return c.toLowerCase()}).replace(/^./,function(c){return c.toUpperCase()})}
 function resCell(p){var t=p.trim(),m;if(/^(CORRECT|Correct)(\s*\(.*\))?$/.test(t))return{res:{t:t.replace(/^CORRECT/,"Correct"),c:"ok",b:1}};if(/^INCORRECT/.test(t))return{res:{t:"Incorrect",c:"bad",b:1}};
  m=/^Not yet\.?\s*Correct answer:\s*(.*?)(\s*\(.*\))?$/.exec(t);if(m)return{res:{t:"Not yet"+(m[2]||""),c:"bad",b:1},cor:m[1]};if(/^\[?(SKIPPED|NOT ANSWERED|no answer|not recorded)/i.test(t))return{res:{t:t,c:"bad",b:1}};return null}
-function rowsTable(items){var keys=[],rows=items.map(function(it){var r={plain:[],kv:{},res:null};it.parts.forEach(function(p){var c=resCell(p);if(c){r.res=c.res;if(c.cor)r.kv["Correct answer"]=c.cor;return}var m=/^([A-Z][A-Za-z' \-]{1,22}|shown|student|correct):\s*(.*)$/.exec(p.trim());if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1);if(k=="Correct"&&/\d+ of \d+/.test(m[2]))k="Class correct";if(k=="Correct")k="Correct answer";r.kv[k]=m[2];if(keys.indexOf(k)<0)keys.push(k)}else r.plain.push(p.trim())});return r});
+function rowsTable(items){var keys=[],rows=items.map(function(it){var r={plain:[],kv:{},res:null};it.parts.forEach(function(p){var c=resCell(p);if(c){r.res=c.res;if(c.cor)r.kv["Correct answer"]=c.cor;return}var m=/^(My answer|Word|Meaning|Correct answer|Student answer|Correct|shown|student|correct):\s*(.*)$/.exec(p.trim());if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1);if(k=="Correct"&&/\d+ of \d+/.test(m[2]))k="Class correct";if(k=="Correct")k="Correct answer";r.kv[k]=m[2];if(keys.indexOf(k)<0)keys.push(k)}else r.plain.push(p.trim())});return r});
  if(rows.some(function(r){return r.kv["Correct answer"]})&&keys.indexOf("Correct answer")<0)keys.push("Correct answer");
  var mp=Math.max.apply(0,rows.map(function(r){return r.plain.length})),hasRes=rows.some(function(r){return r.res}),head=["#"],w=[4];
  var pl=mp==1?["Question"]:mp==2?["Stage","Question"]:mp==0?[]:["Stage","Question"].concat(Array(mp-2).fill(""));pl.forEach(function(p){head.push(p);w.push(p=="Question"?30:p=="Stage"?13:12)});
