@@ -81,6 +81,19 @@ h1,h2,.box b,.fbk b,.stat b,.ltr,.eyebrow,.eye,.task h4,.end h2{color:#1F4D40}
 <div class="rsrow"><button class="sec" id="reset">↺ Reset activity</button></div>
 <div class="modal" id="modal" hidden><div class="mbox" role="alertdialog" aria-modal="true" aria-labelledby="mt" aria-describedby="mp"><h3 id="mt"></h3><p id="mp"></p><p id="mn" style="font-size:12.5px;color:var(--mut)"></p><div class="row" id="mb" style="justify-content:center"></div></div></div>
 </div>
+<script id="mlg-scaffold">
+/* Miss L Gems: records which optional language supports a student chose to use. */
+window.MLGScaffold=(function(){
+var E=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var BOX='<div class="mlg-sc" style="border:1px solid #D9DEE7;border-radius:12px;padding:10px 12px;margin:10px 0;background:#fff;color:#2F3A4A;font-size:14px;line-height:1.45;text-align:left"><b>Language support I used</b>';
+function make(defs){var u;function reset(){u={};defs.forEach(function(d){u[d[0]]={n:0,items:[]}})}reset();
+function say(x){if(!x.n)return"Not used";var s=x.n==1?"Used once":"Used "+x.n+" times";if(x.items.length){var a=x.items.slice(0,12);s+=": "+a.join(", ")+(x.items.length>12?" and "+(x.items.length-12)+" more":"")}return s}
+return{use:function(k,item){var x=u[k];if(!x)return;x.n++;if(item&&x.items.indexOf(item)<0)x.items.push(item)},once:function(k){var x=u[k];if(x&&!x.n)x.n=1},reset:reset,
+rows:function(){return defs.map(function(d){return[d[1],say(u[d[0]])]})},
+html:function(){return BOX+defs.map(function(d){return'<div>'+E(d[1])+': <b>'+E(say(u[d[0]]))+'</b></div>'}).join("")+'</div>'}}}
+make.note=function(t){return BOX+'<div>'+E(t)+'</div></div>'};
+return make})();
+</script>
 <script id="mlg-guard">
 /* Miss L Gems activity protections: discreet, and browser-limited like all such checks. */
 window.MLGGuard=function(o){var SHOT=false,LN=false,PK=0,FST=0,AW=false,ST=0,$=function(i){return document.getElementById(i)};
@@ -164,6 +177,8 @@ function vscore(v){let s=0;if(/en[-_]GB/i.test(v.lang))s+=3;else if(/en[-_]US/i.
 function loadVoices(){if(!TTS)return;const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&!BAD.test(v.name)).sort((a,b)=>vscore(b)-vscore(a));if(!vs.length)return;const sel=document.getElementById("vs"),cur=vSel&&vSel.name;sel.innerHTML=vs.map(v=>`<option value="${v.name}">${v.name} (${v.lang})${vs[0]===v?" ★ best":""}</option>`).join("");vSel=vs.find(v=>v.name===cur)||vs[0];sel.value=vSel.name;sel.onchange=()=>{vSel=vs.find(v=>v.name===sel.value)}}
 function speak(t,done){if(!TTS){if(done)done();return}speechSynthesis.cancel();setTimeout(()=>{const u=new SpeechSynthesisUtterance(t);u.lang=vSel?vSel.lang:"en-GB";if(vSel)u.voice=vSel;u.rate=rate;if(done){u.onend=done;u.onerror=done}speechSynthesis.speak(u)},80)}
 function playAll(){let k=0;const nx=()=>{document.querySelectorAll(".opt").forEach((e,x)=>e.classList.toggle("now",x===k-1&&k<=3));if(k>=3){setTimeout(()=>document.querySelectorAll(".opt").forEach(e=>e.classList.remove("now")),900);return}const j=k++;document.querySelectorAll(".opt").forEach((e,x)=>e.classList.toggle("now",x===j));speak(opts[j].t,()=>setTimeout(nx,600))};nx()}
+var SC=MLGScaffold([["tr","Thai and Chinese translations"]]);
+document.addEventListener("click",e=>{if(e.target&&e.target.id==="trb"){document.getElementById("trw").style.display="";e.target.style.display="none";SC.use("tr",W[i][1])}});
 function intro(){active=false;
  app.innerHTML=`<div class="note"><b>Learning Goal</b><br>Hear and say 40 tricky English words correctly.</div>
  <div class="note"><b>Learning Objectives</b> By the end I can:<br>• choose the correct pronunciation from three,<br>• say each word and compare it with the correct one,<br>• notice 8 sound patterns.</div>
@@ -179,7 +194,7 @@ function intro(){active=false;
  [nI,cI].forEach(x=>x.oninput=()=>{x.style.borderColor="";eE.textContent=""});
  document.getElementById("go").onclick=()=>{const nn=nI.value.trim(),cc=cI.value.trim();
   if(!nn||!cc){eE.textContent="⚠️ "+(!nn&&!cc?"Please type your name and your class to start.":!nn?"Please type your name to start.":"Please type your class to start.");if(!nn)nI.style.borderColor="var(--badt)";if(!cc)cI.style.borderColor="var(--badt)";(!nn?nI:cI).focus();return}
-  const yy=document.getElementById("yg").value.trim();if(!yy){eE.textContent="Please type your Year Group.";return}yg=yy;TG.enter();TG.reset();name=nn;cls=cc;W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=true;begin()};
+  const yy=document.getElementById("yg").value.trim();if(!yy){eE.textContent="Please type your Year Group.";return}yg=yy;TG.enter();TG.reset();SC.reset();name=nn;cls=cc;W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=true;begin()};
 }
 let queue=[],qp=0;
 function begin(){Object.values(log).forEach(l=>l.skipped=false);const gs=[...new Set(W.map(w=>w[0]))];queue=gs.flatMap(g=>sh(W.map((w,k)=>w[0]===g?k:-1).filter(k=>k>=0)));qp=0;q()}
@@ -191,7 +206,7 @@ function q(){
  app.innerHTML=`<div class="row" style="justify-content:space-between"><span><span class="badge">${c}</span> ${log[w]&&log[w].skipped?'<span class="badge">↩ Skipped earlier</span>':""}</span><span style="font-size:13px;color:var(--mut)">Word ${Math.min(qp+1,W.length)} of ${W.length}</span></div>
  <div class="bar"><i style="width:${W.filter((x,k)=>res[k]!==undefined).length/W.length*100}%"></i></div>
  <div class="word">${w}</div>
- <div class="tr"><span><small>ไทย</small>${th}</span><span><small>中文</small>${zh}</span></div>
+ <button type="button" class="sec" id="trb" style="display:block;margin:0 auto 12px">Show translation</button><div class="tr" id="trw" style="display:none"><span><small>ไทย</small>${th}</span><span><small>中文</small>${zh}</span></div>
  <p class="q">Which audio says “${w}” correctly?</p>
  ${opts.map((o,k)=>`<div class="opt" id="o${k}"><span class="l">${"ABC"[k]}</span><button class="play" data-k="${k}">▶ Listen</button><button class="pick" data-k="${k}">This one</button></div>`).join("")}
  <button class="sec" id="all" style="width:100%">▶ Play A, B, C in order</button>
@@ -236,7 +251,7 @@ function summary(){
  const rl=Object.keys(recs).map(k=>`<tr><td>${W[k][1]}</td><td><audio controls src="${recs[k]}"></audio></td></tr>`).join("");
  app.innerHTML=`<div style="text-align:center"><h2 style="margin:0;color:var(--tealD)">Well done, ${name.replace(/</g,"&lt;")}!</h2></div>
  <div class="grid"><div class="stat"><b>${sc}/${W.length}</b><span>Correct</span></div><div class="stat"><b>${pct}%</b><span>Accuracy</span></div><div class="stat"><b>${Object.keys(recs).length}</b><span>Recordings</span></div><div class="stat"><b style="${sw?'color:var(--badt)':''}">${sw}</b><span>Tab switches</span></div></div>
- <h3>Score by sound</h3><div class="tw"><table><tr><th>Sound group</th><th>Score</th></tr>${rows}</table></div>
+ ${SC.html()}<h3>Score by sound</h3><div class="tw"><table><tr><th>Sound group</th><th>Score</th></tr>${rows}</table></div>
  <h3>Words to practise</h3>${miss?`<div class="tw"><table><tr><th>Word</th><th>ไทย · 中文</th><th>Hear</th></tr>${miss}</table></div>`:"<p>None. Perfect score! 🏆</p>"}
  <h3>My recordings</h3>${rl?`<div class="tw"><table>${rl}</table></div>`:"<p>No recordings yet.</p>"}
  <div class="note">Next, continue to the Final Review to save your responses as a PDF. Recordings stay in this browser tab only.</div>
@@ -261,7 +276,7 @@ gr.forEach(x=>{(x[2]&&x[1]/x[2]>=.8?st:dv).push('Sound group "'+x[0]+'": '+x[1]+
 const tricky=ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>w[1]);if(tricky.length)nx.push("Listen again and repeat these words: "+tricky.slice(0,10).join(", ")+".");gr.filter(x=>x[2]&&x[1]/x[2]<.8).slice(0,2).forEach(x=>nx.push('Practise the "'+x[0]+'" pattern with minimal pairs and short read-aloud sentences.'));nx.push("Listen to the student's recordings, or hear them read aloud, to confirm pronunciation.");
 const rows=ALL.map((w,k)=>{const l=L(w);return[String(k+1),w[0],{t:w[1],b:1},l.answered?"Audio "+l.sel+": "+l.selText:(l.skipped?"Skipped":"Not answered"),l.answered?(l.ok?{t:"Correct",c:"ok",b:1}:{t:"Not yet",c:"bad",b:1}):{t:"No answer",c:"amb",b:1},l.url?"Recorded":{t:"None",c:"mut"}]});
 const grd=gr.filter(x=>x[2]).slice().sort((a,b)=>b[1]/b[2]-a[1]/a[2]),pat=[];if(grd.length){pat.push('Most correct answers: the "'+grd[0][0]+'" sound group ('+grd[0][1]+" of "+grd[0][2]+").");const lw=grd[grd.length-1];if(lw!==grd[0]&&lw[1]<lw[2])pat.push('Most incorrect answers: the "'+lw[0]+'" sound group ('+lw[1]+" of "+lw[2]+").")}const un=ALL.length-ans.length;if(un)pat.push(un+" word"+(un==1?" was":"s were")+" not answered.");
-const wb=MLGPDF.wida({counts:[okN,ans.length-okN,un],patterns:pat,incorrectHead:["Word","Sound group","What I chose"],incorrectW:[30,30,40],incorrect:ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>[w[1],w[0],"Audio "+L(w).sel+": "+L(w).selText]),noWriting:"This activity has no writing task. Spoken recordings cannot be included in a PDF.",name:n,standard:"Social and Instructional Language",use:"Recount",domain:"Listening and pronunciation",pct:pc,target:1,at:"Matching everyday oral content related words and phrases to pictures, diagrams, or photographs",next:[2,"Matching oral descriptions of characters or main events in content related topics"],opening:n+" chose the correct pronunciation for "+okN+" of "+ALL.length+" words ("+pc+"%) and made "+rec+" recording"+(rec==1?"":"s")+".",strengths:st,develop:dv,steps:nx,limits:"Based on one Sound Detective attempt at word level. WIDA has no pronunciation descriptor, so this is the closest match. Recordings are not included in the PDF, so the teacher should confirm spoken accuracy."});
+const wb=MLGPDF.wida({scaffolds:SC.rows(),counts:[okN,ans.length-okN,un],patterns:pat,incorrectHead:["Word","Sound group","What I chose"],incorrectW:[30,30,40],incorrect:ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>[w[1],w[0],"Audio "+L(w).sel+": "+L(w).selText]),noWriting:"This activity has no writing task. Spoken recordings cannot be included in a PDF.",name:n,standard:"Social and Instructional Language",use:"Recount",domain:"Listening and pronunciation",pct:pc,target:1,at:"Matching everyday oral content related words and phrases to pictures, diagrams, or photographs",next:[2,"Matching oral descriptions of characters or main events in content related topics"],opening:n+" chose the correct pronunciation for "+okN+" of "+ALL.length+" words ("+pc+"%) and made "+rec+" recording"+(rec==1?"":"s")+".",strengths:st,develop:dv,steps:nx,limits:"Based on one Sound Detective attempt at word level. WIDA has no pronunciation descriptor, so this is the closest match. Recordings are not included in the PDF, so the teacher should confirm spoken accuracy."});
 return MLGPDF.build({theme:"eal",title:"Sound Detective",subtitle:"Tricky Words, Level 1: Final Review",foot:"Sound Detective - "+n+" ("+c+")",meta:[["English Name",n],["Year Group",yg||"-"],["Form Group",c],["Date",dt]],tiles:[[okN+"/"+ALL.length,"Correct ("+pc+"%)"],[ans.length+"/"+ALL.length,"Answered"],[rec+"/"+ALL.length,"Recordings"],[String(dep),"Page departures"]],blocks:wb.concat([{h:"Score by Sound Group"},{table:{head:["Sound group","Result"],w:[60,40],rows:gr.map(x=>[x[0],{t:x[1]+" of "+x[2],bar:x[2]?Math.round(100*x[1]/x[2]):0}])}},{h:"All Words"},{table:{head:["#","Sound group","Word","Answer selected","Result","Recording"],w:[5,18,17,30,13,12],rows:rows,z:8.3}},{p:"Audio recordings cannot be included in the PDF.",o:{f:"I",z:8.5,c:[93,100,112]}}])})}
 function review(){
  active=false;
@@ -273,7 +288,7 @@ function review(){
  <p><b>Student:</b> <span id="sn">—</span> &nbsp; <b>Class/form:</b> <span id="sc2">—</span> &nbsp; <b>Date:</b> <span id="sd">—</span></p>
  <p><b>Completion:</b> ${ans===ALL.length?"All questions answered":"<b>Not all questions answered</b>"} (${ans} of ${ALL.length}) · Skipped and left unanswered: ${ALL.filter(w=>!L(w).answered&&L(w).skipped).length} · Recordings made: ${rec} of ${ALL.length} · Page departures detected: ${sw}<br><span id="sg"></span></p>
  <div class="tw"><table><tr><th>#</th><th>Sound group</th><th>Word</th><th>Answer selected</th><th>Recording</th></tr>${rows}</table></div>
- <p style="font-size:12px">Audio recordings cannot be included in the PDF.</p></div>
+ ${SC.html()}<p style="font-size:12px">Audio recordings cannot be included in the PDF.</p></div>
  <div class="noprint"><button class="start" id="dl">Download My Responses (PDF)</button><button class="sec" id="bk" style="width:100%;margin-top:10px">← Back to my results</button></div>`;
  const upd=()=>{$("sn").textContent=$("fn").value.trim()||"—";$("sc2").textContent=$("fc").value.trim()||"—";$("sd").textContent=$("fd").value||"—"};
  ["fn","fc","fd"].forEach(x=>$(x).oninput=upd);upd();
@@ -343,7 +358,7 @@ Doc.prototype={
 function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
  (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
 function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";if(o.fixed){var fb0=[{h:"WIDA Report",sub:o.fixed.sub}];}
- var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:"None. Every answer was correct."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
+ var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:"None. Every answer was correct."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}if(o.scaffolds){b.push({h:"Language Support Used",sub:"Optional help the student chose to use. Please consider this when reading the WIDA level."});b.push(o.scaffolds.length?{table:{head:["Support","How it was used"],w:[46,54],rows:o.scaffolds}}:{p:o.noScaffolds||"No optional language support was offered."})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
  b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
  if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Indicative writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}});b.push({p:o.opening});if(o.fixed.text)b.push({p:o.fixed.text})}else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
  var at=met||near||!o.below?o.at:o.below[1];
