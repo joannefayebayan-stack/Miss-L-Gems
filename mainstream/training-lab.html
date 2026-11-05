@@ -46,7 +46,6 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 </head>
 <body>
 <main id="app"></main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 var W=[
 ["Specificity","ความเฉพาะเจาะจง","Training must match the sport and the muscles you use.","A swimmer trains the back muscles used in swimming."],
@@ -274,27 +273,17 @@ h+='<div class="card"><h2>By skill</h2>';d.skills.forEach(function(x){h+='<p sty
 var rv=[];d.units.forEach(function(x){x.miss.forEach(function(m){rv.push('<li><span class="th">'+x.u+'</span> '+m.replace(/</g,'&lt;')+'</li>')})});
 h+='<div class="card"><h2>🔁 Review these</h2>'+(rv.length?'<ul>'+rv.join('')+'</ul>':'<span class="th">No missed items right now.</span>')+'</div>';
 h+='<div class="card"><h2>📋 Study plan</h2><ol>'+d.plan.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol></div>';
-app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()}
-function savePdf(){var J=window.jspdf;if(!J){msg('The PDF tool did not load. Please check your internet and try again.');return}
-var d=data(),doc=new J.jsPDF({unit:'mm',format:'a4'}),y=18;
-function A(t){return String(t).replace(/[\u2018\u2019]/g,"'").replace(/[\u2013\u2014]/g,'-').replace(/\u2192/g,'to').replace(/[^\x20-\x7E]/g,'').trim()}
-function ln(t,s,b,c){doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(s);c=c||[20,38,28];doc.setTextColor(c[0],c[1],c[2]);doc.splitTextToSize(A(t),178).forEach(function(r){if(y>280){doc.addPage();y=18}doc.text(r,16,y);y+=s*.42+1.6})}
-function bar(p){if(y>270){doc.addPage();y=18}doc.setDrawColor(180);doc.rect(16,y-3,100,4);doc.setFillColor(15,122,79);if(p)doc.rect(16,y-3,p,4,'F');y+=6}
-function sec(t,a,e){y+=3;ln(t,13,1);(a.length?a:[e]).forEach(function(s){ln('- '+s,10)})}
-ln("Training Lab Report - Y10 MYP PHE Unit 2",16,1,[15,122,79]);
-ln(new Date().toLocaleDateString('en-GB')+'  |  '+d.n+' answers  |  Overall '+d.tot+'%',10);
-sec('Strengths',d.strengths,'Keep playing to find your strengths (80% or more).');
-sec('What to focus on',d.focus,'Nothing urgent. Keep it up!');
-y+=3;ln('By subunit',13,1);d.units.forEach(function(x){ln(UN[x.u]+': '+(x.n?x.p+'% ('+x.n+' answers) - '+LB[x.l]:'not played yet'),10);bar(x.p||0)});
-ln('By skill',13,1);d.skills.forEach(function(x){ln(x.name+': '+(x.n?x.p+'% - '+LB[x.l]:'not played yet'),10);bar(x.p||0)});
-var rv=[];d.units.forEach(function(x){x.miss.forEach(function(m){rv.push('['+UN[x.u].split(' ')[0]+'] '+m)})});
-sec('Words and questions to review',rv,'No missed items right now.');
-sec('Study plan',d.plan,'Keep practising with the whole-unit mix.');
-var fn='PHE-Unit2-Progress.pdf';
-if(!(window.claude&&claude.use)){doc.save(fn);return}
-var blob=doc.output('blob');
-claude.use('downloads').then(function(dl){if(!dl){msg('Saving is not available here. Open this page in claude.ai to save the PDF.');return}
-return dl.save({filename:fn,data:blob}).then(function(){msg('Saved! ✅')})}).catch(function(e){msg(e&&e.code=='declined'?'Save cancelled.':'Could not save the PDF. Please try again.')})}
+var pn='',pf='';try{pn=localStorage.getItem('trainingLabName')||'';pf=localStorage.getItem('trainingLabForm')||''}catch(e){}
+h+='<div class="card"><h2>Your details for the PDF</h2><p style="margin:.3em 0"><label for="pname"><b>Name</b></label><br><input id="pname" type="text" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1px solid #c5d3cb;border-radius:8px"></p><p style="margin:.6em 0 .2em"><label for="pform"><b>Form group</b></label><br><input id="pform" type="text" autocomplete="off" style="width:100%;padding:10px;font:inherit;border:1px solid #c5d3cb;border-radius:8px"></p></div>';
+app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()
+document.getElementById('pname').value=pn;document.getElementById('pform').value=pf}
+function savePdf(){var ne=document.getElementById('pname'),fe=document.getElementById('pform'),nm=ne?ne.value.trim():'',fm=fe?fe.value.trim():'';if(!nm){msg('Type your name first, so your teacher knows whose report this is.');if(ne)ne.focus();return}
+try{localStorage.setItem('trainingLabName',nm);localStorage.setItem('trainingLabForm',fm)}catch(e){}
+var d=data(),nu=function(t){return String(t).replace(/^[^\x20-\x7E]+\s*/,'')},cell=function(x){return x.n?{t:x.p+'% ('+x.n+' answers)',bar:x.p}:{t:'Not played yet',c:'mut'}},lab=function(x){var c=x.l=='strong'?'ok':x.l=='focus'?'bad':x.l=='ok'?'amb':'mut';return{t:nu(LB[x.l]),c:c,b:1}};
+var rev=[];d.units.forEach(function(x){x.miss.forEach(function(m){rev.push([UN[x.u].split(' ')[0],m])})});
+var wb=MLGPDF.wida({name:nm,standard:'Language for Science (nearest match for PHE)',use:'Explain',domain:'Reading and subject vocabulary',pct:d.tot,target:1,at:'Identifying key words and phrases that describe the topics or phenomena',next:[2,'Differentiating between technical and everyday vocabulary that describe phenomena'],opening:nm+' has answered '+d.n+' questions in Year 10 PHE Unit 2, with '+d.tot+'% correct overall.',strengths:d.strengths,develop:d.focus,steps:d.plan,limits:'Based on Training Lab answers saved on this device. WIDA has no PHE standard, and quiz scores show recognition more than independent language use, so the teacher should confirm with written or spoken work.'});
+var blob=MLGPDF.build({theme:'mainstream',title:'Training Lab',subtitle:'Year 10 PHE, Unit 2: Training Report',foot:'Training Lab - '+nm+(fm?' ('+fm+')':''),meta:[['Name',nm],['Form group',fm||'-'],['Date',new Date().toLocaleDateString('en-GB')]],tiles:[[d.tot+'%','Overall'],[String(d.n),'Answers'],[String(d.strengths.length),'Strengths'],[String(d.focus.length),'Areas to focus on']],blocks:wb.concat([{h:'By Subunit'},{table:{head:['Subunit','Result','Status'],w:[52,28,20],rows:d.units.map(function(x){return[UN[x.u],cell(x),lab(x)]})}},{h:'By Skill'},{table:{head:['Skill','Result','Status'],w:[52,28,20],rows:d.skills.map(function(x){return[x.name,cell(x),lab(x)]})}},{h:'Words and Questions to Review'}],rev.length?[{table:{head:['Subunit','Item'],w:[14,86],rows:rev}}]:[{p:'No missed items right now.'}])});
+MLGPDF.deliver(blob,'PHE-Unit2-'+nm.replace(/[^A-Za-z0-9]+/g,'_')+'.pdf').then(function(){msg('Saved! ✅')}).catch(function(e){msg(e&&e.code=='declined'?'Save cancelled.':'Could not save the PDF. Please try again.')})}
 function prin(){start('r');G.items=sh(SP).slice(0,nn());redraw=rq;rq()}
 function rq(){var p=G.items[G.i],o=sh(sh(PR.filter(function(x){return x!==p[1]})).slice(0,3).concat([p[1]]));G.ans=p[1];ask('Which principle?','<p><b>'+p[0]+'</b></p>',o,null,p[1]+': '+p[2])}
 function phase(){start('h');G.items=sh(HP).slice(0,nn());redraw=hq;hq()}
@@ -351,6 +340,112 @@ redraw=modes;app.innerHTML=topbar(true)+'<div class="card" style="text-align:cen
 (S.thai?'<p class="th">'+(p>=.9?'เยี่ยมมาก อชิ!':p>=.6?'ดีมาก ลองอีกครั้งเพื่อให้ได้ 3 ดาว':'สู้ๆ ลองทบทวนบัตรคำแล้วเล่นใหม่')+'</p>':'')+
 '<div class="row" style="justify-content:center"><button class="btn" onclick="'+({m:'match',q:'quiz',g:'gap',p:'pros',t:'tf',e:'thai',r:'prin',h:'phase'})[G.mode]+'()">Play again</button><button class="ghost" onclick="modes()">Menu</button><button class="ghost" onclick="report()">📊 Progress</button></div></div>'}
 home();
+</script>
+<script id="mlg-pdf">
+/* Miss L Gems report PDF engine. No outside files needed. */
+(function(){
+var W={"R":[278,278,355,556,556,889,667,222,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,222,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584],"B":[278,333,474,556,556,889,722,278,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,278,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584],"T":[250,333,555,500,500,1000,833,333,333,333,500,570,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,570,570,570,500,930,722,667,722,722,667,611,778,778,389,500,778,667,944,722,778,611,778,722,556,667,722,722,1000,722,722,667,333,278,333,581,500,333,500,556,444,556,444,333,500,556,278,333,556,278,833,556,500,556,556,444,389,333,556,500,722,500,500,444,394,220,394,520]};
+var TH={eal:[29,90,72],mainstream:[39,71,125],other:[134,98,42]};
+var INK=[27,36,48],MUT=[93,100,112],LINE=[224,217,200],BAND=[20,30,43],GOLD=[205,176,120],WARM=[248,246,241],OK=[30,107,58],OKB=[230,243,232],BAD=[154,46,34],BADB=[251,231,227],AMB=[138,90,10],AMBB=[252,241,218];
+var PW=595,PH=842,M=44,CW=PW-2*M,TOP=PH-44,BOT=52;
+function cl(s){return String(s==null?"":s).replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,"-").replace(/\u2026/g,"...").replace(/\u2192/g,"to").replace(/[\u00B7\u2022]/g,"-").replace(/[\u2265]/g,">=").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu,"").replace(/[^\x20-\x7E\n]+/g,"?").replace(/[ \t]+/g," ").trim()}
+function tw(t,f,z){var a=f=="B"?W.B:f=="T"?W.T:W.R,n=0;for(var i=0;i<t.length;i++)n+=a[t.charCodeAt(i)-32]||556;return n*z/1000}
+function wrap(t,f,z,w){var o=[];cl(t).split("\n").forEach(function(p){var l="";p.split(" ").forEach(function(x){while(tw(x,f,z)>w&&x.length>1){var k=x.length-1;while(k>1&&tw(x.slice(0,k),f,z)>w)k--;if(l){o.push(l);l=""}o.push(x.slice(0,k));x=x.slice(k)}var c=l?l+" "+x:x;if(l&&tw(c,f,z)>w){o.push(l);l=x}else l=c});o.push(l)});return o}
+function pe(s){return s.replace(/([\\()])/g,"\\$1")}
+var LV=[[246,213,208,109,31,21],[251,223,186,107,61,0],[245,236,170,87,80,0],[207,233,200,29,84,36],[198,229,236,14,78,94],[217,211,240,61,47,128]],LVN=["Entering","Emerging","Developing","Expanding","Bridging","Reaching"];
+var FN={R:"F1",B:"F2",I:"F3",T:"F4",J:"F5"};
+function Doc(theme,foot){this.a=TH[theme]||TH.eal;this.foot=foot||"";this.pg=[];this.add()}
+Doc.prototype={
+ add:function(){this.c=[];this.pg.push(this.c);this.y=TOP},
+ rgb:function(c,s){return (c[0]/255).toFixed(3)+" "+(c[1]/255).toFixed(3)+" "+(c[2]/255).toFixed(3)+(s?" RG":" rg")},
+ rect:function(x,y,w,h,c){this.c.push(this.rgb(c)+" "+x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1)+" re f")},
+ stroke:function(x,y,w,h,c,t){this.c.push(this.rgb(c,1)+" "+(t||.6)+" w "+x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1)+" re S")},
+ line:function(x,y,x2,c,t){this.c.push(this.rgb(c,1)+" "+(t||.6)+" w "+x.toFixed(1)+" "+y.toFixed(1)+" m "+x2.toFixed(1)+" "+y.toFixed(1)+" l S")},
+ text:function(t,x,y,f,z,c){this.c.push("BT "+this.rgb(c||INK)+" /"+FN[f]+" "+z+" Tf "+x.toFixed(1)+" "+y.toFixed(1)+" Td ("+pe(t)+") Tj ET")},
+ need:function(h){if(this.y-h<BOT){this.add();return true}return false},
+ lines:function(ls,x,f,z,c,lh){var s=this;ls.forEach(function(l){s.need(lh);s.y-=lh;if(l)s.text(l,x,s.y,f,z,c)})},
+ head:function(d){var ti=wrap(d.title||"Report","T",25,CW-40),su=d.subtitle?cl(d.subtitle):"",h=30+ti.length*28+(su?18:0);
+  this.rect(0,PH-h-6,PW,h+6,BAND);this.rect(0,PH-h-9,PW,3,GOLD);var y=PH-34,s=this;this.text("MISS L GEMS",PW-M-tw("MISS L GEMS","B",8),PH-20,"B",8,GOLD);
+  ti.forEach(function(l){y-=2;s.text(l,M,y-14,"T",25,[255,255,255]);y-=26});if(su)this.text(su,M,y-8,"J",13,GOLD);this.y=PH-h-26},
+ kv:function(p){var s=this,per=Math.min(3,p.length)||1,cw=CW/per,rows=[];for(var i=0;i<p.length;i+=per)rows.push(p.slice(i,i+per));
+  rows.forEach(function(r){var ls=r.map(function(x){return wrap(x[1]||"-","R",9.5,cw-14)}),h=14+Math.max.apply(0,ls.map(function(l){return l.length}))*12;s.need(h+2);
+   r.forEach(function(x,i){var X=M+i*cw;s.text(cl(x[0]).toUpperCase(),X,s.y-9,"B",6.8,MUT);ls[i].forEach(function(l,k){s.text(l,X,s.y-20-k*12,"R",9.5,INK)})});s.y-=h+1});this.y-=5},
+ tiles:function(t){var s=this,n=t.length;if(!n)return;var g=8,w=(CW-g*(n-1))/n,h=46;this.need(h+8);t.forEach(function(x,i){var X=M+i*(w+g),v=cl(x[0]);s.rect(X,s.y-h,w,h,WARM);s.rect(X,s.y-h,w,2.5,s.a);var z=v.length>11?13:v.length>7?16:20;s.text(v,X+9,s.y-23,"T",z,s.a);wrap(x[1],"R",7.8,w-14).slice(0,2).forEach(function(l,k){s.text(l,X+9,s.y-34-k*8,"R",7.8,MUT)})});this.y-=h+14},
+ h:function(t,sub){this.need(100);this.y-=8;var s=this,ls=wrap(t,"T",14.5,CW);ls.forEach(function(l){s.y-=16;s.text(l,M,s.y,"T",14.5,s.a)});if(sub){this.y-=11;wrap(sub,"R",8,CW).forEach(function(l,k){if(k)s.y-=10;s.text(l,M,s.y,"I",8,MUT)})}this.y-=5;this.line(M,this.y,M+CW,this.a,.9);this.y-=7},
+ band:function(t){this.need(70);this.y-=8;this.rect(M,this.y-22,CW,22,this.a);this.text(cl(t),M+10,this.y-15.5,"B",11,[255,255,255]);this.y-=30},
+ p:function(t,o){o=o||{};var z=o.z||10,f=o.f||"R",c=o.c||INK,x=M+(o.x||0);this.lines(wrap(t,f=="I"?"R":f,z,CW-(o.x||0)),x,f,z,c,z*1.42);this.y-=o.g==null?5:o.g},
+ list:function(a,num){var s=this;a.forEach(function(t,i){var mk=num?(i+1)+".":"-",ls=wrap(t,"R",10,CW-18);s.need(14);s.text(mk,M+2,s.y-13,"B",10,s.a);s.lines(ls,M+18,"R",10,INK,14);s.y-=3});this.y-=3},
+ box:function(b){var s=this,W2=CW-22,tl=b.title?wrap(b.title,"B",10,W2):[],hi=b.hint?wrap(b.hint,"R",8.5,W2):[],tx=wrap(b.text||"","R",10.5,W2),h=14+tl.length*13+hi.length*11+tx.length*15;
+  if(h<TOP-BOT)this.need(h+6);var top=this.y;this.rect(M,top-h,CW,h,WARM);this.rect(M,top-h,3,h,this.a);var y=top-8;
+  tl.forEach(function(l){y-=10;s.text(l,M+13,y,"B",10,s.a);y-=3});hi.forEach(function(l){y-=9;s.text(l,M+13,y,"I",8.5,MUT);y-=2});tx.forEach(function(l){y-=12;s.text(l,M+13,y,"R",10.5,b.c||INK);y-=3});this.y=top-h-8},
+ table:function(tb){var s=this,sum=tb.w.reduce(function(a,b){return a+b},0),cw=tb.w.map(function(x){return x/sum*CW}),z=tb.z||(tb.w.length>=6?7.8:8.8),lh=z*1.3,pad=4.5;
+  function hdr(){var ls=tb.head.map(function(t,i){return wrap(t,"B",8,cw[i]-pad*2)}),h=8+Math.max.apply(0,ls.map(function(l){return l.length}))*10;s.rect(M,s.y-h,CW,h,s.a);var x=M;ls.forEach(function(l,i){l.forEach(function(t,k){s.text(t,x+pad,s.y-11-k*10,"B",8,[255,255,255])});x+=cw[i]});s.y-=h}
+  if(this.y-60<BOT)this.add();hdr();
+  tb.rows.forEach(function(r,ri){var cells=r.map(function(v,i){v=(v&&typeof v=="object")?v:{t:v};var f=v.b?"B":"R";return{v:v,f:f,ls:wrap(v.t==null?"":v.t,f,z,cw[i]-pad*2)}}),h=7+Math.max.apply(0,cells.map(function(c){return c.ls.length}))*lh+(cells.some(function(c){return c.v.bar!=null})?5:0);
+   if(s.y-h<BOT){s.add();hdr()}if(ri%2)s.rect(M,s.y-h,CW,h,WARM);var x=M;cells.forEach(function(c,i){var col=INK;if(c.v.c=="ok"){s.rect(x,s.y-h,cw[i],h,OKB);col=OK}if(c.v.c=="bad"){s.rect(x,s.y-h,cw[i],h,BADB);col=BAD}if(c.v.c=="amb"){s.rect(x,s.y-h,cw[i],h,AMBB);col=AMB}if(c.v.c=="mut")col=MUT;
+     c.ls.forEach(function(l,k){s.text(l,x+pad,s.y-z-2-k*lh,c.f,z,col)});if(c.v.bar!=null){var bw=cw[i]-pad*2,by=s.y-h+3.5;s.rect(x+pad,by,bw,3,LINE);s.rect(x+pad,by,bw*Math.min(1,c.v.bar/100),3,c.v.bar>=80?OK:c.v.bar>=50?AMB:BAD)}x+=cw[i]});
+   s.y-=h;s.line(M,s.y,M+CW,LINE,.4)});this.y-=11},
+ level:function(n,t){var c=LV[(n||1)-1],s=this,ls=wrap(t,"B",10.5,CW-22),h=11+ls.length*14;this.need(h+6);this.rect(M,this.y-h,CW,h,c.slice(0,3));ls.forEach(function(l,k){s.text(l,M+11,s.y-15-k*14,"B",10.5,c.slice(3))});this.y-=h+8},
+ h3:function(t,c){this.need(32);this.y-=15;this.text(cl(t),M,this.y,"B",10.5,c||this.a);this.y-=3},
+ out:function(){var o=[],n=8,kids=[],s=this,N=this.pg.length;o[1]="<</Type/Catalog/Pages 2 0 R>>";["Helvetica","Helvetica-Bold","Helvetica-Oblique","Times-Bold","Times-Italic"].forEach(function(b,i){o[3+i]="<</Type/Font/Subtype/Type1/BaseFont/"+b+"/Encoding/WinAnsiEncoding>>"});
+  this.pg.forEach(function(p,i){var f=[];s.c=f;s.line(M,38,M+CW,LINE,.5);s.text(wrap(s.foot||"","R",7.5,CW-70)[0]||"",M,27,"R",7.5,MUT);var pn="Page "+(i+1)+" of "+N;s.text(pn,M+CW-tw(pn,"R",7.5),27,"R",7.5,MUT);var st=p.concat(f).join("\n");
+   o[n]="<</Length "+st.length+">>\nstream\n"+st+"\nendstream";o[n+1]="<</Type/Page/Parent 2 0 R/MediaBox[0 0 "+PW+" "+PH+"]/Resources<</Font<</F1 3 0 R/F2 4 0 R/F3 5 0 R/F4 6 0 R/F5 7 0 R>>>>/Contents "+n+" 0 R>>";kids.push(n+1);n+=2});
+  o[2]="<</Type/Pages/Count "+kids.length+"/Kids["+kids.map(function(k){return k+" 0 R"}).join(" ")+"]>>";
+  var b="%PDF-1.4\n",off=[];for(var i=1;i<o.length;i++){off[i]=b.length;b+=i+" 0 obj\n"+o[i]+"\nendobj\n"}var x=b.length;b+="xref\n0 "+o.length+"\n0000000000 65535 f \n"+off.slice(1).map(function(v){return String(v).padStart(10,"0")+" 00000 n \n"}).join("")+"trailer\n<</Size "+o.length+"/Root 1 0 R>>\nstartxref\n"+x+"\n%%EOF";
+  return new Blob([Uint8Array.from(b,function(c){return c.charCodeAt(0)&255})],{type:"application/pdf"})}
+};
+function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
+ (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
+function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";
+ var nm=cl(o.name||"This student"),b=[{h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."}];
+ b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
+ b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
+ var at=met||near||!o.below?o.at:o.below[1];
+ b.push({p:o.opening});
+ b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""});
+ if(o.strengths&&o.strengths.length){b.push({h3:"Strengths",c:OK});b.push({list:o.strengths})}
+ if(o.develop&&o.develop.length){b.push({h3:"Areas to develop",c:BAD});b.push({list:o.develop})}
+ if(o.steps&&o.steps.length){b.push({h3:"Next steps"});b.push({list:o.steps,num:1})}
+ var nx=met?o.next:(near?null:(o.below?[o.target,o.at]:null));if(nx)b.push({box:{title:"Next WIDA target: Level "+nx[0]+" "+LVN[nx[0]-1],text:nx[1]}});
+ if(o.limits)b.push({p:o.limits,o:{f:"I",z:8.5,c:MUT}});
+ return b}
+/* Turn the activities' plain-text reports into tables and sections. */
+var STAT=/^(Score|First-try correct|Correct|Rank|Unanswered|Clues played|Players)$/i;
+function pct(v){var m=/(\d+)\s*(?:\/|of)\s*(\d+)/.exec(v);return m&&+m[2]?Math.round(100*m[1]/m[2]):null}
+function pairs(l){var a=[],ok=true;l.split(" | ").forEach(function(x){var m=/^([A-Z][^:]{0,32}):\s*(.*)$/.exec(x.trim());if(m)a.push([m[1],m[2]]);else ok=false});return ok&&a.length?a:null}
+function headOf(l){var t=l.trim();var m=/^([A-Z][A-Z0-9 ,&'\-\/]{3,})(?:\s*\(([^)]*)\))?(?::\s*(.*))?$/.exec(t);if(!m)return null;return{t:m[1].trim(),sub:m[2]||"",v:m[3]}}
+function titleCase(s){return s.toLowerCase().replace(/(^|[\s\-\/])([a-z])/g,function(m,p,c){return p+c.toUpperCase()}).replace(/\b(By|In|The|Of|On|And|To)\b/g,function(c){return c.toLowerCase()}).replace(/^./,function(c){return c.toUpperCase()})}
+function resCell(p){var t=p.trim(),m;if(/^(CORRECT|Correct)(\s*\(.*\))?$/.test(t))return{res:{t:t.replace(/^CORRECT/,"Correct"),c:"ok",b:1}};if(/^INCORRECT/.test(t))return{res:{t:"Incorrect",c:"bad",b:1}};
+ m=/^Not yet\.?\s*Correct answer:\s*(.*?)(\s*\(.*\))?$/.exec(t);if(m)return{res:{t:"Not yet"+(m[2]||""),c:"bad",b:1},cor:m[1]};if(/^\[?(SKIPPED|NOT ANSWERED|no answer|not recorded)/i.test(t))return{res:{t:t,c:"bad",b:1}};return null}
+function rowsTable(items){var keys=[],rows=items.map(function(it){var r={plain:[],kv:{},res:null};it.parts.forEach(function(p){var c=resCell(p);if(c){r.res=c.res;if(c.cor)r.kv["Correct answer"]=c.cor;return}var m=/^([A-Z][A-Za-z' \-]{1,22}|shown|student|correct):\s*(.*)$/.exec(p.trim());if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1);if(k=="Correct"&&/\d+ of \d+/.test(m[2]))k="Class correct";if(k=="Correct")k="Correct answer";r.kv[k]=m[2];if(keys.indexOf(k)<0)keys.push(k)}else r.plain.push(p.trim())});return r});
+ if(rows.some(function(r){return r.kv["Correct answer"]})&&keys.indexOf("Correct answer")<0)keys.push("Correct answer");
+ var mp=Math.max.apply(0,rows.map(function(r){return r.plain.length})),hasRes=rows.some(function(r){return r.res}),head=["#"],w=[4];
+ var pl=mp==1?["Question"]:mp==2?["Stage","Question"]:mp==0?[]:["Stage","Question"].concat(Array(mp-2).fill(""));pl.forEach(function(p){head.push(p);w.push(p=="Question"?30:p=="Stage"?13:12)});
+ keys.forEach(function(k){head.push(k);w.push(k=="Meaning"?26:k=="Shown"?22:k=="Word"?13:14)});if(hasRes){head.push("Result");w.push(11)}
+ return{head:head,w:w,rows:rows.map(function(r,i){var o=[items[i].n];pl.forEach(function(_,k){o.push(r.plain[k]||"")});keys.forEach(function(k){var v=r.kv[k]||"";o.push(k=="Class correct"?{t:v,bar:pct(v)}:v)});if(hasRes)o.push(r.res||"");return o})}}
+function fromText(text,o){o=o||{};var L=String(text).split("\n"),i=0,sp={theme:o.theme,foot:o.foot,meta:[],tiles:[],blocks:[]},first=(L[i++]||"").trim(),m=/^(.*?)\s+-\s+(.*)$/.exec(first);sp.title=o.title||(m?titleCase(m[1]):titleCase(first));sp.subtitle=o.subtitle||(m?titleCase(m[2]):"");
+ function addP(ps){ps.forEach(function(x){if(STAT.test(x[0])&&sp.tiles.length<5)sp.tiles.push([x[1].replace(/\s*\(.*?\)\s*$/,"").trim(),x[0]+(/\((\d+%)\)/.test(x[1])?" ("+/\((\d+%)\)/.exec(x[1])[1]+")":"")]);else sp.meta.push(x)})}
+ for(;i<L.length&&L[i].trim();i++){var pp=pairs(L[i]);if(pp)addP(pp.map(function(x){return[x[0],x[1].replace(/^(\d{4}-\d\d-\d\d)T(\d\d:\d\d).*Z$/,"$1 $2 UTC")]}));else sp.blocks.push({p:L[i],o:{c:MUT}})}
+ var B=sp.blocks;if(o.wida)o.wida.forEach(function(x){B.push(x)});var sec=null,buf=[];function flush(){if(sec===null&&!buf.length)return;render(sec,buf);buf=[]}
+ function render(s,ls){var name=s?s.t:"";ls=ls.filter(function(l){return l.trim()});var writing=/WRITTEN|WRITING|SENTENCE|TEACH-BACK/.test(name)&&!/ORDER/.test(name);
+  if(!ls.length)return;
+  if(/^NOTES?$/.test(name)){ls.forEach(function(l){B.push({p:l,o:{f:"I",z:8,c:MUT,g:3}})});return}
+  if(writing){var k=0;while(k<ls.length){var l=ls[k].trim(),n=/^\d+\.\s*(.*)$/.exec(l);if(n&&ls[k+1]&&/^\s/.test(ls[k+1])){var f=/^(.*?)\s*\(frame:\s*(.*)\)$/.exec(n[1]);B.push({box:{title:f?f[1]:n[1],hint:f?"Frame: "+f[2]:"",text:ls[k+1].trim()}});k+=2}else if(/^Prompt:/.test(l)&&ls[k+1]){B.push({box:{title:"Prompt",hint:l.replace(/^Prompt:\s*/,""),text:ls[k+1].replace(/^Student:\s*/,"").trim()}});k+=2}else if(ls.length==2&&k==0){B.push({box:{hint:l,text:ls[1].trim()}});k+=2}else{B.push({box:{text:l}});k++}}return}
+  var items=[],cur=null,logs=[],kv=[],other=[];ls.forEach(function(l){var n=/^(\d+)\.\s+(.*)$/.exec(l);if(n){cur={n:n[1],parts:n[2].split(" | ")};items.push(cur);return}if(/^\s+/.test(l)&&cur){l.trim().split(" | ").forEach(function(p){cur.parts.push(p)});return}cur=null;var c=l.split(" | ");if(/^\d{4}-\d\d-\d\dT|^\d\d:\d\d/.test(c[0])&&c.length>1){logs.push([c[0].replace("T"," ").replace(/\.\d+Z$/,"").replace(/Z$/,""),c[1],c.slice(2).join(" | ")]);return}var q=pairs(l);if(q){kv.push(q);return}other.push(l)});
+  other.forEach(function(l){B.push({p:l})});
+  var run=[];kv.forEach(function(q){if(q.length==1&&pct(q[0][1])!=null){run.push(q[0]);return}if(run.length){B.push(sTbl(run,name));run=[]}B.push({kv:q})});if(run.length)B.push(sTbl(run,name));
+  if(items.length){B.push({table:rowsTable(items)})}
+  if(logs.length)B.push({table:{head:["Time","Event","Detail"],w:[22,20,58],rows:logs,z:8}})}
+ function sTbl(r,nm){return{table:{head:[/MISSION/.test(nm||"")?"Mission":"Area","Result"],w:[60,40],rows:r.map(function(x){var p=pct(x[1]);return[x[0],{t:x[1],bar:p}]})}}}
+ for(;i<L.length;i++){var l=L[i],h=/^\s/.test(l)?null:headOf(l);
+  if(h&&!/^\d/.test(l)){flush();var st=/^STUDENT \d+$/.test(h.t);var nm=h.t.replace(/\s+\d+$/,"");if(st){B.push({band:"Student: "+titleCase(h.v||"")});sec={t:"STUDENT"};(o.bands&&o.bands[h.v]||[]).forEach(function(x){B.push(x)});continue}
+   if(/^NOTES?$/.test(nm)){sec={t:"NOTES"};buf.push(h.v||"");continue}
+   B.push({h:titleCase(nm),sub:h.sub});sec={t:nm};if(h.v!=null&&h.v!==""){B.push(/^none\.?$/i.test(h.v)?{p:"None",o:{c:OK,f:"B"}}:{box:{text:h.v}})}continue}
+  buf.push(l)}
+ flush();return build(sp)}
+function deliver(blob,fn){return (async function(){var d=null;try{d=window.claude?await window.claude.use("downloads"):null}catch(e){d=null}if(d){await d.save({filename:fn,data:blob});return}var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},4000)})()}
+window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida};
+})();
 </script>
 <!-- Miss L Gems: link back to the home page -->
 <a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#141e2b;color:#efe6d0;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
