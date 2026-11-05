@@ -164,13 +164,18 @@ REC.forEach((r,i)=>P((i+1)+". "+NAMES[r.stage-1]+" | "+r.q+" | My answer: "+r.ch
 P("");P("SCORE BY MISSION");secScores().forEach(x=>P(x[0]+": "+x[1]+"/"+x[2]));P("");P("MY WRITTEN OUTPUT");(S.txt.length?S.txt:[{part:"Writing task",frame:"",text:""}]).forEach((t,i)=>{P((i+1)+". "+t.part+(t.frame?" (frame: "+t.frame+")":""));P("   "+(S.txt.length?(t.text||"[no response]"):"[not reached]"))});P("");P("CLUES TO PRACTISE AGAIN: "+(miss.join(", ")||"none"));return L.join("\n")}
 function cpy(t){const c=$("ct");(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>c.textContent="Copied. Paste it into Google Classroom or an email.").catch(()=>{c.innerHTML="";const a=document.createElement("textarea");a.readOnly=true;a.value=t;a.setAttribute("data-allow","");c.appendChild(a)})}
 function prt(t){const p=$("pp");p.innerHTML="";const h=document.createElement("h2");h.textContent="Map Detective";const e=document.createElement("pre");e.textContent=t;p.append(h,e);try{window.print()}catch(x){$("ct").textContent="Printing is not available here. Use Save my work as PDF."}}
-function mkPdf(text,foot){const PW=595,PH=842,MG=48,LH=12.5,CPL=88,L=[];
-wrap(text,CPL).split("\n").forEach(l=>{while(l.length>CPL){L.push(l.slice(0,CPL));l="   "+l.slice(CPL)}L.push(l)});
-const per=Math.floor((PH-2*MG)/LH),pages=[];for(let i=0;i<L.length;i+=per)pages.push(L.slice(i,i+per));
-const e=s=>String(s).replace(/é/g,"e").replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,"-").replace(/…/g,"...").replace(/[^\x20-\x7E]/g,"?").replace(/([\\()])/g,"\\$1");
-const o=[];o[1]="<</Type/Catalog/Pages 2 0 R>>";o[3]="<</Type/Font/Subtype/Type1/BaseFont/Courier>>";o[4]="<</Type/Font/Subtype/Type1/BaseFont/Courier-Bold>>";let n=5;const kids=[];
-pages.forEach((p,pi)=>{let c="";p.forEach((l,i)=>{const b=/^[A-Z][A-Z0-9 ,.&'\-:()]{5,}$/.test(l);c+=`BT /${b?"F2":"F1"} 9 Tf ${MG} ${(PH-MG-i*LH).toFixed(1)} Td (${e(l)}) Tj ET\n`});
-c+=`BT /F1 8 Tf ${MG} 28 Td (${e(foot+"  |  Page "+(pi+1)+" of "+pages.length)}) Tj ET`;
+function mkPdf(text,foot){const PW=595,PH=842,MG=50,MW=PW-2*MG,FS=10.5,LH=15;
+const W=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+const cl=s=>String(s).replace(/é/g,"e").replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,"-").replace(/…/g,"...").replace(/[^\x20-\x7E]/g,"?"),pe=s=>s.replace(/([\\()])/g,"\\$1");
+const sw=(t,z)=>[...t].reduce((a,c)=>a+(W[c.charCodeAt(0)-32]||556),0)*z/1000,isH=l=>/^[A-Z][A-Z0-9 ,.&'\-:()]{5,}$/.test(l);
+const L=[];text.split("\n").forEach(r=>{const t=cl(r);if(!t.trim()){L.push({t:"",g:6});return}
+if(isH(t)){L.push({t,b:1,x:0,g:LH+5});return}
+const lead=((t.match(/^ */)||[""])[0].length)*4;let cur="",ind=lead;
+t.trim().split(" ").forEach(w=>{const tr=cur?cur+" "+w:w;if(cur&&sw(tr,FS)+ind>MW){L.push({t:cur,x:ind,g:LH});cur=w;ind=lead+14}else cur=tr});L.push({t:cur,x:ind,g:LH})});
+const pages=[[]];let y=PH-MG;L.forEach(l=>{if(y-l.g<MG+14){pages.push([]);y=PH-MG}y-=l.g;pages[pages.length-1].push({...l,y})});
+const o=[];o[1]="<</Type/Catalog/Pages 2 0 R>>";o[3]="<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>";o[4]="<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>";let n=5;const kids=[];
+pages.forEach((p,pi)=>{let c="0.1 0.1 0.1 rg\n";p.forEach(l=>{if(l.t)c+=`BT /${l.b?"F2 11.5":"F1 "+FS} Tf ${MG+l.x} ${l.y.toFixed(1)} Td (${pe(l.t)}) Tj ET\n`});
+c+=`BT /F1 8 Tf ${MG} 28 Td (${pe(cl(foot+"  |  Page "+(pi+1)+" of "+pages.length))}) Tj ET`;
 o[n]="<</Length "+c.length+">>\nstream\n"+c+"\nendstream";o[n+1]="<</Type/Page/Parent 2 0 R/MediaBox[0 0 "+PW+" "+PH+"]/Resources<</Font<</F1 3 0 R/F2 4 0 R>>>>/Contents "+n+" 0 R>>";kids.push(n+1);n+=2});
 o[2]="<</Type/Pages/Count "+kids.length+"/Kids["+kids.map(k=>k+" 0 R").join(" ")+"]>>";
 let s="%PDF-1.4\n";const off=[];for(let i=1;i<o.length;i++){off[i]=s.length;s+=i+" 0 obj\n"+o[i]+"\nendobj\n"}
