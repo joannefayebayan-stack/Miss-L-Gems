@@ -27,6 +27,7 @@ pre{white-space:pre-wrap;word-break:break-word;font-size:11px;line-height:1.4;ba
 #fs{display:none;position:fixed;inset:0;z-index:60;background:#0E1716}
 #pp{display:none}@media print{.wrap,#ac,#fs{display:none!important}#pp{display:block!important}#pp pre{max-height:none;overflow:visible;font-size:10pt;background:none}body{background:#fff;color:#000}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.gw{border-bottom:2px dotted var(--or);cursor:help}#tip{position:fixed;z-index:20;background:var(--ink);color:var(--bg);padding:8px 12px;border-radius:10px;font-size:15px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:230px}
 </style></head><body><div class="wrap"><h1>🕵️ Map Detective</h1><p class="sub">50 clues · 5 missions</p>
 <div class="card" id="g"></div></div><div id="ac" role="alertdialog" aria-live="assertive"></div><div id="fs" role="dialog" aria-modal="true" aria-label="Paused"></div><div id="pp"></div>
 <script>
@@ -104,6 +105,7 @@ $("go").onclick=()=>{const n=$("nm").value.trim(),y=$("yg").value.trim(),f=$("fg
 S.name=n;S.yg=y;S.fg=f;AT=true;ST=0;AW=false;newAttempt();lg("fullscreen-status",isFull()?"active at start":"not active");guide()}}
 function guide(){lg("guided-example","shown");
 g.innerHTML=`<div class="sr"><span>Guided example</span><span>not scored</span></div><p class="q">Look first. Then practise.</p>
+<p class="note" style="text-align:left">Tap a word with a dotted line to see <b>中文</b> and <b>ไทย</b>.</p>
 <div class="box"><b>Read the map</b><div class="map">${MAP.map(m=>`<div><span>${m[0]}</span>${m[1]}</div>`).join("")}</div><p class="note">North is at the top.</p><p>The <b>café</b> is in the top right-hand <b>corner</b>. The <b>garden</b> is <b>between</b> the gym and the bank.</p></div>
 <div class="box"><b>Past simple and passive</b><p>Active: They <b>built</b> a gym. → Passive: A gym <b>was built</b>.</p><p><b>However</b> shows contrast. <b>Overall</b> starts a summary.</p></div>
 <div class="row"><button class="btn s" id="sp">🔊 Hear it</button><button class="btn o" id="gx">I am ready</button></div>`;
@@ -192,6 +194,123 @@ const away=e=>{if(!AT||AW||Date.now()-FST<1500)return;AW=true;ST++;DT++;TA=Date.
 const back=()=>{if(!AW)return;AW=false;if(!AT)return;lg("returned","away about "+Math.round((Date.now()-TA)/1000)+"s");
 if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your answers were cleared and the activity restarted from the beginning. Stay on this page and work on your own.",1)}else{lg("warning-shown","");modal("Warning: you left the activity page. Stay on this page. If you leave again, your attempt will be reset and you will start again.")}};
 document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab-hidden"}):back());window.addEventListener("blur",away);window.addEventListener("focus",back);
-intro();
+const GL={};`library|图书馆|ห้องสมุด
+car park|停车场|ที่จอดรถ
+café|咖啡馆|ร้านกาแฟ
+cafés|咖啡馆（复数）|ร้านกาแฟ (หลายร้าน)
+gym|健身房|ยิม
+garden|花园|สวน
+bank|银行|ธนาคาร
+shop|商店|ร้านค้า
+bus stop|公交站|ป้ายรถเมล์
+school|学校|โรงเรียน
+pool|游泳池|สระว่ายน้ำ
+toilet|厕所|ห้องน้ำ
+pond|池塘|บ่อน้ำ
+park|公园|สวนสาธารณะ
+trees|树|ต้นไม้
+road|道路|ถนน
+roads|道路|ถนน
+houses|房子|บ้าน
+workers|工人|คนงาน
+council|市政委员会|สภาท้องถิ่น
+city|城市|เมือง
+town|城镇|เมือง
+college|学院|วิทยาลัย
+site|场地|พื้นที่
+wasteland|荒地|พื้นที่รกร้าง
+space|空间|พื้นที่ว่าง
+map|地图|แผนที่
+maps|地图|แผนที่
+corner|角落|มุม
+middle|中间|ตรงกลาง
+centre|中心|ศูนย์กลาง
+side|侧边|ด้านข้าง
+edge|边缘|ขอบ
+top|顶部|ด้านบน
+bottom|底部|ด้านล่าง
+left|左边|ซ้าย
+right|右边|ขวา
+north|北|เหนือ
+south|南|ใต้
+east|东|ตะวันออก
+west|西|ตะวันตก
+between|在……之间|ระหว่าง
+opposite|在……对面|ตรงข้าม
+behind|在……后面|ข้างหลัง
+inside|在……里面|ข้างใน
+under|在……下面|ข้างล่าง
+next to|紧挨着|ข้างๆ
+in front of|在……前面|ข้างหน้า
+old|旧的|เก่า
+new|新的|ใหม่
+large|大的|ใหญ่
+small|小的|เล็ก
+bigger|更大的|ใหญ่กว่า
+modern|现代的|ทันสมัย
+last year|去年|ปีที่แล้ว
+moved|搬动；迁移|ย้าย
+built|建造|สร้าง
+cut|砍；切|ตัด
+became|变成|กลายเป็น
+dug|挖|ขุด
+expanded|扩大|ขยาย
+changed|改变|เปลี่ยนแปลง
+put|放|วาง
+added|增加|เพิ่ม
+demolished|拆除|รื้อถอน
+relocated|重新安置；搬迁|ย้ายที่ตั้ง
+transformed|转变|เปลี่ยนแปลงรูปแบบ
+constructed|建造|ก่อสร้าง
+created|创造|สร้างสรรค์
+planted|种植|ปลูก
+knocked down|推倒；拆毁|รื้อลง
+replaced|替换|แทนที่
+destroyed|摧毁|ทำลาย
+removed|移除|เอาออก
+closed|关闭|ปิด
+shrank|缩小|หดตัว
+grew|成长；扩大|เติบโต
+make|制造；做|ทำ
+made|制造；做|ทำ
+develop|发展|พัฒนา
+verb|动词|คำกริยา
+irregular|不规则的|ไม่ปกติ
+regular|规则的|ปกติ
+passive|被动语态|ประโยคถูกกระทำ
+active|主动语态|ประโยคกระทำ
+past participle|过去分词|กริยาช่องที่ 3
+past simple|一般过去时|อดีตกาลธรรมดา
+sentence|句子|ประโยค
+compares|比较|เปรียบเทียบ
+overview|概述|ภาพรวม
+introduction|引言；开头|บทนำ
+details|细节|รายละเอียด
+report|报告|รายงาน
+however|然而|อย่างไรก็ตาม
+in addition|此外|นอกจากนี้
+whereas|而；然而|ในขณะที่
+overall|总的来说|โดยรวม
+firstly|首先|ประการแรก
+formed|构成|ประกอบขึ้น
+means|意思是|หมายถึง
+correct|正确的|ถูกต้อง
+best|最好的|ดีที่สุด
+minutes|分钟|นาที
+least|至少|อย่างน้อย
+spend|花（时间）|ใช้เวลา
+contrast|对比|ความขัดแย้ง
+action|动作|การกระทำ
+focus|重点|จุดสำคัญ
+finished|已完成的|ที่เสร็จแล้ว
+check|检查|ตรวจสอบ
+mission|任务|ภารกิจ`.split("\n").forEach(l=>{const a=l.split("|");if(a[0])GL[a[0].toLowerCase()]=[a[1],a[2]]});
+const GRE=new RegExp("(^|[^A-Za-z])("+Object.keys(GL).sort((a,b)=>b.length-a.length).join("|")+")(?![A-Za-z])","gi");
+const dec=r=>{const tw=document.createTreeWalker(r,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentNode.closest("button,textarea,input,pre,summary,.gw")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}),L=[];while(tw.nextNode())L.push(tw.currentNode);
+L.forEach(n=>{const t=n.nodeValue;GRE.lastIndex=0;if(!GRE.test(t))return;GRE.lastIndex=0;const h=t.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])).replace(GRE,(m,p,w)=>p+'<span class="gw" data-w="'+w.toLowerCase()+'">'+w+'</span>');const sp=document.createElement("span");sp.innerHTML=h;n.replaceWith(...sp.childNodes)})};
+const tip=document.createElement("div");tip.id="tip";tip.style.display="none";tip.setAttribute("role","status");document.body.appendChild(tip);let tt;
+const ob=new MutationObserver(()=>{tip.style.display="none";ob.disconnect();dec(g);ob.observe(g,{childList:true,subtree:true})});
+document.addEventListener("click",e=>{const w=e.target.closest&&e.target.closest(".gw");if(!w){tip.style.display="none";return}const k=w.dataset.w,z=GL[k];if(!z)return;const r=w.getBoundingClientRect();tip.innerHTML="<b>"+esc(k)+"</b><br>"+z[0]+"<br>"+z[1];tip.style.display="block";tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,r.left))+"px";tip.style.top=(r.bottom+6)+"px";say(k);clearTimeout(tt);tt=setTimeout(()=>tip.style.display="none",5000)});
+intro();dec(g);ob.observe(g,{childList:true,subtree:true});
 </script></body></html>
 <!-- v2: rebuilt on Maths Word Lab standard; supersedes earlier published version -->
