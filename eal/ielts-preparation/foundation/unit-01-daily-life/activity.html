@@ -209,6 +209,8 @@
   .strat-tag { display: inline-block; font-size: 11.5px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: #8A5A12; margin-bottom: 4px; }
   .strat p { margin: 0; font-size: 14.5px; line-height: 1.55; }
   .strat ol { margin: 6px 0 0; padding-left: 20px; font-size: 14px; }
+  .strat .src { font-size: 12px; color: #8A5A12; font-weight: 700; white-space: nowrap; }
+  .email-card { background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 10px; padding: 12px 16px; margin: 0 0 14px; font-size: 15px; line-height: 1.55; }
   .glpop { position: fixed; z-index: 1500; display: none; max-width: 290px; background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.18); padding: 12px 14px; font-size: 14.5px; line-height: 1.45; }
   .glpop.show { display: block; }
   .glpop .gw { font-weight: 800; color: var(--teal-dark); }
@@ -297,6 +299,7 @@
    CONTENT
    ========================================================= */
 const ACTIVITY_TITLE = 'Unit 1 Challenge: Daily Life — IELTS Foundation';
+const SKEY = 'u1_';
 
 const PARTS = [
   { key: 'vocab',     short: 'A Vocabulary', title: 'Part A · Vocabulary' },
@@ -519,6 +522,108 @@ const GLOSS = {
   'example': ['something that shows what you mean', 'ตัวอย่าง', '例子'],
   'aloud': ['in a voice others can hear', 'ออกเสียงดัง ๆ', '大声地；出声地']
 };
+
+const START_GOAL = 'describe daily routines clearly and accurately, and practise the IELTS skills you need for reading, listening, writing and speaking about familiar topics.';
+const START_OBJ = ['Use daily-routine collocations and tell the time', 'Use the present simple and adverbs of frequency', 'Find information in several short texts', 'Work out new words from context', 'Complete a form while listening', 'Write and speak about your routine'];
+const START_SC = ['I choose the right verb + noun pairs and say times correctly', 'I add -s / -es for he, she and it', 'I put frequency words in the right place', 'I can prove my reading answers', 'I spell names and numbers correctly', 'I write 80–120 words using time order words', 'I add a reason or example when I speak'];
+
+const VOCAB_HELP = 'Choose the verb that makes the correct phrase.';
+const MCQ_STRAT = {};
+
+const READING_TAG = 'IELTS strategy';
+const READING_LEAD = 'Read about three students. Questions 1–6: choose A, B or C. Questions 7–9: choose the best meaning.';
+const READING_STRAT = `<p>Information about one question is often in more than one text. <span class="src">Tip 06, p. 13</span></p>
+      <ol><li>Underline the key idea in the question.</li><li>Check <b>all three</b> texts. The question and the text often use different words with the same meaning.</li><li>Choose the text that answers the question <b>completely</b>.</li></ol>`;
+
+const LISTEN_MODE = 'text';
+const LISTEN_TITLE = 'Global Schools Exchange: Registration';
+const LISTEN_LIMIT = 'Write ONE WORD AND/OR A NUMBER for each answer.';
+const LISTEN_MAXWORDS = 1;
+const LISTEN_LEAD = 'A student phones an exchange office. Read the form first, choose a voice, then press Play.';
+const LISTEN_STRAT = `<p>The answer does not always use the words you hear, but the meaning is the same. For example, “volleyball and basketball” = “team sports”. Be careful: you may hear something that is <b>not</b> the answer. <span class="src">Mini tips 17.0–17.4, p. 16</span></p>`;
+const SPEAKERS = { W: 'Officer', S: 'Student' };
+const LISTEN_TRAP_NOTE = 'Notice the traps: Toronto (not chosen), the fifteenth (changed to the eighteenth), and “my dad drives me, but not often”.';
+const LISTEN_FIXED = { id: 'L4', text: 'Recognised the corrected date (18th, not the 15th).' };
+
+const WRITE_INTRO = '';
+const WRITE_EMAIL = '';
+const WRITE_MIN = 80, WRITE_MAX = 120;
+const WRITE_TASK_SHORT = 'a paragraph about your typical school day (80–120 words)';
+const WRITE_PROMPT = `<b>Task:</b> Write a paragraph about your typical school day. Write <b>80–120 words</b>. Describe your morning, afternoon and evening, and say how often you do things.`;
+const WRITE_CHECKLIST = ['I start with a topic sentence.', 'I use time order words (first, then, after that, finally).', 'I use adverbs of frequency in the right place.', 'I give at least one reason with “because”.'];
+const WRITE_LABEL = 'Your paragraph';
+
+const SPEAK_LEAD = 'These are IELTS Speaking Part 1 questions. For each question, write short notes (key words, not full sentences), then say your answer aloud. Use A + R + E: Answer, Reason, Example.';
+const SPEAK_STRAT = `<p>When you plan, write only <b>short words or phrases</b>. If you write full sentences and read them out, you will lose marks. If you cannot think of something true to say, you can invent it. <span class="src">Tip 19, p. 16</span></p>`;
+
+function mcqDiag(id, ans, q) {
+  if (VOCAB.some(v => v.id === id) && ans === 'make' && optText(q, q.correct) === 'do') return 'Chose “make” where English uses “do” (a common do / make confusion).';
+  if (id === 'G9' && ans === 'watches') return 'Added -s after “doesn’t” (the verb should stay in its base form).';
+  if (id === 'G2' && ans === 'doesn’t have') return 'Used “doesn’t” with “they” (they → don’t).';
+  if (id === 'G2' && ans === 'don’t has') return 'Used “has” after “don’t” (after don’t / doesn’t, use the base verb).';
+  if (id === 'G3') return 'Did not match the question word to the subject (your brother = he → Does).';
+  if (['G1', 'G8'].includes(id)) return 'Missed the he / she / it form of the verb.';
+  if (['G6', 'G7'].includes(id)) return 'Spelling rule for he / she / it endings (-es, -ies).';
+  if (['G4', 'G5'].includes(id)) return 'Word order with a frequency adverb.';
+  if (id === 'G10') return 'Meaning of the frequency adverb (every single day = always).';
+  return 'Chose a verb that does not go with this noun.';
+}
+function readingDiag(q, a) {
+  if (q.type === 'mcq') return 'The context clue was not used to work out the meaning.';
+  if (READING_DISTRACTOR[q.id] === a) return 'Chose a text with a similar idea that does not fully match (a distractor).';
+  return 'The matching information was not located in the correct text.';
+}
+function readingWida(R, Rc) {
+  const ctx = R.items.filter(i => i.cat === 'meaning from context'), ctxOk = ctx.filter(i => i.ok).length;
+  const match = R.items.filter(i => i.cat !== 'meaning from context'), matchOk = match.filter(i => i.ok).length;
+  const level = Rc <= 2 ? 1 : Rc <= 4 ? 2 : Rc <= 7 ? 3 : (ctxOk === ctx.length ? 4 : 3);
+  const evidence = [`${Rc} of ${R.items.length} correct: matching information ${matchOk}/${match.length}, meaning from context ${ctxOk}/${ctx.length}.`];
+  if (R.items.filter(i => !i.ok && i.answered && i.diag.includes('distractor')).length) evidence.push('Chose at least one distractor text with a similar idea.');
+  return { level, evidence };
+}
+
+const RECOMMEND = {
+  Listening: { 1: 'Pre-teach key words with pictures and practise letter names and numbers with very short dialogues.', 2: 'Use short Part 1-style dialogues with answer-type hints; practise spelling names and writing numbers.', 3: 'Practise spotting traps and corrections (“No, sorry…”) in Part 1 dialogues, then check spelling.', 4: 'Move to longer IELTS Part 1–2 recordings played once only, without hints.' },
+  Reading: { 1: 'Use a bilingual glossary and read one short text at a time; highlight matching words in the question and the text.', 2: 'Practise finding the sentence that answers each question; build paraphrase pairs (twice a week = two times a week).', 3: 'Practise explaining why the distractor text is wrong, and guessing new words from context clues.', 4: 'Use longer texts with inference questions and less support.' },
+  Writing: { 1: 'Use sentence frames and a word bank to write 3–4 sentences about your day.', 2: 'Use the paragraph planner; add time-order words and one reason with “because”.', 3: 'Write 100+ words; add contrast (but, however) and check verb endings (-s / -es).', 4: 'Compare weekdays and weekends, and vary sentence structures and frequency expressions.' }
+};
+
+function writingChecks(t) {
+  const m = re => (t.match(re) || []).length;
+  return {
+    words: wordCount(t),
+    sentences: (t.split(/[.!?]+/).filter(s => s.trim().split(/\s+/).length >= 2)).length,
+    sequencers: m(/\b(first(ly)?|then|after that|next|later|finally|afterwards)\b/gi),
+    frequency: m(/\b(always|usually|often|sometimes|rarely|never|hardly ever|seldom|occasionally|normally|generally)\b/gi),
+    because: m(/\bbecause\b/gi),
+    contrast: m(/\b(but|however|although|while)\b/gi),
+    timeExp: m(/\b(at \d{1,2}([:.]\d{2})?|in the (morning|afternoon|evening)|on weekdays|at (the )?weekends?|every (day|morning|evening|night)|once a week|twice a week)\b/gi),
+    lowerI: m(/(^|[\s,.!?])i(?=[\s,.!?'’]|$)/g),
+    noCapStart: t.split(/(?<=[.!?])\s+|\n+/).map(s => s.trim()).filter(s => s.split(/\s+/).length >= 2 && /^[a-z]/.test(s)).length
+  };
+}
+function writingRows(w) {
+  return [
+    ['Words', `${w.words} (target 80–120)`],
+    ['Sentences', w.sentences],
+    ['Time-order words (first, then, after that…)', w.sequencers],
+    ['Adverbs of frequency', w.frequency],
+    ['Reasons with “because”', w.because],
+    ['Contrast words (but, however…)', w.contrast],
+    ['Time expressions (at 7:00, on weekdays…)', w.timeExp],
+    ['Small “i” instead of capital “I”', w.lowerI],
+    ['Sentences starting with a small letter', w.noCapStart]
+  ];
+}
+function writingEvidence(w) {
+  return `${w.words} words, ${w.sentences} sentences, ${w.sequencers} time-order words, ${w.frequency} frequency adverbs, ${w.because} reason(s) with “because”, ${w.contrast} contrast word(s).`;
+}
+function writingLevel(w) {
+  let pts = 0;
+  if (w.words >= 40) pts++; if (w.words >= 80) pts++; if (w.sequencers >= 2) pts++; if (w.frequency >= 2) pts++;
+  if (w.because >= 1) pts++; if (w.contrast >= 1) pts++; if (w.sentences >= 5) pts++;
+  return w.words < 15 ? 1 : w.words < 60 ? 2 : pts <= 3 ? 2 : pts <= 5 ? 3 : (w.words >= 90 ? 4 : 3);
+}
 const GLOSS_RE = new RegExp('\\b(' + Object.keys(GLOSS).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'gi');
 // Escape text and turn key words into tappable help buttons.
 function gl(text) {
@@ -563,17 +668,18 @@ function shuffle(arr) {
 }
 // Shuffle, avoiding an identical sequence to the previous attempt in this session.
 function freshOrder(key, ids) {
-  const prev = ss.get('u1_order_' + key);
+  const prev = ss.get(SKEY + 'order_' + key);
   let order = shuffle(ids), tries = 0;
   while (prev && order.join(',') === prev && tries < 10) { order = shuffle(ids); tries++; }
-  ss.set('u1_order_' + key, order.join(','));
+  ss.set(SKEY + 'order_' + key, order.join(','));
   return order;
 }
 
+function optIds(q) { const ids = q.opts.map(o => o[0]); return q.fixed ? ids : shuffle(ids); }
 function newAttemptState() {
   const optOrder = {};
   VOCAB.concat(GRAMMAR).forEach(q => { optOrder[q.id] = shuffle(q.opts.map(o => o[0])); });
-  READING.filter(q => q.type === 'mcq').forEach(q => { optOrder[q.id] = shuffle(q.opts.map(o => o[0])); });
+  READING.filter(q => q.type === 'mcq').forEach(q => { optOrder[q.id] = optIds(q); });
   return {
     phase: 'start',          // start | active | complete
     part: 0,
@@ -618,9 +724,10 @@ function wordCount(t) { const s = (t || '').trim(); return s ? s.split(/\s+/).le
 function partName(key) { const p = PARTS.find(x => x.key === key); return p ? p.title : key; }
 function normalise(s) {
   return String(s || '').toLowerCase().replace(/[’']/g, '').replace(/[.,!?;:]+$/g, '').replace(/\s+/g, ' ').trim()
-    .replace(/^(the|a|an|by|july)\s+/, '').replace(/\s+(of\s+)?july$/, '').replace(/^(the\s+)/, '').trim();
+    .replace(/\s+(a|per) week$/, '').replace(/^£\s*/, '£').trim();
 }
-function listenCorrect(item) { return item.accept.includes(normalise(state.answers[item.id])); }
+function overLimit(raw) { return String(raw || '').trim().split(/\s+/).filter(w => w && !/^£?\d+([.,]\d+)?$/.test(w)).length > LISTEN_MAXWORDS; }
+function listenCorrect(item) { const raw = state.answers[item.id]; if (LISTEN_MODE === 'mcq') return raw === item.correct; return !overLimit(raw) && item.accept.includes(normalise(raw)); }
 
 function logSupport(part, tier, inserted) {
   let rec = state.supportLog.find(r => r.part === part && r.tier === tier);
@@ -647,30 +754,15 @@ function renderStart() {
   const years = ['Year 7','Year 8','Year 9','Year 10','Year 11','Year 12','Year 13'];
   app.innerHTML = `
     ${restartNotice ? `<div class="restart-note" role="status">Your activity has restarted and your previous answers were cleared. This is attempt ${attemptNo}.</div>` : ''}
-    <div class="goal"><b>Learning goal:</b> describe daily routines clearly and accurately, and practise the IELTS skills you need for reading, listening, writing and speaking about familiar topics.</div>
+    <div class="goal"><b>Learning goal:</b> ${esc(START_GOAL)}</div>
     <div class="twocol">
       <div class="box">
         <h3>Learning objectives</h3>
-        <ul class="tight">
-          <li>Use daily-routine collocations and tell the time</li>
-          <li>Use the present simple and adverbs of frequency</li>
-          <li>Find information in several short texts</li>
-          <li>Work out new words from context</li>
-          <li>Complete a form while listening</li>
-          <li>Write and speak about your routine</li>
-        </ul>
+        <ul class="tight">${START_OBJ.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       </div>
       <div class="box">
         <h3>Success criteria</h3>
-        <ul class="tight">
-          <li>I choose the right verb + noun pairs and say times correctly</li>
-          <li>I add -s / -es for he, she and it</li>
-          <li>I put frequency words in the right place</li>
-          <li>I can prove my reading answers</li>
-          <li>I spell names and numbers correctly</li>
-          <li>I write 80–120 words using time order words</li>
-          <li>I add a reason or example when I speak</li>
-        </ul>
+        <ul class="tight">${START_SC.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       </div>
     </div>
     <div class="fields">
@@ -697,7 +789,7 @@ function onStart() {
   restartNotice = false;
   state.phase = 'active';
   document.body.classList.add('is-active');
-  ss.set('u1_inprogress', '1');
+  ss.set(SKEY + 'inprogress', '1');
   requestFs();
   renderPart();
 }
@@ -736,10 +828,11 @@ function renderMcq(key) {
   const q = byId(bank, order[state.qi]);
   const answered = state.answers[q.id] !== undefined;
   const pct = Math.round((state.qi / order.length) * 100);
-  const helper = key === 'vocab' ? 'Choose the verb that makes the correct phrase.' : 'Choose the correct answer.';
+  const helper = key === 'vocab' ? VOCAB_HELP : 'Choose the correct answer.';
   app.innerHTML = `
     ${stepper()}
     <h2 class="part">${PARTS[state.part].title}</h2>
+    ${MCQ_STRAT[key] ? `<div class="strat"><span class="strat-tag">IELTS strategy</span>${MCQ_STRAT[key]}</div>` : ''}
     <div class="statrow"><span>Question ${state.qi + 1} of ${order.length}</span></div>
     <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
     <p class="question">${gl(q.q)}</p>
@@ -842,10 +935,9 @@ function renderReading() {
   app.innerHTML = `
     ${stepper()}
     <h2 class="part">${PARTS[state.part].title}</h2>
-    <p class="lead">${gl('Read about three students. Questions 1–6: choose A, B or C. Questions 7–9: choose the best meaning.')}</p>
-    <div class="strat"><span class="strat-tag">IELTS strategy</span>
-      <p>${gl('Information about one question is often in more than one text.')}</p>
-      <ol><li>Underline the key idea in the question.</li><li>Check <b>all three</b> texts. The question and the text often use different words with the same meaning.</li><li>Choose the text that answers the question <b>completely</b>.</li></ol></div>
+    <p class="lead">${gl(READING_LEAD)}</p>
+    <div class="strat"><span class="strat-tag">${esc(READING_TAG)}</span>
+      ${READING_STRAT}</div>
     ${checked ? '' : supportPanel('reading')}
     <div class="reading-grid">
       <div class="texts sticky">${TEXTS.map(t => `<div class="text-card"><h4>${esc(t.name)}</h4><p>${gl(t.body)}</p></div>`).join('')}</div>
@@ -878,7 +970,7 @@ function readingQ(q, i, checked) {
   const ans = state.answers[q.id];
   let opts;
   if (q.type === 'match') {
-    opts = `<div class="abc">${['A','B','C'].map(L => btnOpt(q.id, L, L, ans, checked, q.correct)).join('')}</div>`;
+    opts = `<div class="abc">${TEXTS.map(t => t.id).map(L => btnOpt(q.id, L, L, ans, checked, q.correct)).join('')}</div>`;
   } else {
     opts = `<div class="abc col">${state.optOrder[q.id].map(oid => btnOpt(q.id, oid, optText(q, oid), ans, checked, q.correct)).join('')}</div>`;
   }
@@ -922,9 +1014,9 @@ function renderListening() {
   app.innerHTML = `
     ${stepper()}
     <h2 class="part">${PARTS[state.part].title}</h2>
-    <div class="strat"><span class="strat-tag">IELTS strategy</span>
-      <p>The answer does not always use the words you hear, but the meaning is the same. For example, “volleyball and basketball” = “team sports”. Be careful: you may hear something that is <b>not</b> the answer.</p></div>
-    <p class="lead">${gl('A student phones an exchange office. Read the form first, choose a voice, then press Play.')} You can listen <b>two times</b>. ${gl('Complete the form.')}</p>
+    ${LISTEN_STRAT ? `<div class="strat"><span class="strat-tag">IELTS strategy</span>
+      ${LISTEN_STRAT}</div>` : ''}
+    <p class="lead">${gl(LISTEN_LEAD)} You can listen <b>two times</b>. ${gl('Answer the questions.')}</p>
     <div class="player">
       <div class="accent-row" role="group" aria-label="Voice">
         <span class="acc-label">Voice:</span>
@@ -938,10 +1030,16 @@ function renderListening() {
     </div>
     ${checked ? '' : supportPanel('listening')}
     <div class="form-sheet">
-      <h4>Global Schools Exchange: Registration</h4>
-      <div class="limit">Write ONE WORD AND/OR A NUMBER for each answer.</div>
+      <h4>${esc(LISTEN_TITLE)}</h4>
+      ${LISTEN_LIMIT ? `<div class="limit">${esc(LISTEN_LIMIT)}</div>` : ''}
       ${LISTEN_FORM.map((f, i) => {
         const v = state.answers[f.id] || '';
+        if (LISTEN_MODE === 'mcq') {
+          const ok = checked && v === f.correct;
+          return `<div class="rq"><div class="qtext">${i + 1}. ${gl(f.label)}${hints && !checked ? `<span class="hint">(${esc(f.hint)})</span>` : ''}</div>
+            <div class="abc col">${f.opts.map(o => btnOpt(f.id, o[0], o[0].toUpperCase() + '   ' + o[1], v, checked, f.correct)).join('')}</div>
+            ${checked ? `<div class="explain ${ok ? 'good' : 'bad'}"><b>${ok ? 'Correct.' : v ? 'Not quite.' : 'Not answered.'}</b> <span class="proof">${esc(f.why || '')}</span></div>` : ''}</div>`;
+        }
         const ok = checked && listenCorrect(f);
         return `<div class="frow"><label for="in-${f.id}">${i + 1}. ${gl(f.label)}${hints && !checked ? `<span class="hint">(${esc(f.hint)})</span>` : ''}</label>
           <div class="inwrap"><input type="text" id="in-${f.id}" value="${esc(v)}" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" ${checked ? `disabled class="${ok ? 'right' : 'wrong'}"` : ''}>${f.suffix ? `<span>${esc(f.suffix)}</span>` : ''}
@@ -949,8 +1047,8 @@ function renderListening() {
       }).join('')}
     </div>
     ${checked ? `<div class="script"><p><b>Recording script</b> (answers in bold)</p>${SCRIPT.map((l, i) =>
-      `<p><b>${l[0] === 'W' ? 'Officer' : 'Student'}:</b> ${SCRIPT_ANSWER_LINES.includes(i) ? '<b>' + esc(l[1]) + '</b>' : esc(l[1])}</p>`).join('')}
-      <p class="note">Notice the traps: Toronto (not chosen), the fifteenth (changed to the eighteenth), and “my dad drives me, but not often”.</p></div>` : ''}
+      `<p><b>${esc(SPEAKERS[l[0]])}:</b> ${SCRIPT_ANSWER_LINES.includes(i) ? '<b>' + esc(l[1]) + '</b>' : esc(l[1])}</p>`).join('')}
+      <p class="note">${esc(LISTEN_TRAP_NOTE)}</p></div>` : ''}
     <p class="inline-msg" id="lMsg"></p>
     <div class="row-end">${checked
       ? `<button class="primary" id="lNext">Continue to Writing →</button>`
@@ -958,6 +1056,10 @@ function renderListening() {
   `;
   if (!checked) bindSupport('listening', renderListening);
   LISTEN_FORM.forEach(f => { const i = document.getElementById('in-' + f.id); if (i && !checked) i.addEventListener('input', () => { state.answers[f.id] = i.value; state.listeningWarned = false; }); });
+  if (LISTEN_MODE === 'mcq' && !checked) document.querySelectorAll('.form-sheet .opt').forEach(b => b.addEventListener('click', () => {
+    state.answers[b.dataset.qid] = b.dataset.val; state.listeningWarned = false; saveProgress();
+    b.parentElement.querySelectorAll('.opt').forEach(x => { x.classList.toggle('chosen', x === b); x.setAttribute('aria-pressed', x === b); });
+  }));
   document.getElementById('playBtn').addEventListener('click', playRecording);
   document.querySelectorAll('.acc').forEach(b => b.addEventListener('click', () => {
     if (speaking) return;
@@ -1106,17 +1208,16 @@ function renderWriting() {
   app.innerHTML = `
     ${stepper()}
     <h2 class="part">${PARTS[state.part].title}</h2>
-    <div class="prompt"><b>Task:</b> Write a ${gl('paragraph')} about your ${gl('typical')} school day. Write <b>80–120 words</b>. ${gl('Describe your morning, afternoon and evening, and say how often you do things.')}</div>
+    ${WRITE_INTRO ? `<p class="lead">${gl(WRITE_INTRO)}</p>` : ''}
+    ${WRITE_EMAIL ? `<div class="email-card">${gl(WRITE_EMAIL)}</div>` : ''}
+    <div class="prompt">${WRITE_PROMPT}</div>
     ${supportPanel('writing')}
-    <label class="field" for="wText">Your paragraph</label>
+    <label class="field" for="wText">${esc(WRITE_LABEL)}</label>
     <textarea id="wText" spellcheck="false" autocorrect="off" autocapitalize="sentences">${esc(state.writing)}</textarea>
-    <div class="wordbar">Words: <b id="wc">${wordCount(state.writing)}</b> / 80–120</div>
+    <div class="wordbar">Words: <b id="wc">${wordCount(state.writing)}</b> / ${WRITE_MIN}–${WRITE_MAX}</div>
     <div class="checklist">
       <h4>Check before you continue</h4>
-      <label class="checkrow"><input type="checkbox"> I start with a topic sentence.</label>
-      <label class="checkrow"><input type="checkbox"> I use time order words (first, then, after that, finally).</label>
-      <label class="checkrow"><input type="checkbox"> I use adverbs of frequency in the right place.</label>
-      <label class="checkrow"><input type="checkbox"> I give at least one reason with “because”.</label>
+      ${WRITE_CHECKLIST.map(c => `<label class="checkrow"><input type="checkbox"> ${esc(c)}</label>`).join('')}
     </div>
     <p class="inline-msg" id="wMsg"></p>
     <div class="row-end"><button class="primary" id="wNext">Continue to Speaking →</button></div>
@@ -1128,9 +1229,9 @@ function renderWriting() {
   document.getElementById('wNext').addEventListener('click', () => {
     state.writing = ta.value;
     const n = wordCount(ta.value);
-    if (n < 80 && !state.writeWarned) {
+    if (n < WRITE_MIN && !state.writeWarned) {
       state.writeWarned = true;
-      document.getElementById('wMsg').textContent = n === 0 ? 'You have not written anything yet. Tap Continue again to move on anyway.' : `You have ${n} words. Try to write at least 80. Tap Continue again to move on anyway.`;
+      document.getElementById('wMsg').textContent = n === 0 ? 'You have not written anything yet. Tap Continue again to move on anyway.' : `You have ${n} words. Try to write at least ${WRITE_MIN}. Tap Continue again to move on anyway.`;
       return;
     }
     nextPart();
@@ -1142,9 +1243,8 @@ function renderSpeaking() {
   app.innerHTML = `
     ${stepper()}
     <h2 class="part">${PARTS[state.part].title}</h2>
-    <div class="strat"><span class="strat-tag">IELTS strategy</span>
-      <p>When you plan, write only <b>short words or phrases</b>. If you write full sentences and read them out, you will lose marks. If you cannot think of something true to say, you can invent it.</p></div>
-    <p class="lead">${gl('These are IELTS Speaking Part 1 questions. For each question, write short notes (key words, not full sentences), then say your answer aloud. Use')} <b>A + R + E</b>: ${gl('Answer, Reason, Example.')}</p>
+    ${SPEAK_STRAT ? `<div class="strat"><span class="strat-tag">IELTS strategy</span>${SPEAK_STRAT}</div>` : ''}
+    <p class="lead">${gl(SPEAK_LEAD)}</p>
     ${supportPanel('speaking')}
     ${SPEAK_Q.map((q, i) => `<div class="spq"><div class="qtext">${i + 1}. ${gl(q.q)}</div>
       <textarea class="short" id="sp-${q.id}" spellcheck="false" autocorrect="off" aria-label="Answer ${i + 1}">${esc(state.speaking[q.id])}</textarea></div>`).join('')}
@@ -1180,7 +1280,7 @@ function finish() {
   state.completedAt = new Date();
   document.body.classList.remove('is-active');
   document.body.classList.add('is-complete');
-  ss.del('u1_inprogress');
+  ss.del(SKEY + 'inprogress');
   hideShield(); warnModal.classList.remove('show');
   stopSpeech(false);
   exitFs();
@@ -1193,18 +1293,6 @@ function fmtDate(d) {
   catch (e) { return d.toString(); }
 }
 
-function writingChecks(t) {
-  const m = re => (t.match(re) || []).length;
-  return {
-    words: wordCount(t),
-    sentences: (t.split(/[.!?]+/).filter(s => s.trim().split(/\s+/).length >= 2)).length,
-    sequencers: m(/\b(first(ly)?|then|after that|next|later|finally|afterwards)\b/gi),
-    frequency: m(/\b(always|usually|often|sometimes|rarely|never|hardly ever|seldom|occasionally|normally|generally)\b/gi),
-    because: m(/\bbecause\b/gi),
-    contrast: m(/\b(but|however|although|while)\b/gi),
-    timeExp: m(/\b(at \d{1,2}([:.]\d{2})?|in the (morning|afternoon|evening)|on weekdays|at (the )?weekends?|every (day|morning|evening|night)|once a week|twice a week)\b/gi)
-  };
-}
 function speakChecks(t) {
   return {
     words: wordCount(t),
@@ -1229,16 +1317,7 @@ function itemResults() {
     let diag = '';
     if (!a) diag = 'Not answered.';
     else if (a !== q.correct) {
-      if (key === 'vocab' && ans === 'make' && optText(q, q.correct) === 'do') diag = 'Chose “make” where English uses “do” (a common do / make confusion).';
-      else if (id === 'G9' && ans === 'watches') diag = 'Added -s after “doesn’t” (the verb should stay in its base form).';
-      else if (id === 'G2' && ans === 'doesn’t have') diag = 'Used “doesn’t” with “they” (they → don’t).';
-      else if (id === 'G2' && ans === 'don’t has') diag = 'Used “has” after “don’t” (after don’t / doesn’t, use the base verb).';
-      else if (id === 'G3') diag = 'Did not match the question word to the subject (your brother = he → Does).';
-      else if (['G1', 'G8'].includes(id)) diag = 'Missed the he / she / it form of the verb.';
-      else if (['G6', 'G7'].includes(id)) diag = 'Spelling rule for he / she / it endings (-es, -ies).';
-      else if (['G4', 'G5'].includes(id)) diag = 'Word order with a frequency adverb.';
-      else if (id === 'G10') diag = 'Meaning of the frequency adverb (every single day = always).';
-      else diag = 'Chose a verb that does not go with this noun.';
+      diag = mcqDiag(id, ans, q);
     }
     return { id, cat: CATS[id], q: q.q, ans, correct: optText(q, q.correct), ok: a === q.correct, answered: !!a, why: q.why, diag };
   });
@@ -1250,18 +1329,24 @@ function itemResults() {
     let diag = '';
     if (!a) diag = 'Not answered.';
     else if (a !== q.correct) {
-      if (q.type === 'mcq') diag = 'The context clue was not used to work out the meaning.';
-      else if (READING_DISTRACTOR[q.id] === a) diag = 'Chose a text with a similar idea that does not fully match (a distractor).';
-      else diag = 'The matching information was not located in the correct text.';
+      diag = readingDiag(q, a);
     }
     return { id: q.id, cat: CATS[q.id], q: q.q, ans: a ? show(a) : '', correct: show(q.correct), ok: a === q.correct, answered: !!a, why: q.why, diag };
   }) });
   parts.push({ key: 'listening', name: 'D · Listening', items: LISTEN_FORM.map(f => {
+    if (LISTEN_MODE === 'mcq') {
+      const a = state.answers[f.id], ok = a === f.correct;
+      let diag = '';
+      if (!a) diag = 'Not answered.';
+      else if (!ok) diag = (LISTEN_DISTRACTOR[f.id] || []).includes(a) ? 'Chose an option that is mentioned in the recording but is not the answer (a distractor).' : 'The answer was not identified in the recording.';
+      return { id: f.id, cat: CATS[f.id], q: f.label, ans: a ? optText(f, a) : '', correct: optText(f, f.correct), ok, answered: !!a, why: f.why || '', diag };
+    }
     const raw = String(state.answers[f.id] || '').trim(), n = normalise(raw), ok = listenCorrect(f);
     let diag = '';
     if (!raw) diag = 'Not answered.';
     else if (!ok) {
-      if ((LISTEN_DISTRACTOR[f.id] || []).includes(n)) diag = `Wrote a word from the recording that was a trap (“${raw}”) instead of the final answer.`;
+      if (overLimit(raw)) diag = `Wrote more than ${LISTEN_MAXWORDS === 1 ? 'one word' : LISTEN_MAXWORDS + ' words'}. The task gives a word limit, so this answer is marked wrong.`;
+      else if ((LISTEN_DISTRACTOR[f.id] || []).includes(n)) diag = `Wrote a word from the recording that was a trap (“${raw}”) instead of the final answer.`;
       else if (f.accept.some(acc => acc.length >= 5 && lev(n, acc) <= 2)) diag = 'Near-miss spelling: the word was heard but spelled incorrectly.';
       else diag = 'The answer was not identified in the recording.';
     }
@@ -1301,11 +1386,6 @@ const CANDO = {
   Reading: { 1: 'Use references (e.g., picture dictionaries, bilingual glossaries, technology)', 2: 'Locate main ideas in a series of related sentences', 3: 'Answer questions about explicit information in texts', 4: 'Infer meaning from text', 5: 'Draw conclusions from different sources of informational text' },
   Writing: { 1: 'Supply missing words in short sentences', 2: 'Correspond for social purposes (e.g., memos, e-mails, notes)', 3: 'Compose short narrative and expository pieces', 4: 'Compose narrative and expository text for a variety of purposes', 5: 'Explain, with details, phenomena, processes, procedures' }
 };
-const RECOMMEND = {
-  Listening: { 1: 'Pre-teach key words with pictures and practise letter names and numbers with very short dialogues.', 2: 'Use short Part 1-style dialogues with answer-type hints; practise spelling names and writing numbers.', 3: 'Practise spotting traps and corrections (“No, sorry…”) in Part 1 dialogues, then check spelling.', 4: 'Move to longer IELTS Part 1–2 recordings played once only, without hints.' },
-  Reading: { 1: 'Use a bilingual glossary and read one short text at a time; highlight matching words in the question and the text.', 2: 'Practise finding the sentence that answers each question; build paraphrase pairs (twice a week = two times a week).', 3: 'Practise explaining why the distractor text is wrong, and guessing new words from context clues.', 4: 'Use longer texts with inference questions and less support.' },
-  Writing: { 1: 'Use sentence frames and a word bank to write 3–4 sentences about your day.', 2: 'Use the paragraph planner; add time-order words and one reason with “because”.', 3: 'Write 100+ words; add contrast (but, however) and check verb endings (-s / -es).', 4: 'Compare weekdays and weekends, and vary sentence structures and frequency expressions.' }
-};
 function supportUsed(part, tier) { return state.supportLog.some(r => r.part === part && (!tier || r.tier === tier)); }
 function widaReport(parts) {
   const out = [];
@@ -1316,36 +1396,31 @@ function widaReport(parts) {
     lvl = Lc <= 2 ? 1 : Lc <= 4 ? 2 : Lc <= 6 ? 3 : 4;
     if (lvl > 3 && supportUsed('listening', 'starter')) { lvl = 3; notes.push('Answer-type hints (Starter support) were used.'); }
   }
-  const lEvid = [`${Lc} of ${L.items.length} form gaps correct.`];
-  const l4 = L.items.find(i => i.id === 'L4');
-  if (l4.ok) lEvid.push('Recognised the corrected date (18th, not the 15th).');
-  L.items.filter(i => !i.ok && i.answered).forEach(i => lEvid.push(`${i.q}: wrote “${i.ans}” (${i.diag.replace(/\.$/, '').toLowerCase()}).`));
+  const lEvid = [`${Lc} of ${L.items.length} questions correct.`];
+  const lf = L.items.find(i => i.id === LISTEN_FIXED.id);
+  if (lf && lf.ok) lEvid.push(LISTEN_FIXED.text);
+  L.items.filter(i => !i.ok && i.answered).forEach(i => lEvid.push(`${i.q}: ${LISTEN_MODE === 'mcq' ? 'chose' : 'wrote'} “${i.ans}” (${i.diag.replace(/\.$/, '').toLowerCase()}).`));
   out.push({ domain: 'Listening', level: lvl, evidence: lEvid, notes });
 
   const R = parts.find(p => p.key === 'reading'), Rc = partStats(R).correct;
-  const ctx = R.items.filter(i => i.cat === 'meaning from context'), ctxOk = ctx.filter(i => i.ok).length;
-  const match = R.items.filter(i => i.cat !== 'meaning from context'), matchOk = match.filter(i => i.ok).length;
-  let rl = Rc <= 2 ? 1 : Rc <= 4 ? 2 : Rc <= 7 ? 3 : (ctxOk === ctx.length ? 4 : 3);
+  const rw = readingWida(R, Rc);
+  let rl = rw.level;
   const rNotes = [];
   if (rl > 3 && supportUsed('reading', 'starter')) { rl = 3; rNotes.push('Starter support (glossary) was used.'); }
   const rg = (state.glossLog.reading || []).length;
   if (rg) rNotes.push(`Used bilingual key-word help for ${rg} word${rg > 1 ? 's' : ''}.`);
-  out.push({ domain: 'Reading', level: rl, evidence: [`${Rc} of ${R.items.length} correct: matching information ${matchOk}/${match.length}, meaning from context ${ctxOk}/${ctx.length}.`].concat(
-    R.items.filter(i => !i.ok && i.answered && i.diag.includes('distractor')).length ? ['Chose at least one distractor text with a similar idea.'] : []), notes: rNotes });
+  out.push({ domain: 'Reading', level: rl, evidence: rw.evidence, notes: rNotes });
 
   const w = writingChecks(state.writing);
   const inserts = state.supportLog.filter(r => r.part === 'writing').reduce((s, r) => s + r.inserts, 0);
   let wl = null; const wNotes = ['Grammar and spelling accuracy are not checked automatically. Read the paragraph to confirm.'];
   if (w.words === 0) wNotes.unshift('No writing was submitted, so there is not enough evidence.');
   else {
-    let pts = 0;
-    if (w.words >= 40) pts++; if (w.words >= 80) pts++; if (w.sequencers >= 2) pts++; if (w.frequency >= 2) pts++;
-    if (w.because >= 1) pts++; if (w.contrast >= 1) pts++; if (w.sentences >= 5) pts++;
-    wl = w.words < 15 ? 1 : w.words < 60 ? 2 : pts <= 3 ? 2 : pts <= 5 ? 3 : (w.words >= 90 ? 4 : 3);
+    wl = writingLevel(w);
     if (inserts >= 3 && wl > 3) wl = 3;
     if (inserts) wNotes.unshift(`${inserts} sentence frame${inserts > 1 ? 's or words were' : ' or word was'} inserted from language support.`);
   }
-  out.push({ domain: 'Writing', level: wl, evidence: [`${w.words} words, ${w.sentences} sentences, ${w.sequencers} time-order words, ${w.frequency} frequency adverbs, ${w.because} reason(s) with “because”, ${w.contrast} contrast word(s).`], notes: wNotes });
+  out.push({ domain: 'Writing', level: wl, evidence: [writingEvidence(w)], notes: wNotes });
 
   const sp = SPEAK_Q.map(q => speakChecks(state.speaking[q.id] || ''));
   out.push({ domain: 'Speaking', level: null, evidence: [`Typed notes only: ${sp.filter(s => s.words).length} of 3 answered; reasons given in ${sp.filter(s => s.reason).length}, examples in ${sp.filter(s => s.example).length}.`],
@@ -1467,17 +1542,11 @@ function renderReport() {
     </div>`).join('')}
 
     <h3>6. Student’s Written Output</h3>
-    <p style="font-size:14px;margin:0 0 8px"><b>Part E · Writing.</b> Task: write 80–120 words about your typical school day. Shown exactly as typed.</p>
+    <p style="font-size:14px;margin:0 0 8px"><b>Part E · Writing.</b> Task: ${esc(WRITE_TASK_SHORT)}. Shown exactly as typed.</p>
     <div class="verbatim">${state.writing.trim() ? esc(state.writing) : '<i>No writing submitted.</i>'}</div>
     <table class="rt" style="margin-top:10px">
       <tr><th>Automatic language check (approximate)</th><th>Count</th></tr>
-      <tr><td>Words</td><td>${w.words} (target 80–120)</td></tr>
-      <tr><td>Sentences</td><td>${w.sentences}</td></tr>
-      <tr><td>Time-order words (first, then, after that…)</td><td>${w.sequencers}</td></tr>
-      <tr><td>Adverbs of frequency</td><td>${w.frequency}</td></tr>
-      <tr><td>Time expressions (at 7:00, on weekdays…)</td><td>${w.timeExp}</td></tr>
-      <tr><td>Reasons with “because”</td><td>${w.because}</td></tr>
-      <tr><td>Contrast words (but, however…)</td><td>${w.contrast}</td></tr>
+      ${writingRows(w).map(r => `<tr><td>${esc(r[0])}</td><td>${esc(String(r[1]))}</td></tr>`).join('')}
     </table>
     <p class="note">Counts are found automatically and do not check accuracy.</p>
     <p style="font-size:14px;margin:16px 0 4px"><b>Part F · Speaking preparation</b> (typed notes, shown exactly as typed)</p>
@@ -1680,7 +1749,7 @@ function restartPart() {
     bank.forEach(q => { state.optOrder[q.id] = shuffle(q.opts.map(o => o[0])); });
   } else if (key === 'reading') {
     clear(READING.map(q => q.id));
-    READING.filter(q => q.type === 'mcq').forEach(q => { state.optOrder[q.id] = shuffle(q.opts.map(o => o[0])); });
+    READING.filter(q => q.type === 'mcq').forEach(q => { state.optOrder[q.id] = optIds(q); });
     state.readingChecked = false; state.readingWarned = false;
   } else if (key === 'listening') {
     clear(LISTEN_FORM.map(f => f.id));
@@ -1699,7 +1768,7 @@ function restartPart() {
 }
 
 /* ---------- Progress saving (this browser tab only) ---------- */
-const SAVE_KEY = 'u1_daily_life_progress';
+const SAVE_KEY = SKEY + 'progress';
 function saveProgress() {
   if (!state || state.phase === 'start') return;
   saveTyping();

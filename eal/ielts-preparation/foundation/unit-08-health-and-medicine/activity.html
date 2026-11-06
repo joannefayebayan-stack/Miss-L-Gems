@@ -1159,8 +1159,8 @@ function renderWriting() {
   app.innerHTML = `
     ${stepper()}
     <h2 class="part">${PARTS[state.part].title}</h2>
-    <p class="lead">${gl(WRITE_INTRO)}</p>
-    <div class="email-card">${gl(WRITE_EMAIL)}</div>
+    ${WRITE_INTRO ? `<p class="lead">${gl(WRITE_INTRO)}</p>` : ''}
+    ${WRITE_EMAIL ? `<div class="email-card">${gl(WRITE_EMAIL)}</div>` : ''}
     <div class="prompt">${WRITE_PROMPT}</div>
     ${supportPanel('writing')}
     <label class="field" for="wText">${esc(WRITE_LABEL)}</label>
