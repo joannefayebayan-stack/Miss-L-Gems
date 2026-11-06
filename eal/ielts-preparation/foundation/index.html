@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IELTS Foundation</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="IELTS Foundation: level guide, course goals and the ten units.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Jost:wght@400;500&display=swap">
+<style>
+/* Layout: same jeweller's case as the home page. A pale hero, then one card per unit in the EAL emerald collection. */
+:root{
+  --bg:#FBFAF7; --surface:#ffffff; --fg:#2F3A4A; --muted:#5F6B7A; --line:#E7E3DA;
+  --gold:#8A6A2F; --emerald:#2A6E5B; --emerald-soft:#F1FAF6; --chip:#E4F2EC;
+  --hero:#E8EFFA; --hero-fg:#2B3A4F; --hero-muted:#51607A; --hero-gold:#8FA8D6;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"Jost","Century Gothic",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1.02rem/1.6 var(--body)}
+.wrap{max-width:1000px;margin-inline:auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--hero-fg);outline-offset:3px}
+h1,h2{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0}
+
+.hero{background:var(--hero);color:var(--hero-fg);padding-block:clamp(28px,5vw,44px) clamp(40px,6vw,60px)}
+.back{display:inline-block;font-size:.9rem;color:var(--hero-muted);text-underline-offset:3px;margin-bottom:clamp(24px,4vw,40px)}
+.eyebrow{font:500 .82rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+h1{font-size:clamp(3rem,9vw,5.4rem);line-height:1.02}
+.lede{font:italic 400 clamp(1.2rem,2.6vw,1.5rem)/1.4 var(--display);max-width:34em;margin:16px 0 0;color:var(--hero-muted)}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin:22px 0 0;padding:0;list-style:none;font-size:.95rem;color:var(--hero-muted)}
+.facts b{color:var(--hero-fg);font-weight:500}
+.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:color-mix(in srgb,var(--hero-gold) 45%,transparent);border:1px solid color-mix(in srgb,var(--hero-gold) 45%,transparent);margin-top:26px;max-width:860px}
+.levels div{background:#F4F7FD;padding:14px 18px;min-width:0}
+.levels span{display:block;font:500 .74rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.levels b{display:block;font:600 1.55rem/1.2 var(--display);color:var(--hero-fg);margin-top:4px}
+.levels b a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.fine a{color:var(--hero-fg);text-underline-offset:2px}
+.levels em{display:block;font-style:normal;font-size:.9rem;color:var(--hero-muted)}
+.path{margin:16px 0 0;font-size:.95rem;color:var(--hero-muted)}
+.path b{color:var(--hero-fg);font-weight:500}
+.fine{margin:6px 0 0;font-size:.82rem;color:var(--hero-muted)}
+.strategy{margin-top:20px;background:#FBF4E4;border:1px solid #EAD9B0;padding:14px 18px}
+.strategy .label{color:var(--gold)}
+.strategy ul{margin:0;padding-left:1.1em;font-size:.95rem}
+.strategy li+li{margin-top:6px}
+.strategy b{font-weight:500}
+.wida{margin:18px 0 0;padding-top:14px;border-top:1px dashed var(--line);font-size:.93rem;color:var(--muted)}
+.wida b{color:var(--fg);font-weight:500}
+
+.intro{padding-block:clamp(40px,6vw,64px);background:var(--emerald-soft);border-bottom:1px solid var(--line)}
+h2{font-size:clamp(2rem,5vw,2.8rem);line-height:1.1;color:var(--emerald)}
+.intro p.sub{margin:10px 0 0;color:var(--muted);max-width:40em}
+.skills{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:28px}
+.skills div{background:var(--surface);padding:18px 20px;min-width:0}
+.skills b{display:block;font:600 1.3rem/1.2 var(--display);color:var(--emerald);margin-bottom:6px}
+.skills span{font-size:.94rem;color:var(--muted)}
+
+.units-nav{padding-block:28px 0}
+.units-nav ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.units-nav a{display:block;padding:10px 12px;border:1px solid var(--line);background:var(--surface);text-decoration:none;font-size:.9rem;line-height:1.3;height:100%}
+.units-nav a:hover{border-color:var(--emerald);color:var(--emerald)}
+.units-nav span{display:block;font-size:.75rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
+
+.units{padding-block:28px clamp(48px,7vw,80px)}
+h3.group{font:500 .82rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
+.list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line)}
+.unit{padding:28px clamp(18px,3vw,32px);scroll-margin-top:16px}
+.unit+.unit{border-top:1px solid var(--line)}
+.unit-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 18px}
+.unit-no{font:500 .78rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.unit-title{font:600 clamp(1.6rem,3.4vw,2rem)/1.15 var(--display);margin:4px 0 0}
+.status{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.status.ready{border-color:var(--emerald);color:var(--emerald);background:var(--chip)}
+.desc{margin:10px 0 0;color:var(--muted);max-width:44em}
+.cols{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px 36px;margin-top:20px}
+.label{font:500 .76rem/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--emerald);margin:0 0 8px}
+.goals{margin:0;padding-left:1.1em;font-size:.97rem}
+.goals li+li{margin-top:4px}
+dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;font-size:.95rem}
+dt{font-weight:500}
+dd{margin:0;color:var(--muted)}
+
+footer{background:var(--hero);color:var(--hero-muted);padding-block:30px 36px;text-align:center;font-size:.92rem}
+footer b{display:block;font:500 1.35rem var(--display);color:var(--hero-fg);margin-bottom:2px}
+
+@media (max-width:760px){
+  .skills{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .units-nav ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cols{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){.levels{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:420px){
+  .skills{grid-template-columns:minmax(0,1fr)}
+  dl{grid-template-columns:minmax(0,1fr);gap:2px}
+  dd{margin-bottom:8px}
+}
+
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;font-size:.9rem;color:var(--hero-muted);margin-bottom:clamp(24px,4vw,40px)}
+.crumbs a{color:var(--hero-muted);text-underline-offset:3px}
+.crumbs span[aria-current]{color:var(--hero-fg)}
+.cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{display:flex;flex-direction:column;gap:6px;height:100%;padding:20px 22px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:inherit}
+a.card:hover{border-color:var(--emerald)}
+a.card:hover .open{text-decoration:underline}
+.card .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card .t{font:600 1.45rem/1.2 var(--display);margin:0}
+.card .d{margin:0;color:var(--muted);font-size:.95rem}
+.card .open{margin-top:auto;padding-top:8px;font-size:.92rem;color:var(--emerald);font-weight:500}
+.card.soon{background:transparent;border-style:dashed}
+.card.soon .t{color:var(--muted)}
+.card .meta{font-size:.9rem;color:var(--hero-muted)}
+.resources{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+.btn{display:inline-block;padding:12px 20px;border:1px solid var(--emerald);color:var(--emerald);text-decoration:none;font-weight:500;background:var(--surface)}
+.btn.primary{background:var(--emerald);color:#fff}
+.btn.off{border-style:dashed;color:var(--muted);border-color:var(--line);pointer-events:none}
+.unitpage{padding-block:36px clamp(48px,7vw,80px)}
+.unitpage .unit{background:var(--surface);border:1px solid var(--line)}
+.book{font-size:.9rem;color:var(--muted);margin:14px 0 0}
+@media (max-width:760px){.cards{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../../index.html">Miss L Gems</a> <span aria-hidden="true">›</span> <a href="../../../index.html#eal">EAL</a> <span aria-hidden="true">›</span> <a href="../index.html">IELTS Preparation</a> <span aria-hidden="true">›</span> <span aria-current="page">Foundation</span></nav>
+  <p class="eyebrow">IELTS Preparation</p>
+  <h1>IELTS Foundation</h1>
+  <p class="lede">Your first step towards IELTS. Ten topic units build your English, starting with everyday life and moving towards the kinds of tasks you will meet in the test.</p>
+  <ul class="facts">
+    <li><b>For:</b> students planning to take IELTS</li>
+    <li><b>Units:</b> 10, from daily life to science and technology</li>
+  </ul>
+  <div class="levels" aria-label="Level guide">
+    <div><span>CEFR</span><b>A2</b><em><a href="https://assets.cambridge.org/97810092/80280/frontmatter/9781009280280_frontmatter.pdf" target="_blank" rel="noopener">The level this book is written for (Cambridge)</a></em></div>
+    <div><span>IELTS band</span><b><a href="https://ielts.idp.com/canada/prepare/article-ielts-and-cefr-levels" target="_blank" rel="noopener">about 3.0–3.5</a></b><em>CEFR A2 on the IELTS–CEFR chart</em></div>
+    <div><span>WIDA</span><b>Levels 2–3</b><em>Emerging to Developing (approximate; <a href="https://wida.wisc.edu/resources/can-do-descriptors-key-uses-edition-grades-9-12" target="_blank" rel="noopener">WIDA Can Do Descriptors</a>)</em></div>
+  </div>
+  <p class="path"><b>Your IELTS path:</b> Foundation → Level 1 (target Band 5.5) → Level 2 (target Band 6.5) → Level 3 (target Band 7.5)</p>
+  <p class="fine">Bands and levels are approximate guides, not test results. Band scores for each CEFR level: <a href="https://ielts.idp.com/canada/prepare/article-ielts-and-cefr-levels" target="_blank" rel="noopener">IELTS and CEFR levels (IDP IELTS)</a> and <a href="https://www.ielts.org/about-ielts/ielts-in-cefr-scale" target="_blank" rel="noopener">IELTS and the CEFR (ielts.org)</a>. Level of the book and Level 1–3 target bands: <a href="https://assets.cambridge.org/97810092/80280/frontmatter/9781009280280_frontmatter.pdf" target="_blank" rel="noopener">Mindset for IELTS Foundation, Cambridge</a>. There is no official WIDA to CEFR conversion.</p>
+</div></header>
+
+<main>
+<section class="intro"><div class="wrap">
+  <h2>Course goals</h2>
+  <p class="sub">In Foundation the four skills work together. Reading gives you ideas and language for writing, and listening gives you ideas and language for speaking.</p>
+  <div class="skills">
+    <div><b>Reading</b><span>Build ideas and vocabulary, and get used to IELTS-style questions at your level.</span></div>
+    <div><b>Listening</b><span>Learn strategies for listening and the kinds of tasks used in the IELTS test.</span></div>
+    <div><b>Writing</b><span>Write for everyday communication and learn how IELTS Writing tasks are marked.</span></div>
+    <div><b>Speaking</b><span>Speak with confidence on familiar topics and answer IELTS-style questions.</span></div>
+  </div>
+</div></section>
+
+
+<section class="units"><div class="wrap">
+  <h3 class="group">Units</h3>
+  <ul class="cards">
+    <li><a class="card" href="unit-01-daily-life/index.html">
+      <div class="row"><span class="unit-no">Unit 1</span><span class="status ready">Ready</span></div>
+      <p class="t">Daily Life</p><p class="d">Talk and write about your day: what you do, when you do it and how often.</p><span class="open">Open unit →</span></a></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 2</span><span class="status">Coming soon</span></div>
+      <p class="t">House and Home</p><p class="d">Describe the place you live and choose the right accommodation.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 3</span><span class="status">Coming soon</span></div>
+      <p class="t">Hobbies, Leisure and Entertainment</p><p class="d">Talk about the sports, hobbies and events you enjoy, and what is happening now.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 4</span><span class="status">Coming soon</span></div>
+      <p class="t">Travel and Holidays</p><p class="d">Plan and describe holidays, and talk about places you have been.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 5</span><span class="status">Coming soon</span></div>
+      <p class="t">Food</p><p class="d">Talk about ingredients, meals and recipes, and explain how a dish is made.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 6</span><span class="status">Coming soon</span></div>
+      <p class="t">Transport and Places in Town</p><p class="d">Get around a town or city, read real signs and compare places.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 7</span><span class="status">Coming soon</span></div>
+      <p class="t">Jobs, Work and Study</p><p class="d">Describe your skills and abilities, and apply for a summer job.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 8</span><span class="status">Coming soon</span></div>
+      <p class="t">Health and Medicine</p><p class="d">Talk about staying healthy and relaxing, and give a friend good advice.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 9</span><span class="status">Coming soon</span></div>
+      <p class="t">Language</p><p class="d">Talk about how you learn languages, make plans and give a longer talk.</p></div></li>
+    <li><div class="card soon">
+      <div class="row"><span class="unit-no">Unit 10</span><span class="status">Coming soon</span></div>
+      <p class="t">Science and Technology</p><p class="d">Talk about the technology you use, predict the future and describe a graph.</p></div></li>
+  </ul>
+</div></section>
+</main>
+<footer><div class="wrap"><b>Miss L Gems</b>IELTS Foundation follows the topics and skills of Mindset for IELTS Foundation (Cambridge).</div></footer>
+</body>
+</html>
