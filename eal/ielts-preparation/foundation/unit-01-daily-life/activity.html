@@ -390,6 +390,12 @@ const SPEAK_Q = [
   { id: 'S3', q: 'Do you prefer weekdays or weekends? Why?' }
 ];
 
+// IELTS strategies taught in this unit's own tip boxes (listed in the student report).
+const STRATEGIES = [
+  { part: 'reading', text: 'Information about one question is often in more than one text: check all the texts and choose the one that answers completely.', src: 'Tip 6, p. 13', ids: ['R1','R2','R3','R4','R5','R6'] },
+  { part: 'listening', text: 'The answer may use different words from the ones you hear, and you may hear something that is not the answer.', src: 'Mini tips 17.0–17.4, p. 16', ids: ['L3','L4','L6','L7'] },
+  { part: 'speaking', text: 'Plan with short words or phrases, not full sentences; you can invent details.', src: 'Tip 19, p. 16', ids: [] }
+];
 // Optional language support, three tiers. Use is recorded in the report.
 const TIER_NAMES = { starter: 'Starter', builder: 'Builder', stretch: 'Stretch' };
 const TIER_WIDA  = { starter: 'WIDA 1–2 (Entering–Emerging)', builder: 'WIDA 3 (Developing)', stretch: 'WIDA 4–5 (Expanding–Bridging)' };
@@ -1348,6 +1354,14 @@ function widaReport(parts) {
 }
 
 /* ---------- Support summaries ---------- */
+function strategyRows(parts) {
+  const all = {}; parts.forEach(p => p.items.forEach(i => { all[i.id] = i; }));
+  return STRATEGIES.map(st => {
+    const its = (st.ids || []).map(id => all[id]).filter(Boolean);
+    const ok = its.filter(i => i.ok).length;
+    return { text: st.text, part: partName(st.part), src: st.src, result: its.length ? `${ok} of ${its.length} correct` : 'Teacher-assessed (typed notes)' };
+  });
+}
 function supportSummaryRows() {
   if (!state.supportLog.length) return null;
   return state.supportLog.map(r => ({
@@ -1480,10 +1494,15 @@ function renderReport() {
     <p class="note">Support use shows which scaffolds the student chose. It is not a WIDA level judgement.</p>
     <p class="note">Listening: ${esc(listenNote)}</p>
 
-    <h3>8. Next Steps</h3>
+    <h3>8. IELTS Strategies Practised</h3>
+    <p class="note" style="margin-top:0">The strategies taught in this unit of the book, and how the student did on the questions that use them.</p>
+    <table class="rt"><tr><th>Strategy</th><th>Part</th><th>Book</th><th>Result on these questions</th></tr>
+      ${strategyRows(parts).map(r => `<tr><td>${esc(r.text)}</td><td>${esc(r.part)}</td><td>${esc(r.src)}</td><td>${esc(r.result)}</td></tr>`).join('')}</table>
+
+    <h3>9. Next Steps</h3>
     <ul class="tight">${nextSteps(parts, wida).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
 
-    <h3>9. Attempt Record</h3>
+    <h3>10. Attempt Record</h3>
     <ul class="tight">${monitoringLines().map(l => `<li>${esc(l)}</li>`).join('')}</ul>
     <p class="note">These are browser events only. They are not proof of how the work was done.</p>
 
@@ -1515,6 +1534,7 @@ function plainReport() {
   const sup = supportSummaryRows();
   if (sup) sup.forEach(r => L.push(`${r.part}: ${r.tier} — ${r.use}`)); else L.push('None');
   glossRows().forEach(r => L.push(`${r.part} translations: ${r.words.join(', ')}`));
+  L.push('', 'IELTS STRATEGIES PRACTISED'); strategyRows(parts).forEach(r => L.push(`${r.text} (${r.src}, ${r.part}): ${r.result}`));
   L.push('', 'NEXT STEPS'); nextSteps(parts, wida).forEach(x => L.push('- ' + x));
   L.push('', 'ATTEMPT RECORD'); monitoringLines().forEach(l => L.push(l));
   return L.join('\n');
