@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" translate="no" class="notranslate">
+<head>
+<meta charset="UTF-8"><meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Survey Showdown</title>
+<style>
+/* Layout: one shared classroom screen. Two team scores on top, the answer board in the middle, teacher buttons below. Single light look, matching the site's pastel EAL pages. */
+:root{color-scheme:light;--bg:#F7FCFA;--card:#FFFFFF;--ink:#2F3A4A;--mut:#5F6B7A;--line:#D5EBE1;--mint:#BFE6D6;--mint2:#9FD3BE;--mintl:#E4F5EE;--deep:#1F4D40;--peach:#FBE2CC;--peach2:#F5C49A;--peachd:#7A4E1E;--bad:#A63A32;--badb:#FCEBE8;--ok:#1F6B45;
+--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--th:"Noto Sans Thai","Thonburi","Leelawadee UI",sans-serif}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.45;padding-block:clamp(10px,2vh,22px) 12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{width:100%;max-width:1080px;margin:0 auto;display:grid;gap:10px}
+.wrap.narrow{max-width:720px}
+header{text-align:center}
+.eye{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--deep)}
+h1{font-size:clamp(28px,4vw,40px);margin:4px 0;color:var(--deep);text-wrap:balance}
+h2{font-size:20px;margin:0 0 6px;color:var(--deep)}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--deep);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.box{background:var(--mintl);border-radius:12px;padding:10px 14px}
+.box b{color:var(--deep)}
+.box ul{margin:4px 0 0;padding-left:20px}
+label{font-weight:700;display:block;margin-bottom:4px}
+input,select{font:inherit;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.btn{border:0;border-radius:14px;padding:12px 20px;font-weight:700;background:var(--mint);color:var(--deep);box-shadow:0 3px 0 var(--mint2)}
+.btn:hover{background:var(--mint2)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn.line{background:#fff;border:1.5px solid var(--mint2);box-shadow:0 3px 0 var(--line)}
+.btn.line:hover{background:var(--mintl)}
+.btn.wide{width:100%;font-size:18px;padding:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row.c{justify-content:center}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}
+.team{border-radius:16px;padding:6px 12px;border:3px solid transparent;display:grid;gap:2px;text-align:center;min-width:0}
+.team.a{background:var(--mintl);color:var(--deep)}
+.team.b{background:var(--peach);color:var(--peachd)}
+.team.on.a{border-color:var(--deep)}
+.team.on.b{border-color:var(--peachd)}
+.team .nm{font-weight:700;font-size:clamp(15px,2vw,20px);overflow-wrap:anywhere}
+.team .sc{font-size:clamp(36px,5vw,50px);font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}
+.team .st{font-size:13px;font-weight:700}
+.fix{display:flex;justify-content:center;gap:6px;align-items:center}
+.fix button{border:1px solid currentColor;background:transparent;border-radius:8px;padding:0 9px;font-size:13px;font-weight:700;min-height:26px}
+.mid{display:grid;align-content:center;justify-items:center;text-align:center;min-width:88px;gap:2px}
+.mid small{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mut)}
+.mid b{font-size:clamp(28px,4vw,42px);line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums}
+.q{font-size:clamp(23px,3.2vw,34px);font-weight:800;text-align:center;margin:0;color:var(--ink);text-wrap:balance}
+.qn{text-align:center;color:var(--mut);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.help{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;text-align:center}
+.help .box{font-size:clamp(15px,1.8vw,18px);flex:1 1 280px;min-width:0;padding:6px 12px}
+.help .tr span{display:block}
+.board{display:grid;gap:7px}
+.slot{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;min-height:clamp(46px,6.8vh,72px);padding:4px 14px;border:0;border-radius:14px;background:var(--mint);box-shadow:0 3px 0 var(--mint2);text-align:left;color:var(--deep)}
+.slot:hover:not(:disabled){background:var(--mint2)}
+.slot:disabled{cursor:default;opacity:.7}
+.slot .n{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;font-size:18px}
+.slot .hid{font-size:15px;color:var(--deep);opacity:.7}
+.slot.open{background:#fff;box-shadow:inset 0 0 0 2px var(--mint2)}
+.slot.new{animation:flip .3s ease-out}
+.slot.open:disabled{opacity:1}
+.slot.late{background:#F2F5F4;box-shadow:inset 0 0 0 1px var(--line);color:var(--mut)}
+.slot .an{font-size:clamp(20px,2.8vw,28px);font-weight:800;min-width:0;overflow-wrap:anywhere}
+.slot .an u{text-decoration:underline dotted var(--peach2) 2px;text-underline-offset:5px}
+.slot .tx{display:block;font-size:clamp(14px,1.8vw,17px);font-weight:600;color:var(--mut)}
+.slot .pt{font-size:clamp(20px,2.8vw,28px);font-weight:800;font-variant-numeric:tabular-nums;background:var(--mintl);padding:2px 12px;border-radius:10px}
+.slot.late .pt{background:none;font-size:14px;font-weight:600}
+@keyframes flip{from{transform:rotateX(70deg)}to{transform:none}}
+.say{text-align:center;font-size:clamp(16px,2.2vw,20px);font-weight:700;color:var(--deep);min-height:28px;margin:0}
+.ctl{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.strikes{display:flex;gap:6px}
+.strikes i{width:clamp(36px,5vw,50px);height:clamp(36px,5vw,50px);border-radius:10px;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:clamp(22px,3.4vw,32px);background:#fff;border:2px dashed var(--line);color:transparent}
+.strikes i.x{background:var(--badb);border:2px solid var(--bad);color:var(--bad)}
+.mist{border:0;border-radius:14px;padding:14px 20px;font-size:clamp(18px,2.6vw,24px);font-weight:800;background:var(--badb);color:var(--bad);box-shadow:0 3px 0 #EBBDB6;width:100%}
+.mist:hover:not(:disabled){background:#F8D8D3}
+.mist:active{transform:translateY(2px);box-shadow:none}
+.mist:disabled{opacity:.4;cursor:default;transform:none}
+#bigx{position:fixed;inset:0;z-index:50;display:grid;place-items:center;pointer-events:none;background:rgba(252,235,232,.55)}
+#bigx span{font-size:min(55vh,55vw);line-height:1;font-weight:900;color:var(--bad);animation:pop .75s ease-out both}
+@keyframes pop{0%{transform:scale(.4);opacity:0}25%{transform:scale(1.05);opacity:1}80%{opacity:1}100%{opacity:0}}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{background:var(--mintl);color:var(--deep);text-align:left;padding:8px 10px}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.win{text-align:center;font-size:clamp(28px,5vw,46px);font-weight:800;color:var(--deep);margin:0;text-wrap:balance}
+.note{font-size:14px;color:var(--mut)}
+.msg{font-size:14px;color:var(--ok);min-height:20px;margin:0}
+.kq{padding:10px 0;border-top:1px solid var(--line)}
+.kq ol{margin:4px 0 0;padding-left:24px}
+.kq small{color:var(--mut)}
+@media (max-width:560px){.teams{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1;display:flex;gap:8px;align-items:baseline;justify-content:center}.ctl{grid-template-columns:1fr}.strikes{justify-content:center}.slot{grid-template-columns:40px 1fr auto;gap:8px}.slot .n{width:32px;height:32px;font-size:16px}}
+@media (prefers-reduced-motion:reduce){.slot.new{animation:none}#bigx span{animation-duration:.01s;animation-delay:.7s;animation-fill-mode:backwards;opacity:1}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app" aria-live="polite"></main>
+<script>
+/* Questions. Answers are in slot order, highest points first. Each question's points add up to 100.
+   [answer, points, Thai, Chinese, also accept] */
+const QS=[
+{t:"Name something in a kitchen.",th:"บอกชื่อสิ่งของที่อยู่ในครัว",zh:"说出厨房里的一样东西。",f:"There is a ___ in the kitchen.",a:[["fridge",35,"ตู้เย็น","冰箱","refrigerator"],["stove",25,"เตา","炉子","cooker, oven"],["table",15,"โต๊ะ","桌子",""],["sink",15,"อ่างล้างจาน","水槽",""],["spoon",10,"ช้อน","勺子","fork, knife, plate"]]},
+{t:"Name something in your school bag.",th:"บอกชื่อสิ่งของที่อยู่ในกระเป๋านักเรียนของคุณ",zh:"说出你书包里的一样东西。",f:"I have a ___ in my school bag.",a:[["book",35,"หนังสือ","书","notebook"],["pen",25,"ปากกา","笔",""],["laptop",20,"แล็ปท็อป","笔记本电脑","computer, iPad"],["water bottle",12,"ขวดน้ำ","水瓶","bottle"],["pencil",8,"ดินสอ","铅笔",""]]},
+{t:"Name a food people eat for breakfast.",th:"บอกชื่ออาหารที่คนกินตอนเช้า",zh:"说出人们早餐吃的一种食物。",f:"People eat ___ for breakfast.",a:[["rice",30,"ข้าว","米饭","rice soup"],["eggs",25,"ไข่","鸡蛋",""],["bread",20,"ขนมปัง","面包","toast"],["fruit",15,"ผลไม้","水果",""],["noodles",10,"ก๋วยเตี๋ยว","面条",""]]},
+{t:"Name a way to go to school.",th:"บอกวิธีเดินทางไปโรงเรียน",zh:"说出一种去学校的方式。",f:"I go to school by ___.",a:[["car",35,"รถยนต์","汽车",""],["bus",30,"รถบัส","公交车","school bus"],["motorbike",15,"มอเตอร์ไซค์","摩托车",""],["walking",12,"เดิน","走路","on foot"],["train",8,"รถไฟ","火车","BTS, MRT"]]},
+{t:"Name something you use on a rainy day.",th:"บอกชื่อสิ่งที่คุณใช้เมื่อฝนตก",zh:"说出下雨天你会用的一样东西。",f:"I use a ___ when it rains.",a:[["umbrella",50,"ร่ม","雨伞",""],["raincoat",25,"เสื้อกันฝน","雨衣","jacket"],["boots",12,"รองเท้าบูท","靴子",""],["taxi",8,"แท็กซี่","出租车","car"],["hat",5,"หมวก","帽子",""]]},
+{t:"Name a pet.",th:"บอกชื่อสัตว์เลี้ยง",zh:"说出一种宠物。",f:"Many people have a ___ as a pet.",a:[["dog",40,"สุนัข","狗",""],["cat",35,"แมว","猫",""],["fish",12,"ปลา","鱼",""],["bird",8,"นก","鸟",""],["rabbit",5,"กระต่าย","兔子",""]]},
+{t:"Name a job in a hospital.",th:"บอกชื่องานในโรงพยาบาล",zh:"说出医院里的一种工作。",f:"A ___ works in a hospital.",a:[["doctor",45,"หมอ","医生",""],["nurse",35,"พยาบาล","护士",""],["cleaner",10,"พนักงานทำความสะอาด","清洁工",""],["cook",5,"พ่อครัว","厨师","chef"],["driver",5,"คนขับรถ","司机","ambulance driver"]]},
+{t:"Name a school subject.",th:"บอกชื่อวิชาเรียน",zh:"说出一门学校科目。",f:"We study ___ at school.",a:[["Maths",30,"คณิตศาสตร์","数学",""],["English",25,"ภาษาอังกฤษ","英语",""],["Science",20,"วิทยาศาสตร์","科学",""],["Art",15,"ศิลปะ","美术",""],["PE",10,"พลศึกษา","体育","sport"]]},
+{t:"Name something you do after school.",th:"บอกสิ่งที่คุณทำหลังเลิกเรียน",zh:"说出你放学后做的一件事。",f:"After school, I ___.",a:[["do homework",30,"ทำการบ้าน","做作业","study"],["play games",25,"เล่นเกม","玩游戏",""],["sleep",20,"นอนหลับ","睡觉",""],["eat",15,"กินอาหาร","吃东西","have dinner"],["play sports",10,"เล่นกีฬา","做运动","go to the gym"]]},
+{t:"Name a sport with a ball.",th:"บอกชื่อกีฬาที่ใช้ลูกบอล",zh:"说出一种用球的运动。",f:"People use a ball in ___.",a:[["football",40,"ฟุตบอล","足球","soccer"],["basketball",30,"บาสเกตบอล","篮球",""],["volleyball",15,"วอลเลย์บอล","排球",""],["tennis",10,"เทนนิส","网球",""],["golf",5,"กอล์ฟ","高尔夫球",""]]},
+{t:"Name something you do on your phone.",th:"บอกสิ่งที่คุณทำบนโทรศัพท์",zh:"说出你用手机做的一件事。",f:"I ___ on my phone.",a:[["send messages",30,"ส่งข้อความ","发信息","chat, text"],["watch videos",30,"ดูวิดีโอ","看视频","watch TikTok, YouTube"],["play games",20,"เล่นเกม","玩游戏",""],["take photos",12,"ถ่ายรูป","拍照",""],["listen to music",8,"ฟังเพลง","听音乐",""]]},
+{t:"Name something you take to the beach.",th:"บอกชื่อสิ่งที่คุณนำไปชายหาด",zh:"说出你带去海滩的一样东西。",f:"I take ___ to the beach.",a:[["towel",30,"ผ้าเช็ดตัว","毛巾",""],["sunscreen",25,"ครีมกันแดด","防晒霜","sun cream"],["swimsuit",20,"ชุดว่ายน้ำ","泳衣","swimming clothes"],["hat",15,"หมวก","帽子","sunglasses"],["water",10,"น้ำ","水","drink"]]},
+{t:"Name a cold drink.",th:"บอกชื่อเครื่องดื่มเย็น",zh:"说出一种冷饮。",f:"I like to drink cold ___.",a:[["water",35,"น้ำ","水",""],["juice",25,"น้ำผลไม้","果汁",""],["cola",20,"โคล่า","可乐","soda, soft drink"],["iced tea",12,"ชาเย็น","冰茶","Thai tea"],["milk",8,"นม","牛奶",""]]},
+{t:"Name a sweet fruit.",th:"บอกชื่อผลไม้รสหวาน",zh:"说出一种甜的水果。",f:"A ___ is a sweet fruit.",a:[["mango",35,"มะม่วง","芒果",""],["banana",25,"กล้วย","香蕉",""],["watermelon",20,"แตงโม","西瓜",""],["apple",12,"แอปเปิล","苹果",""],["orange",8,"ส้ม","橙子",""]]},
+{t:"Name something in a classroom.",th:"บอกชื่อสิ่งของที่อยู่ในห้องเรียน",zh:"说出教室里的一样东西。",f:"There is a ___ in our classroom.",a:[["desk",30,"โต๊ะเรียน","课桌","table"],["chair",25,"เก้าอี้","椅子",""],["whiteboard",25,"ไวท์บอร์ด","白板","board"],["clock",12,"นาฬิกา","时钟",""],["computer",8,"คอมพิวเตอร์","电脑","projector, TV"]]},
+{t:"Name something you do before school.",th:"บอกสิ่งที่คุณทำก่อนไปโรงเรียน",zh:"说出你上学前做的一件事。",f:"Before school, I ___.",a:[["brush my teeth",30,"แปรงฟัน","刷牙",""],["take a shower",25,"อาบน้ำ","洗澡","wash"],["eat breakfast",25,"กินอาหารเช้า","吃早餐",""],["get dressed",12,"แต่งตัว","穿衣服","put on my uniform"],["pack my bag",8,"จัดกระเป๋า","整理书包",""]]},
+{t:"Name something you do on a very hot day.",th:"บอกสิ่งที่คุณทำในวันที่ร้อนมาก",zh:"说出很热的时候你做的一件事。",f:"On a very hot day, I ___.",a:[["drink water",30,"ดื่มน้ำ","喝水",""],["go swimming",25,"ไปว่ายน้ำ","去游泳",""],["turn on the air conditioner",25,"เปิดแอร์","开空调","turn on the AC, fan"],["eat ice cream",12,"กินไอศกรีม","吃冰淇淋",""],["stay inside",8,"อยู่ในบ้าน","待在室内","stay at home"]]},
+{t:"Name something you wear to school.",th:"บอกชื่อสิ่งที่คุณใส่ไปโรงเรียน",zh:"说出你穿去学校的一样东西。",f:"I wear ___ to school.",a:[["a shirt",30,"เสื้อเชิ้ต","衬衫","uniform"],["shoes",25,"รองเท้า","鞋子",""],["trousers",20,"กางเกงขายาว","长裤","pants"],["socks",15,"ถุงเท้า","袜子",""],["a skirt",10,"กระโปรง","裙子",""]]},
+{t:"Name a place where you can buy food.",th:"บอกชื่อสถานที่ที่คุณซื้ออาหารได้",zh:"说出一个可以买食物的地方。",f:"I can buy food at a ___.",a:[["supermarket",35,"ซูเปอร์มาร์เก็ต","超市",""],["restaurant",25,"ร้านอาหาร","餐厅","food stall"],["market",20,"ตลาด","市场",""],["convenience store",15,"ร้านสะดวกซื้อ","便利店","7-Eleven"],["canteen",5,"โรงอาหาร","食堂",""]]},
+{t:"Name a place in a town.",th:"บอกชื่อสถานที่ในเมือง",zh:"说出城镇里的一个地方。",f:"There is a ___ in my town.",a:[["shopping mall",30,"ห้างสรรพสินค้า","商场","mall"],["school",25,"โรงเรียน","学校",""],["hospital",20,"โรงพยาบาล","医院",""],["park",15,"สวนสาธารณะ","公园",""],["bank",10,"ธนาคาร","银行",""]]}
+];
+const SUP=[["tq","Thai and Chinese translation of the question"],["fr","Sentence frame"],["ta","Thai and Chinese translation of an answer"]];
+const KEY="surveyShowdownGame";
+const $=id=>document.getElementById(id),app=$("app");
+const E=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuf=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+let G=null,U=[],view="start",keyFrom="start",msg="",justShown=-1;
+function store(){if(!G)return;try{if(G.phase!=="end")localStorage.setItem(KEY,JSON.stringify(G));else localStorage.removeItem(KEY)}catch(e){}}
+function saved(){try{const g=JSON.parse(localStorage.getItem(KEY));return g&&g.teams?g:null}catch(e){return null}}
+function fresh(names,n){return{teams:names.map(x=>({name:x,score:0,correct:0,mistakes:0,steals:0,adj:0})),order:shuf(QS.map((_,k)=>k)).slice(0,n),r:0,hist:[],sup:{tq:[0,0,0],fr:[0,0,0],ta:[0,0,0]},...roundState()}}
+function roundState(){return{phase:"face",ctl:null,strikes:0,bank:0,shown:[0,0,0,0,0],late:[0,0,0,0,0],tr:[0,0,0,0,0],tq:false,fr:false,found:0,mist:0,say:""}}
+const Q=()=>QS[G.order[G.r]];
+const QN=()=>G.order[G.r]+1;
+const snap=()=>{U.push(JSON.stringify(G));if(U.length>60)U.shift()};
+const who=()=>G.phase==="play"?G.ctl:G.phase==="steal"?1-G.ctl:2;
+function award(t,how){const q=Q(),bank=G.bank;if(t!==null)G.teams[t].score+=bank;
+ const missed=q.a.filter((_,k)=>!G.shown[k]).map(a=>a[0]);
+ G.hist.push({n:QN(),q:q.t,found:G.found,mist:G.mist,win:t,pts:t===null?0:bank,how:how,missed:missed});
+ G.phase="done";
+ G.say=how==="steal"?G.teams[t].name+" stole the round and won "+bank+" points!":how==="fail"?"The steal failed. "+G.teams[t].name+" keeps "+bank+" points.":G.teams[t].name+" found every answer and won "+bank+" points!"}
+function reveal(k){const a=Q().a[k];if(G.phase==="face"){G.say="First choose which team answers first.";return render()}
+ if(G.shown[k]){G.tr[k]=!G.tr[k];if(G.tr[k])G.sup.ta[who()]++;return render()}
+ snap();justShown=k;
+ if(G.phase==="done"){G.shown[k]=1;G.late[k]=1;return render()}
+ G.shown[k]=1;G.found++;G.bank+=a[1];
+ if(G.phase==="steal"){const t=1-G.ctl;G.teams[t].correct++;G.teams[t].steals++;award(t,"steal")}
+ else{G.teams[G.ctl].correct++;G.say="Correct! +"+a[1]+" points.";if(G.shown.every(Boolean))award(G.ctl,"all")}
+ render()}
+function bigX(){const d=document.createElement("div");d.id="bigx";d.setAttribute("aria-hidden","true");d.innerHTML="<span>✕</span>";document.body.appendChild(d);setTimeout(()=>d.remove(),800)}
+function mistake(){if(G.phase==="play"){snap();G.strikes++;G.mist++;G.teams[G.ctl].mistakes++;
+  if(G.strikes>=3){G.phase="steal";G.say=G.teams[G.ctl].name+" has 3 mistakes. "+G.teams[1-G.ctl].name+" can steal with one answer."}else G.say="Mistake "+G.strikes+" of 3. "+G.teams[G.ctl].name+", try again."}
+ else if(G.phase==="steal"){snap();G.mist++;G.teams[1-G.ctl].mistakes++;award(G.ctl,"fail")}else return;
+ bigX();render()}
+function next(){snap();if(G.r+1>=G.order.length){G.phase="end";store();U=[];view="end";return render()}G.r++;Object.assign(G,roundState());render()}
+function render(){store();({start:rStart,game:rGame,end:rEnd,key:rKey})[view]()}
+function head(){return`<header><div class="eye">Years 10 &amp; 11 EAL · Speaking</div><h1>Survey Showdown</h1></header>`}
+function rStart(){app.className="wrap narrow";const s=saved();
+ app.innerHTML=head()+`<div class="box"><b>Learning Goal</b><br>Work in a team and say common English words about everyday life.</div>
+ <div class="box"><b>Learning Objectives</b> By the end I can:<ul><li>understand a short question about everyday life,</li><li>answer with a word or a short sentence,</li><li>take turns and listen to my team.</li></ul></div>
+ <div class="box"><b>Success Criteria</b><ul><li>I answer in English.</li><li>I use a full sentence when I can.</li><li>I listen and do not repeat an answer on the board.</li></ul></div>
+ <div class="card" style="display:grid;gap:12px">
+ ${s?`<div class="box"><b>You have a game in progress.</b> ${E(s.teams[0].name)} ${s.teams[0].score}, ${E(s.teams[1].name)} ${s.teams[1].score}. <button class="btn line" id="cont" style="margin-top:8px;display:block">Continue this game</button></div>`:""}
+ <div class="two"><div><label for="ta">Team 1 name</label><input id="ta" autocomplete="off" value="Team A" maxlength="24"></div><div><label for="tb">Team 2 name</label><input id="tb" autocomplete="off" value="Team B" maxlength="24"></div></div>
+ <div><label for="rn">How many rounds?</label><select id="rn"><option>3</option><option selected>5</option><option>8</option><option>10</option><option>20</option></select></div>
+ <p class="note" id="er" role="alert" style="margin:0;color:var(--bad)"></p>
+ <button class="btn wide" id="go">Start the game</button>
+ <button class="btn line" id="kb">Teacher answer key</button>
+ </div>`;
+ $("go").onclick=()=>{const a=$("ta").value.trim(),b=$("tb").value.trim();if(!a||!b){$("er").textContent="Please type a name for both teams.";return}if(a.toLowerCase()===b.toLowerCase()){$("er").textContent="Please give the two teams different names.";return}G=fresh([a,b],+$("rn").value);U=[];view="game";render()};
+ $("kb").onclick=()=>{view="key";keyFrom="start";render()};if(s)$("cont").onclick=()=>{G=s;U=[];view=G.phase==="end"?"end":"game";render()}}
+function teamBox(k){const t=G.teams[k],on=(G.phase==="play"&&G.ctl===k)||(G.phase==="steal"&&G.ctl!==k),lb=G.phase==="steal"&&G.ctl!==k?"Stealing":G.phase==="play"&&G.ctl===k?"Answering":"";
+ return`<div class="team ${k?"b":"a"} ${on?"on":""}"><div class="nm">${E(t.name)}</div><div class="sc" id="s${k}">${t.score}</div><div class="fix"><span class="st">${lb}</span><button data-fix="${k},-5" aria-label="Take 5 points from ${E(t.name)}">−5</button><button data-fix="${k},5" aria-label="Give 5 points to ${E(t.name)}">+5</button></div></div>`}
+function rGame(){app.className="wrap";const q=Q(),P=G.phase;
+ const slots=q.a.map((a,k)=>{const o=G.shown[k],l=G.late[k];return o?`<button class="slot open ${l?"late":""} ${k===justShown?"new":""}" data-s="${k}"><span class="n">${k+1}</span><span class="an"><u>${E(a[0])}</u>${G.tr[k]?`<span class="tx">${a[2]} · ${a[3]}</span>`:""}</span><span class="pt">${l?"not found":a[1]}</span></button>`:`<button class="slot" data-s="${k}" ${P==="face"?"disabled":""} aria-label="Answer ${k+1}"><span class="n">${k+1}</span><span class="hid"></span><span></span></button>`}).join("");
+ const say=G.say||(P==="face"?"One student from each team answers. Who answered first?":P==="play"?G.teams[G.ctl].name+": say an answer.":P==="done"?"":"");
+ const face=P==="face"?`<div class="row c"><button class="btn" data-first="0">${E(G.teams[0].name)} answers first</button><button class="btn" data-first="1">${E(G.teams[1].name)} answers first</button></div>`:"";
+ const lastR=G.r+1>=G.order.length;
+ const done=P==="done"?`<div class="row c"><button class="btn wide" id="nx" style="max-width:420px">${lastR?"See the final results":"Next round"} →</button></div><p class="note" style="text-align:center;margin:0">Tap a closed answer to show it. It gives no points now.</p>`:"";
+ app.innerHTML=`<div class="teams">${teamBox(0)}<div class="mid"><small>Round points</small><b id="bank">${G.bank}</b><small>Round ${G.r+1} of ${G.order.length}</small><small>Question ${QN()}</small></div>${teamBox(1)}</div>
+ <p class="q">${E(q.t)}</p>
+ <div class="help">${G.tq?`<div class="box tr"><span>${q.th}</span><span>${q.zh}</span></div>`:""}${G.fr?`<div class="box"><b>${E(q.f)}</b></div>`:""}
+ ${G.tq&&G.fr?"":`<div class="row c">${G.tq?"":`<button class="btn line" id="btq">Show translation</button>`}${G.fr?"":`<button class="btn line" id="bfr">Show sentence frame</button>`}</div>`}</div>
+ <div class="board">${slots}</div><p class="say" id="say">${E(say)}</p>${face}${done}
+ <div class="ctl"><div class="strikes" aria-label="${G.strikes} mistakes">${[0,1,2].map(k=>`<i class="${k<G.strikes?"x":""}">✕</i>`).join("")}</div>
+ <button class="mist" id="mk" ${P==="play"||P==="steal"?"":"disabled"}>✕ Mistake</button>
+ <button class="btn line" id="un" ${U.length?"":"disabled"}>Undo</button></div>`;
+ if($("btq"))$("btq").onclick=()=>{G.tq=true;G.sup.tq[who()]++;render()};
+ if($("bfr"))$("bfr").onclick=()=>{G.fr=true;G.sup.fr[who()]++;render()};
+ if($("nx"))$("nx").onclick=next;
+ $("mk").onclick=mistake;
+ $("un").onclick=()=>{if(!U.length)return;G=JSON.parse(U.pop());render()};
+ justShown=-1;
+ app.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>reveal(+b.dataset.s));
+ app.querySelectorAll("[data-first]").forEach(b=>b.onclick=()=>{snap();G.ctl=+b.dataset.first;G.phase="play";G.say="";render()});
+ app.querySelectorAll("[data-fix]").forEach(b=>b.onclick=()=>{const[k,v]=b.dataset.fix.split(",").map(Number);snap();G.teams[k].score+=v;G.teams[k].adj+=v;render()})}
+function supRows(){const n=[G.teams[0].name,G.teams[1].name,"Both teams"];return SUP.map(s=>{const c=G.sup[s[0]],p=c.map((v,k)=>v?n[k]+": "+v:"").filter(Boolean);return[s[1],p.length?p.join(", "):"Not used"]})}
+function winner(){const[a,b]=G.teams;return a.score===b.score?null:a.score>b.score?a:b}
+function winText(h){return h.win===null?"No points":G.teams[h.win].name+" +"+h.pts+(h.how==="steal"?" (steal)":"")}
+function patterns(){const H=G.hist,p=[];if(!H.length)return p;const b=H.slice().sort((x,y)=>y.found-x.found)[0],w=H.slice().sort((x,y)=>y.mist-x.mist)[0];p.push("Most answers found: \""+b.q+"\" ("+b.found+" of 5).");if(w.mist)p.push("Most mistakes: \""+w.q+"\" ("+w.mist+").");const st=G.teams.reduce((s,t)=>s+t.steals,0);p.push(st?"Steals won: "+st+".":"No steals were won.");return p}
+function rEnd(){app.className="wrap narrow";const w=winner(),T=G.teams,sup=supRows(),miss=G.hist.flatMap(h=>h.missed),ad=T.filter(t=>t.adj);
+ app.innerHTML=head()+`<p class="win">${w?E(w.name)+" wins!":"It's a tie!"}</p>
+ <div class="card"><h2>Team results</h2><div class="tw"><table><tr><th>Team</th><th class="num">Points</th><th class="num">Correct answers</th><th class="num">Mistakes</th><th class="num">Steals</th></tr>${T.map(t=>`<tr><td><b>${E(t.name)}</b></td><td class="num"><b>${t.score}</b></td><td class="num">${t.correct}</td><td class="num">${t.mistakes}</td><td class="num">${t.steals}</td></tr>`).join("")}</table></div>${ad.length?`<p class="note">Points changed by the teacher: ${ad.map(t=>E(t.name)+" "+(t.adj>0?"+":"")+t.adj).join(", ")}.</p>`:""}</div>
+ <div class="card"><h2>Rounds</h2><div class="tw"><table><tr><th>Question</th><th class="num">Found</th><th class="num">Mistakes</th><th>Points won</th></tr>${G.hist.map(h=>`<tr><td>${E(h.q)}</td><td class="num">${h.found} of 5</td><td class="num">${h.mist}</td><td>${E(winText(h))}</td></tr>`).join("")}</table></div></div>
+ <div class="card"><h2>Language support used</h2>${sup.map(r=>`<div>${E(r[0])}: <b>${E(r[1])}</b></div>`).join("")}</div>
+ <div class="card"><h2>Words to practise</h2><p style="margin:0">${miss.length?E(miss.join(", ")):"The class found every answer."}</p></div>
+ <div class="row c"><button class="btn" id="pd">Save results as PDF</button><button class="btn line" id="cp">Copy results</button><button class="btn line" id="ag">Play again</button></div><p class="msg" id="ms" style="text-align:center"></p>`;
+ $("ag").onclick=()=>{G=null;view="start";render()};
+ $("pd").onclick=async()=>{const m=$("ms");try{await MLGPDF.deliver(resultPdf(),"Survey_Showdown_results.pdf");m.textContent="PDF ready. Check your downloads."}catch(e){m.textContent=e&&e.code==="declined"?"Save cancelled.":"The PDF could not be saved. Use Copy results instead."}};
+ $("cp").onclick=()=>{const m=$("ms"),t=resultText();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>m.textContent="Copied.").catch(()=>{m.innerHTML="";const a=document.createElement("textarea");a.readOnly=true;a.value=t;a.style.width="100%";a.rows=8;m.appendChild(a);a.select()})}}
+function resultText(){const T=G.teams,L=["SURVEY SHOWDOWN RESULTS",new Date().toLocaleDateString("en-GB"),""];T.forEach(t=>L.push(t.name+": "+t.score+" points, "+t.correct+" correct answers, "+t.mistakes+" mistakes, "+t.steals+" steals"));L.push("","ROUNDS");G.hist.forEach(h=>L.push(h.q+" | Found "+h.found+" of 5 | Mistakes "+h.mist+" | "+winText(h)));L.push("","LANGUAGE SUPPORT USED");supRows().forEach(r=>L.push(r[0]+": "+r[1]));L.push("","WORDS TO PRACTISE: "+(G.hist.flatMap(h=>h.missed).join(", ")||"none"));return L.join("\n")}
+function resultPdf(){const T=G.teams,ok=T[0].correct+T[1].correct,bad=T[0].mistakes+T[1].mistakes,pct=ok+bad?Math.round(100*ok/(ok+bad)):0,miss=G.hist.flatMap(h=>h.missed),w=winner(),st=[],dv=[],nx=[];
+ if(pct>=80)st.push("The class gave many correct answers: "+ok+" correct and "+bad+" mistakes.");else dv.push("The class made "+bad+" mistakes and gave "+ok+" correct answers.");
+ if(miss.length)dv.push("Words not found: "+miss.slice(0,12).join(", ")+(miss.length>12?" and "+(miss.length-12)+" more.":"."));else st.push("The class found every answer on the board.");
+ nx.push(miss.length?"Teach the words that were not found, then play those questions again.":"Play new questions, and ask students to answer in full sentences.");
+ nx.push("Listen to individual students to check their spoken language.");
+ const wb=MLGPDF.wida({scaffolds:supRows(),name:"The class",standard:"Social and Instructional Language",use:"Discuss",domain:"Oral language",pct:pct,target:2,at:"Asking and answering questions",below:[1,"Responding to yes and no questions posed by the group"],next:[3,"Clarifying one's own ideas using a variety of strategies (e.g., analogies or metaphors, paraphrasing)"],opening:"The class gave "+ok+" correct answers and made "+bad+" mistakes ("+pct+"% correct) in "+G.hist.length+" rounds.",strengths:st,develop:dv,steps:nx,limits:"This is one team game, so it shows the whole class and not one student. The percentage comes from the teacher's Correct and Mistake taps. Please confirm each student's level with other evidence."});
+ const head=[{h:"Team Results"},{table:{head:["Team","Points","Correct","Mistakes","Steals"],w:[40,15,15,15,15],rows:T.map(t=>[t.name,String(t.score),String(t.correct),String(t.mistakes),String(t.steals)])}}];
+ if(T.some(t=>t.adj))head.push({p:"Points changed by the teacher: "+T.filter(t=>t.adj).map(t=>t.name+" "+(t.adj>0?"+":"")+t.adj).join(", ")+"."});
+ head.push({h:"Rounds"},{table:{head:["Question","Found","Mistakes","Points won"],w:[50,12,13,25],rows:G.hist.map(h=>[h.q,h.found+" of 5",String(h.mist),winText(h)])}},{h:"Patterns in the Answers"},{list:patterns()},{h:"Mistakes"},{p:"The game counts mistakes. It does not record what students said."},{h:"Words to Practise"},{p:miss.length?miss.join(", "):"The class found every answer."},{h:"Writing"},{p:"This activity has no writing task."});
+ return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Team Game Results",foot:"Survey Showdown - "+T[0].name+" and "+T[1].name,meta:[["Teams",T[0].name+" and "+T[1].name],["Rounds",String(G.hist.length)],["Winner",w?w.name:"Tie"],["Date",new Date().toLocaleDateString("en-GB")]],tiles:[[String(T[0].score),T[0].name],[String(T[1].score),T[1].name]],blocks:head.concat(wb)})}
+function keyPdf(){return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Teacher Answer Key",foot:"Survey Showdown - Teacher answer key",blocks:QS.flatMap((q,i)=>[{h3:"Question "+(i+1)+": "+q.t},{table:{head:["Slot","Answer","Points","Also accept"],w:[10,36,12,42],rows:q.a.map((a,k)=>[String(k+1),a[0],String(a[1]),a[4]||"-"])}}])})}
+function rKey(){app.className="wrap narrow";app.innerHTML=head()+`<div class="box"><b>Teacher answer key.</b> Keep this page away from the class screen. You can open it on your phone: add <b>#key</b> to the end of the game's address. The board shows the question number, and each slot number matches this list.</div>
+ <div class="row"><button class="btn line" id="kx">← Back</button><button class="btn" id="kp">Save answer key as PDF</button></div><p class="msg" id="ms"></p>
+ <div class="card">${QS.map((q,i)=>`<div class="kq"><b>Question ${i+1}: ${E(q.t)}</b><ol>${q.a.map(a=>`<li><b>${E(a[0])}</b> (${a[1]})${a[4]?` <small>also accept: ${E(a[4])}</small>`:""}</li>`).join("")}</ol></div>`).join("")}</div>`;
+ $("kx").onclick=()=>{view=keyFrom;if(location.hash==="#key")try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}render()};
+ $("kp").onclick=async()=>{const m=$("ms");try{await MLGPDF.deliver(keyPdf(),"Survey_Showdown_answer_key.pdf");m.textContent="PDF ready. Check your downloads."}catch(e){m.textContent=e&&e.code==="declined"?"Save cancelled.":"The PDF could not be saved."}}}
+view=location.hash==="#key"?"key":"start";render();
+addEventListener("hashchange",()=>{if(location.hash==="#key"&&view!=="key"){keyFrom=view;view="key";render()}});
+</script>
+<script id="mlg-pdf">
+/* Miss L Gems report PDF engine. No outside files needed. */
+(function(){
+var W={"R":[278,278,355,556,556,889,667,222,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,222,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584],"B":[278,333,474,556,556,889,722,278,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,278,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584],"T":[250,333,555,500,500,1000,833,333,333,333,500,570,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,570,570,570,500,930,722,667,722,722,667,611,778,778,389,500,778,667,944,722,778,611,778,722,556,667,722,722,1000,722,722,667,333,278,333,581,500,333,500,556,444,556,444,333,500,556,278,333,556,278,833,556,500,556,556,444,389,333,556,500,722,500,500,444,394,220,394,520]};
+var TH={eal:[29,90,72],mainstream:[39,71,125],other:[134,98,42]};
+var INK=[27,36,48],MUT=[93,100,112],LINE=[224,217,200],BAND=[20,30,43],GOLD=[205,176,120],WARM=[248,246,241],OK=[30,107,58],OKB=[230,243,232],BAD=[154,46,34],BADB=[251,231,227],AMB=[138,90,10],AMBB=[252,241,218];
+var PW=595,PH=842,M=44,CW=PW-2*M,TOP=PH-44,BOT=52;
+function cl(s){return String(s==null?"":s).replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,"-").replace(/\u2026/g,"...").replace(/\u2192/g,"to").replace(/[\u00B7\u2022]/g,"-").replace(/[\u2265]/g,">=").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu,"").replace(/[^\x20-\x7E\n]+/g,"?").replace(/[ \t]+/g," ").trim()}
+function tw(t,f,z){var a=f=="B"?W.B:f=="T"?W.T:W.R,n=0;for(var i=0;i<t.length;i++)n+=a[t.charCodeAt(i)-32]||556;return n*z/1000}
+function wrap(t,f,z,w){var o=[];cl(t).split("\n").forEach(function(p){var l="";p.split(" ").forEach(function(x){while(tw(x,f,z)>w&&x.length>1){var k=x.length-1;while(k>1&&tw(x.slice(0,k),f,z)>w)k--;if(l){o.push(l);l=""}o.push(x.slice(0,k));x=x.slice(k)}var c=l?l+" "+x:x;if(l&&tw(c,f,z)>w){o.push(l);l=x}else l=c});o.push(l)});return o}
+function pe(s){return s.replace(/([\\()])/g,"\\$1")}
+var LV=[[246,213,208,109,31,21],[251,223,186,107,61,0],[245,236,170,87,80,0],[207,233,200,29,84,36],[198,229,236,14,78,94],[217,211,240,61,47,128]],LVN=["Entering","Emerging","Developing","Expanding","Bridging","Reaching"];
+var FN={R:"F1",B:"F2",I:"F3",T:"F4",J:"F5"};
+function Doc(theme,foot){this.a=TH[theme]||TH.eal;this.foot=foot||"";this.pg=[];this.add()}
+Doc.prototype={
+ add:function(){this.c=[];this.pg.push(this.c);this.y=TOP},
+ rgb:function(c,s){return (c[0]/255).toFixed(3)+" "+(c[1]/255).toFixed(3)+" "+(c[2]/255).toFixed(3)+(s?" RG":" rg")},
+ rect:function(x,y,w,h,c){this.c.push(this.rgb(c)+" "+x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1)+" re f")},
+ stroke:function(x,y,w,h,c,t){this.c.push(this.rgb(c,1)+" "+(t||.6)+" w "+x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1)+" re S")},
+ line:function(x,y,x2,c,t){this.c.push(this.rgb(c,1)+" "+(t||.6)+" w "+x.toFixed(1)+" "+y.toFixed(1)+" m "+x2.toFixed(1)+" "+y.toFixed(1)+" l S")},
+ text:function(t,x,y,f,z,c){this.c.push("BT "+this.rgb(c||INK)+" /"+FN[f]+" "+z+" Tf "+x.toFixed(1)+" "+y.toFixed(1)+" Td ("+pe(t)+") Tj ET")},
+ need:function(h){if(this.y-h<BOT){this.add();return true}return false},
+ lines:function(ls,x,f,z,c,lh){var s=this;ls.forEach(function(l){s.need(lh);s.y-=lh;if(l)s.text(l,x,s.y,f,z,c)})},
+ head:function(d){var ti=wrap(d.title||"Report","T",25,CW-40),su=d.subtitle?cl(d.subtitle):"",h=30+ti.length*28+(su?18:0);
+  this.rect(0,PH-h-6,PW,h+6,BAND);this.rect(0,PH-h-9,PW,3,GOLD);var y=PH-34,s=this;this.text("MISS L GEMS",PW-M-tw("MISS L GEMS","B",8),PH-20,"B",8,GOLD);
+  ti.forEach(function(l){y-=2;s.text(l,M,y-14,"T",25,[255,255,255]);y-=26});if(su)this.text(su,M,y-8,"J",13,GOLD);this.y=PH-h-26},
+ kv:function(p){var s=this,per=Math.min(3,p.length)||1,cw=CW/per,rows=[];for(var i=0;i<p.length;i+=per)rows.push(p.slice(i,i+per));
+  rows.forEach(function(r){var ls=r.map(function(x){return wrap(x[1]||"-","R",9.5,cw-14)}),h=14+Math.max.apply(0,ls.map(function(l){return l.length}))*12;s.need(h+2);
+   r.forEach(function(x,i){var X=M+i*cw;s.text(cl(x[0]).toUpperCase(),X,s.y-9,"B",6.8,MUT);ls[i].forEach(function(l,k){s.text(l,X,s.y-20-k*12,"R",9.5,INK)})});s.y-=h+1});this.y-=5},
+ tiles:function(t){var s=this,n=t.length;if(!n)return;var g=8,w=(CW-g*(n-1))/n,h=46;this.need(h+8);t.forEach(function(x,i){var X=M+i*(w+g),v=cl(x[0]);s.rect(X,s.y-h,w,h,WARM);s.rect(X,s.y-h,w,2.5,s.a);var z=v.length>11?13:v.length>7?16:20;s.text(v,X+9,s.y-23,"T",z,s.a);wrap(x[1],"R",7.8,w-14).slice(0,2).forEach(function(l,k){s.text(l,X+9,s.y-34-k*8,"R",7.8,MUT)})});this.y-=h+14},
+ h:function(t,sub){this.need(100);this.y-=8;var s=this,ls=wrap(t,"T",14.5,CW);ls.forEach(function(l){s.y-=16;s.text(l,M,s.y,"T",14.5,s.a)});if(sub){this.y-=11;wrap(sub,"R",8,CW).forEach(function(l,k){if(k)s.y-=10;s.text(l,M,s.y,"I",8,MUT)})}this.y-=5;this.line(M,this.y,M+CW,this.a,.9);this.y-=7},
+ band:function(t){this.need(70);this.y-=8;this.rect(M,this.y-22,CW,22,this.a);this.text(cl(t),M+10,this.y-15.5,"B",11,[255,255,255]);this.y-=30},
+ p:function(t,o){o=o||{};var z=o.z||10,f=o.f||"R",c=o.c||INK,x=M+(o.x||0);this.lines(wrap(t,f=="I"?"R":f,z,CW-(o.x||0)),x,f,z,c,z*1.42);this.y-=o.g==null?5:o.g},
+ list:function(a,num){var s=this;a.forEach(function(t,i){var mk=num?(i+1)+".":"-",ls=wrap(t,"R",10,CW-18);s.need(14);s.text(mk,M+2,s.y-13,"B",10,s.a);s.lines(ls,M+18,"R",10,INK,14);s.y-=3});this.y-=3},
+ box:function(b){var s=this,W2=CW-22,tl=b.title?wrap(b.title,"B",10,W2):[],hi=b.hint?wrap(b.hint,"R",8.5,W2):[],tx=wrap(b.text||"","R",10.5,W2),h=14+tl.length*13+hi.length*11+tx.length*15;
+  if(h<TOP-BOT)this.need(h+6);var top=this.y;this.rect(M,top-h,CW,h,WARM);this.rect(M,top-h,3,h,this.a);var y=top-8;
+  tl.forEach(function(l){y-=10;s.text(l,M+13,y,"B",10,s.a);y-=3});hi.forEach(function(l){y-=9;s.text(l,M+13,y,"I",8.5,MUT);y-=2});tx.forEach(function(l){y-=12;s.text(l,M+13,y,"R",10.5,b.c||INK);y-=3});this.y=top-h-8},
+ table:function(tb){var s=this,sum=tb.w.reduce(function(a,b){return a+b},0),cw=tb.w.map(function(x){return x/sum*CW}),z=tb.z||(tb.w.length>=6?7.8:8.8),lh=z*1.3,pad=4.5;
+  function hdr(){var ls=tb.head.map(function(t,i){return wrap(t,"B",8,cw[i]-pad*2)}),h=8+Math.max.apply(0,ls.map(function(l){return l.length}))*10;s.rect(M,s.y-h,CW,h,s.a);var x=M;ls.forEach(function(l,i){l.forEach(function(t,k){s.text(t,x+pad,s.y-11-k*10,"B",8,[255,255,255])});x+=cw[i]});s.y-=h}
+  if(this.y-60<BOT)this.add();hdr();
+  tb.rows.forEach(function(r,ri){var cells=r.map(function(v,i){v=(v&&typeof v=="object")?v:{t:v};var f=v.b?"B":"R";return{v:v,f:f,ls:wrap(v.t==null?"":v.t,f,z,cw[i]-pad*2)}}),h=7+Math.max.apply(0,cells.map(function(c){return c.ls.length}))*lh+(cells.some(function(c){return c.v.bar!=null})?5:0);
+   if(s.y-h<BOT){s.add();hdr()}if(ri%2)s.rect(M,s.y-h,CW,h,WARM);var x=M;cells.forEach(function(c,i){var col=INK;if(c.v.c=="ok"){s.rect(x,s.y-h,cw[i],h,OKB);col=OK}if(c.v.c=="bad"){s.rect(x,s.y-h,cw[i],h,BADB);col=BAD}if(c.v.c=="amb"){s.rect(x,s.y-h,cw[i],h,AMBB);col=AMB}if(c.v.c=="mut")col=MUT;
+     c.ls.forEach(function(l,k){s.text(l,x+pad,s.y-z-2-k*lh,c.f,z,col)});if(c.v.bar!=null){var bw=cw[i]-pad*2,by=s.y-h+3.5;s.rect(x+pad,by,bw,3,LINE);s.rect(x+pad,by,bw*Math.min(1,c.v.bar/100),3,c.v.bar>=80?OK:c.v.bar>=50?AMB:BAD)}x+=cw[i]});
+   s.y-=h;s.line(M,s.y,M+CW,LINE,.4)});this.y-=11},
+ level:function(n,t){var c=LV[(n||1)-1],s=this,ls=wrap(t,"B",10.5,CW-22),h=11+ls.length*14;this.need(h+6);this.rect(M,this.y-h,CW,h,c.slice(0,3));ls.forEach(function(l,k){s.text(l,M+11,s.y-15-k*14,"B",10.5,c.slice(3))});this.y-=h+8},
+ h3:function(t,c){this.need(32);this.y-=15;this.text(cl(t),M,this.y,"B",10.5,c||this.a);this.y-=3},
+ out:function(){var o=[],n=8,kids=[],s=this,N=this.pg.length;o[1]="<</Type/Catalog/Pages 2 0 R>>";["Helvetica","Helvetica-Bold","Helvetica-Oblique","Times-Bold","Times-Italic"].forEach(function(b,i){o[3+i]="<</Type/Font/Subtype/Type1/BaseFont/"+b+"/Encoding/WinAnsiEncoding>>"});
+  this.pg.forEach(function(p,i){var f=[];s.c=f;s.line(M,38,M+CW,LINE,.5);s.text(wrap(s.foot||"","R",7.5,CW-70)[0]||"",M,27,"R",7.5,MUT);var pn="Page "+(i+1)+" of "+N;s.text(pn,M+CW-tw(pn,"R",7.5),27,"R",7.5,MUT);var st=p.concat(f).join("\n");
+   o[n]="<</Length "+st.length+">>\nstream\n"+st+"\nendstream";o[n+1]="<</Type/Page/Parent 2 0 R/MediaBox[0 0 "+PW+" "+PH+"]/Resources<</Font<</F1 3 0 R/F2 4 0 R/F3 5 0 R/F4 6 0 R/F5 7 0 R>>>>/Contents "+n+" 0 R>>";kids.push(n+1);n+=2});
+  o[2]="<</Type/Pages/Count "+kids.length+"/Kids["+kids.map(function(k){return k+" 0 R"}).join(" ")+"]>>";
+  var b="%PDF-1.4\n",off=[];for(var i=1;i<o.length;i++){off[i]=b.length;b+=i+" 0 obj\n"+o[i]+"\nendobj\n"}var x=b.length;b+="xref\n0 "+o.length+"\n0000000000 65535 f \n"+off.slice(1).map(function(v){return String(v).padStart(10,"0")+" 00000 n \n"}).join("")+"trailer\n<</Size "+o.length+"/Root 1 0 R>>\nstartxref\n"+x+"\n%%EOF";
+  return new Blob([Uint8Array.from(b,function(c){return c.charCodeAt(0)&255})],{type:"application/pdf"})}
+};
+function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
+ (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
+function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";if(o.fixed){var fb0=[{h:"WIDA Report",sub:o.fixed.sub}];}
+ var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:"None. Every answer was correct."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}if(o.scaffolds){b.push({h:"Language Support Used",sub:"Optional help the student chose to use. Please consider this when reading the WIDA level."});b.push(o.scaffolds.length?{table:{head:["Support","How it was used"],w:[46,54],rows:o.scaffolds}}:{p:o.noScaffolds||"No optional language support was offered."})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
+ b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
+ if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Indicative writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}});b.push({p:o.opening});if(o.fixed.text)b.push({p:o.fixed.text})}else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
+ var at=met||near||!o.below?o.at:o.below[1];
+ b.push({p:o.opening});
+ b.push({p:(met?nm+" is secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":near?nm+" is working towards this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ":nm+" is not yet secure at this activity's WIDA focus, Level "+o.target+" "+LVN[o.target-1]+". ")+"The closest WIDA descriptor is: \""+at+"\""})}
+ if(o.strengths&&o.strengths.length){b.push({h3:"Strengths",c:OK});b.push({list:o.strengths})}
+ if(o.develop&&o.develop.length){b.push({h3:"Areas to develop",c:BAD});b.push({list:o.develop})}
+ if(o.steps&&o.steps.length){b.push({h3:"Next steps"});b.push({list:o.steps,num:1})}
+ var nx=met?o.next:(near?null:(o.below?[o.target,o.at]:null));if(nx)b.push({box:{title:"Next WIDA target: Level "+nx[0]+" "+LVN[nx[0]-1],text:nx[1]}});
+ if(o.limits)b.push({p:o.limits,o:{f:"I",z:8.5,c:MUT}});
+ return b}
+/* Turn the activities' plain-text reports into tables and sections. */
+var STAT=/^(Score|First-try correct|Correct|Rank|Unanswered|Clues played|Players)$/i;
+function pct(v){var m=/(\d+)\s*(?:\/|of)\s*(\d+)/.exec(v);return m&&+m[2]?Math.round(100*m[1]/m[2]):null}
+function pairs(l){var a=[],ok=true;l.split(" | ").forEach(function(x){var m=/^([A-Z][^:]{0,32}):\s*(.*)$/.exec(x.trim());if(m)a.push([m[1],m[2]]);else ok=false});return ok&&a.length?a:null}
+function headOf(l){var t=l.trim();var m=/^([A-Z][A-Z0-9 ,&'\-\/]{3,})(?:\s*\(([^)]*)\))?(?::\s*(.*))?$/.exec(t);if(!m)return null;return{t:m[1].trim(),sub:m[2]||"",v:m[3]}}
+function titleCase(s){return s.toLowerCase().replace(/(^|[\s\-\/])([a-z])/g,function(m,p,c){return p+c.toUpperCase()}).replace(/\b(By|In|The|Of|On|And|To)\b/g,function(c){return c.toLowerCase()}).replace(/^./,function(c){return c.toUpperCase()})}
+function resCell(p){var t=p.trim(),m;if(/^(CORRECT|Correct)(\s*\(.*\))?$/.test(t))return{res:{t:t.replace(/^CORRECT/,"Correct"),c:"ok",b:1}};if(/^INCORRECT/.test(t))return{res:{t:"Incorrect",c:"bad",b:1}};
+ m=/^Not yet\.?\s*Correct answer:\s*(.*?)(\s*\(.*\))?$/.exec(t);if(m)return{res:{t:"Not yet"+(m[2]||""),c:"bad",b:1},cor:m[1]};if(/^\[?(SKIPPED|NOT ANSWERED|no answer|not recorded)/i.test(t))return{res:{t:t,c:"bad",b:1}};return null}
+function rowsTable(items){var keys=[],rows=items.map(function(it){var r={plain:[],kv:{},res:null};it.parts.forEach(function(p){var c=resCell(p);if(c){r.res=c.res;if(c.cor)r.kv["Correct answer"]=c.cor;return}var m=/^(My answer|Word|Meaning|Correct answer|Student answer|Correct|shown|student|correct):\s*(.*)$/.exec(p.trim());if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1);if(k=="Correct"&&/\d+ of \d+/.test(m[2]))k="Class correct";if(k=="Correct")k="Correct answer";r.kv[k]=m[2];if(keys.indexOf(k)<0)keys.push(k)}else r.plain.push(p.trim())});return r});
+ if(rows.some(function(r){return r.kv["Correct answer"]})&&keys.indexOf("Correct answer")<0)keys.push("Correct answer");
+ var mp=Math.max.apply(0,rows.map(function(r){return r.plain.length})),hasRes=rows.some(function(r){return r.res}),head=["#"],w=[4];
+ var pl=mp==1?["Question"]:mp==2?["Stage","Question"]:mp==0?[]:["Stage","Question"].concat(Array(mp-2).fill(""));pl.forEach(function(p){head.push(p);w.push(p=="Question"?30:p=="Stage"?13:12)});
+ keys.forEach(function(k){head.push(k);w.push(k=="Meaning"?26:k=="Shown"?22:k=="Word"?13:14)});if(hasRes){head.push("Result");w.push(11)}
+ return{head:head,w:w,rows:rows.map(function(r,i){var o=[items[i].n];pl.forEach(function(_,k){o.push(r.plain[k]||"")});keys.forEach(function(k){var v=r.kv[k]||"";o.push(k=="Class correct"?{t:v,bar:pct(v)}:v)});if(hasRes)o.push(r.res||"");return o})}}
+function fromText(text,o){o=o||{};var L=String(text).split("\n"),i=0,sp={theme:o.theme,foot:o.foot,meta:[],tiles:[],blocks:[]},first=(L[i++]||"").trim(),m=/^(.*?)\s+-\s+(.*)$/.exec(first);sp.title=o.title||(m?titleCase(m[1]):titleCase(first));sp.subtitle=o.subtitle||(m?titleCase(m[2]):"");
+ function addP(ps){ps.forEach(function(x){if(STAT.test(x[0])&&sp.tiles.length<5)sp.tiles.push([x[1].replace(/\s*\(.*?\)\s*$/,"").trim(),x[0]+(/\((\d+%)\)/.test(x[1])?" ("+/\((\d+%)\)/.exec(x[1])[1]+")":"")]);else sp.meta.push(x)})}
+ for(;i<L.length&&L[i].trim();i++){var pp=pairs(L[i]);if(pp)addP(pp.map(function(x){return[x[0],x[1].replace(/^(\d{4}-\d\d-\d\d)T(\d\d:\d\d).*Z$/,"$1 $2 UTC")]}));else sp.blocks.push({p:L[i],o:{c:MUT}})}
+ var B=sp.blocks;if(o.wida)o.wida.forEach(function(x){B.push(x)});var sec=null,buf=[];function flush(){if(sec===null&&!buf.length)return;render(sec,buf);buf=[]}
+ function render(s,ls){var name=s?s.t:"";ls=ls.filter(function(l){return l.trim()});var writing=/WRITTEN|WRITING|SENTENCE|TEACH-BACK/.test(name)&&!/ORDER/.test(name);
+  if(!ls.length)return;
+  if(/^NOTES?$/.test(name)){ls.forEach(function(l){B.push({p:l,o:{f:"I",z:8,c:MUT,g:3}})});return}
+  if(writing){var k=0;while(k<ls.length){var l=ls[k].trim(),n=/^\d+\.\s*(.*)$/.exec(l);if(n&&ls[k+1]&&/^\s/.test(ls[k+1])){var f=/^(.*?)\s*\(frame:\s*(.*)\)$/.exec(n[1]);B.push({box:{title:f?f[1]:n[1],hint:f?"Frame: "+f[2]:"",text:ls[k+1].trim()}});k+=2}else if(/^Prompt:/.test(l)&&ls[k+1]){B.push({box:{title:"Prompt",hint:l.replace(/^Prompt:\s*/,""),text:ls[k+1].replace(/^Student:\s*/,"").trim()}});k+=2}else if(ls.length==2&&k==0){B.push({box:{hint:l,text:ls[1].trim()}});k+=2}else{B.push({box:{text:l}});k++}}return}
+  var items=[],cur=null,logs=[],kv=[],other=[];ls.forEach(function(l){var n=/^(\d+)\.\s+(.*)$/.exec(l);if(n){cur={n:n[1],parts:n[2].split(" | ")};items.push(cur);return}if(/^\s+/.test(l)&&cur){l.trim().split(" | ").forEach(function(p){cur.parts.push(p)});return}cur=null;var c=l.split(" | ");if(/^\d{4}-\d\d-\d\dT|^\d\d:\d\d/.test(c[0])&&c.length>1){logs.push([c[0].replace("T"," ").replace(/\.\d+Z$/,"").replace(/Z$/,""),c[1],c.slice(2).join(" | ")]);return}var q=pairs(l);if(q){kv.push(q);return}other.push(l)});
+  other.forEach(function(l){B.push({p:l})});
+  var run=[];kv.forEach(function(q){if(q.length==1&&pct(q[0][1])!=null){run.push(q[0]);return}if(run.length){B.push(sTbl(run,name));run=[]}B.push({kv:q})});if(run.length)B.push(sTbl(run,name));
+  if(items.length){B.push({table:rowsTable(items)})}
+  if(logs.length)B.push({table:{head:["Time","Event","Detail"],w:[22,20,58],rows:logs,z:8}})}
+ function sTbl(r,nm){return{table:{head:[/MISSION/.test(nm||"")?"Mission":"Area","Result"],w:[60,40],rows:r.map(function(x){var p=pct(x[1]);return[x[0],{t:x[1],bar:p}]})}}}
+ for(;i<L.length;i++){var l=L[i],h=/^\s/.test(l)?null:headOf(l);
+  if(h&&!/^\d/.test(l)){flush();var st=/^STUDENT \d+$/.test(h.t);var nm=h.t.replace(/\s+\d+$/,"");if(st){B.push({band:"Student: "+titleCase(h.v||"")});sec={t:"STUDENT"};(o.bands&&o.bands[h.v]||[]).forEach(function(x){B.push(x)});continue}
+   if(/^NOTES?$/.test(nm)){sec={t:"NOTES"};buf.push(h.v||"");continue}
+   B.push({h:titleCase(nm),sub:h.sub});sec={t:nm};if(h.v!=null&&h.v!==""){B.push(/^none\.?$/i.test(h.v)?{p:"None",o:{c:OK,f:"B"}}:{box:{text:h.v}})}continue}
+  buf.push(l)}
+ flush();return build(sp)}
+function deliver(blob,fn){return (async function(){var d=null;try{d=window.claude?await window.claude.use("downloads"):null}catch(e){d=null}if(d){await d.save({filename:fn,data:blob});return}var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},4000)})()}
+window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida};
+})();
+</script>
+<!-- Miss L Gems: link back to the home page -->
+<a id="mlg-home" href="../index.html" style="display:inline-block;margin-top:12px;padding:6px 11px;border-radius:999px;background:#FFFFFF;color:#2F3A4A;border:1px solid #D9DEE7;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
+<style>@media print{#mlg-home{display:none!important}}#mlg-home:focus-visible{outline:2px solid #1F4D40;outline-offset:2px}</style>
+<script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
+</body>
+</html>
