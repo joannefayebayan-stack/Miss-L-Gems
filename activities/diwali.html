@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diwali Lights – Year 9</title>
+<meta name="description" content="Watch a short film about the history and celebration of Diwali, then play Diwali Lights: a three-round game for Year 9.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#FFF8EF;--card:#fff;--ink:#2F2A3A;--muted:#6A6176;--line:#F1DFC8;
+  --saffron:#E07A1F;--saffron-d:#9A4A07;--marigold:#F6C453;--rose:#D9466B;--teal:#1E9C90;--plum:#2A0F3D;--night:#1A0A2E;
+  --ok:#21875A;--bad:#C2363C;
+  --display:"Playfair Display",Georgia,serif;--body:"Poppins",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--body);min-height:100vh;padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:var(--saffron-d)}
+main{max-width:860px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px)) 48px max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--display);font-weight:700;line-height:1.1;margin:0;text-wrap:balance}
+h2{font-size:clamp(1.6rem,4.5vw,2.1rem);color:var(--saffron-d)}
+.back{display:inline-block;margin:16px 0 0;font-size:.9rem;text-decoration:none}
+.back:hover{text-decoration:underline}
+
+/* night banner holding the lamps */
+.night{background:radial-gradient(120% 140% at 50% 0%,#3B1452 0%,var(--night) 70%);color:#FFF4DE;border-radius:22px;padding:26px 20px 18px;margin-top:14px;text-align:center;position:relative;overflow:hidden}
+.night .dev{font-family:"Tiro Devanagari Hindi",serif;color:#FFB15C;font-size:1.3rem;margin:0}
+.night h1{font-size:clamp(2.4rem,8vw,3.6rem);color:var(--marigold)}
+.night p.sub{margin:6px 0 0;color:#E9DCF5;font-size:.95rem}
+.lamps{display:flex;justify-content:center;gap:clamp(2px,1.2vw,10px);margin-top:16px;flex-wrap:nowrap}
+.lamps svg{width:clamp(26px,7vw,52px);height:auto;overflow:visible}
+.lamps .fl{opacity:0;transform-origin:50% 100%;transition:opacity .4s}
+.lamps .on .fl{opacity:1;animation:flick 1.6s ease-in-out infinite}
+.lamps .gl{opacity:0;transition:opacity .5s}.lamps .on .gl{opacity:1}
+@keyframes flick{0%,100%{transform:scale(1,1) rotate(0)}30%{transform:scale(.94,1.06) rotate(-3deg)}60%{transform:scale(1.04,.95) rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){.lamps .on .fl{animation:none}}
+.meter{margin:10px auto 0;font-size:.85rem;color:#E9DCF5}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(16px,3.5vw,26px);margin-top:16px}
+.kick{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--saffron);font-weight:600;margin:0 0 4px}
+video{display:block;width:100%;border-radius:12px;background:#000;aspect-ratio:16/9;margin-top:12px}
+.talk{margin:14px 0 0;padding-left:1.2em;color:var(--muted)}
+.talk li+li{margin-top:4px}
+details{margin-top:10px}summary{cursor:pointer;font-weight:500;color:var(--saffron-d)}
+
+button{font:inherit;cursor:pointer}
+.btn{background:var(--saffron);color:#fff;border:0;border-radius:12px;padding:12px 24px;font-weight:600;font-size:1rem;box-shadow:0 3px 0 var(--saffron-d)}
+.btn:hover{filter:brightness(1.06)}.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--saffron-d)}
+.btn.alt{background:#fff;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:focus-visible,.opt:focus-visible,.chip:focus-visible,.bin:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+label{font-weight:500;font-size:.95rem}
+input[type=text]{width:100%;max-width:340px;display:block;padding:11px 12px;font:inherit;border:2px solid var(--line);border-radius:10px;margin:6px 0 14px;background:var(--bg)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:600;font-size:.9rem}
+.hud span{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 11px}
+.q{font-family:var(--display);font-size:clamp(1.3rem,3.6vw,1.65rem);line-height:1.25;margin:16px 0 14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{text-align:left;background:#FFFCF7;border:2px solid var(--line);border-radius:12px;padding:13px 14px;color:var(--ink);font-size:1rem;line-height:1.35;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--marigold);background:#FFF4E0}
+.opt.right{border-color:var(--ok);background:#E7F6EE}.opt.wrong{border-color:var(--bad);background:#FCEBEC}
+.opt:disabled{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;background:#FFF4E0;border-left:4px solid var(--marigold);display:none}
+.fb.show{display:block}.fb b{display:block}
+.fb.good{background:#E7F6EE;border-color:var(--ok)}.fb.bad{background:#FCEBEC;border-color:var(--bad)}
+.next{margin-top:14px}
+.hide{display:none!important}
+
+/* round 2 */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}
+.chip{background:#FFFCF7;border:2px solid var(--line);border-radius:999px;padding:9px 14px;font-size:.93rem;color:var(--ink);text-align:left;line-height:1.3}
+.chip.sel{border-color:var(--saffron);background:#FFE9CF;box-shadow:0 0 0 3px #FFD9AD}
+.chip.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.bins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.bins{grid-template-columns:1fr}}
+.bin{border:2px dashed var(--c);border-radius:14px;padding:12px;min-height:120px;background:color-mix(in srgb,var(--c) 7%,#fff);text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:6px}
+.bin strong{color:var(--c);font-family:var(--display);font-size:1.2rem}
+.bin small{display:block;background:#fff;border-radius:8px;padding:6px 8px;font-size:.85rem;border:1px solid var(--line)}
+.bin.ready{border-style:solid}
+
+/* round 3 */
+.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}
+@media (max-width:620px){.slots{grid-template-columns:1fr}}
+.slot{border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:8px;text-align:center;font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;justify-content:center}
+.slot b{font-family:var(--display);font-size:1.4rem;color:var(--saffron)}
+.slot.done{border-style:solid;border-color:var(--ok);background:#E7F6EE;color:var(--ink)}
+.slot.done span{font-weight:600}
+
+/* end */
+.big{font-family:var(--display);font-size:clamp(2.6rem,9vw,3.6rem);color:var(--saffron-d);margin:4px 0}
+.stars{font-size:2rem;letter-spacing:6px;color:var(--marigold)}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin-top:8px}td{padding:7px 4px;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-weight:600}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+
+/* rangoli studio */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:16px;align-items:start;margin-top:12px}
+@media (max-width:640px){.studio{grid-template-columns:1fr}}
+#rg{width:100%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#3B1452,#1A0A2E);touch-action:none;cursor:crosshair;display:block}
+.pal{display:flex;flex-wrap:wrap;gap:8px}
+.sw{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.sw.sel{box-shadow:0 0 0 3px var(--plum)}
+.tools{display:grid;gap:8px;margin-top:12px}
+.tools .btn{padding:9px 14px;font-size:.92rem}
+.note{font-size:.88rem;color:var(--muted);margin:8px 0 0}
+.mute{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.12);color:#FFF4DE;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 12px;font-size:.8rem}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&display=swap">
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<main>
+<a class="back" href="../index.html#other">← Miss L Gems</a>
+
+<header class="night">
+  <button class="mute" id="mute" aria-pressed="false">Sound on</button>
+  <p class="dev" lang="hi">दीपावली</p>
+  <h1>Diwali Lights</h1>
+  <p class="sub">Watch the film, then light all ten lamps.</p>
+  <div class="lamps" id="lamps" aria-hidden="true"></div>
+  <p class="meter" id="meter">0 of 10 lamps lit</p>
+</header>
+
+<!-- STEP 1: FILM -->
+<section class="card" id="film">
+  <p class="kick">Step 1 · Watch</p>
+  <h2>Diwali: the Festival of Lights</h2>
+  <video controls preload="metadata" poster="media/diwali-poster.jpg" playsinline>
+    <source src="media/diwali-festival-of-lights.mp4" type="video/mp4">
+    Your browser cannot play this video. <a href="media/diwali-festival-of-lights.mp4">Download the film</a>.
+  </video>
+  <p class="note">3½ minutes, with captions on screen. <a href="media/diwali-festival-of-lights.mp4" download>Download the film</a> to show it offline.</p>
+  <details>
+    <summary>Talk about it (before or after the game)</summary>
+    <ol class="talk">
+      <li>Why do you think so many different faiths use light as a symbol?</li>
+      <li>Rama, Guru Hargobind and Mahavira have very different stories. What do the stories have in common?</li>
+      <li>Fireworks are fun but bad for the air. What would you suggest to a city council at Diwali?</li>
+      <li>Thailand celebrates Loy Krathong with lights on water. How is it similar to Diwali, and how is it different?</li>
+    </ol>
+  </details>
+</section>
+
+<!-- STEP 2: GAME -->
+<section class="card" id="start">
+  <p class="kick">Step 2 · Play</p>
+  <h2>Three rounds, ten lamps</h2>
+  <p>Round 1: <b>Quiz</b>, ten questions. Round 2: <b>Whose story?</b>, sort the stories by faith. Round 3: <b>Five days</b>, put the festival days in order. Every point helps to light the lamps.</p>
+  <label for="name">Your name</label>
+  <input type="text" id="name" maxlength="24" autocomplete="off" placeholder="First name">
+  <div class="row"><button class="btn" id="go">Start the game</button><span class="note" id="best"></span></div>
+</section>
+
+<section class="card hide" id="r1">
+  <div class="hud"><span id="r1n">Question 1 of 10</span><span>Round 1 · Quiz</span><span id="sc1">Score 0</span></div>
+  <p class="q" id="qt"></p>
+  <div class="opts" id="opts"></div>
+  <div class="fb" id="fb" role="status"></div>
+  <button class="btn next hide" id="nx">Next question</button>
+</section>
+
+<section class="card hide" id="r2">
+  <div class="hud"><span id="r2n">0 of 6 sorted</span><span>Round 2 · Whose story?</span><span id="sc2">Score 0</span></div>
+  <p class="q">Tap a story, then tap the faith it belongs to.</p>
+  <div class="chips" id="chips"></div>
+  <div class="bins" id="bins"></div>
+  <div class="fb" id="fb2" role="status"></div>
+  <button class="btn next hide" id="nx2">On to Round 3</button>
+</section>
+
+<section class="card hide" id="r3">
+  <div class="hud"><span id="r3n">Day 1 of 5</span><span>Round 3 · Five days</span><span id="sc3">Score 0</span></div>
+  <p class="q">Diwali lasts five days. Tap them in order, from day 1 to day 5.</p>
+  <div class="slots" id="slots"></div>
+  <div class="chips" id="days"></div>
+  <div class="fb" id="fb3" role="status"></div>
+  <button class="btn next hide" id="nx3">See my result</button>
+</section>
+
+<section class="card hide" id="end">
+  <p class="kick">Shubh Deepavali!</p>
+  <h2 id="endName">Well done</h2>
+  <p class="big" id="final">0</p>
+  <p class="stars" id="stars" aria-label=""></p>
+  <p id="verdict"></p>
+  <table id="breakdown"></table>
+  <div class="row" style="margin-top:16px"><button class="btn" id="again">Play again</button><a class="btn alt" href="#studio" style="text-decoration:none">Design a rangoli</a></div>
+</section>
+
+<!-- BONUS -->
+<section class="card" id="studio">
+  <p class="kick">Bonus · Create</p>
+  <h2>Rangoli studio</h2>
+  <p class="note" style="margin-top:6px">Rangoli patterns are symmetrical. Draw in the circle and your pattern repeats eight times. Pick a colour and a brush.</p>
+  <div class="studio">
+    <canvas id="rg" width="900" height="900" aria-label="Rangoli drawing area"></canvas>
+    <div>
+      <div class="pal" id="pal"></div>
+      <div class="tools">
+        <button class="btn alt" id="brush">Brush: dots</button>
+        <button class="btn alt" id="undo">Undo</button>
+        <button class="btn alt" id="clr">Clear</button>
+        <button class="btn" id="save">Save picture</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const show=(...ids)=>ids.forEach(i=>$(i).classList.remove('hide'));
+const hide=(...ids)=>ids.forEach(i=>$(i).classList.add('hide'));
+
+/* ---------- sound ---------- */
+let ac=null,muted=store.get('diwali-muted')==='1';
+function tone(freqs,dur=.5,type='sine',vol=.12){if(muted)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;freqs.forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t+i*.09);g.gain.linearRampToValueAtTime(vol,t+i*.09+.01);g.gain.exponentialRampToValueAtTime(.0001,t+i*.09+dur);o.connect(g).connect(ac.destination);o.start(t+i*.09);o.stop(t+i*.09+dur+.05)})}catch(e){}}
+const good=()=>tone([659,880,1175],.6),bad=()=>tone([196,175],.35,'triangle',.1),fanfare=()=>tone([523,659,784,1047,1319],.9);
+function setMute(){$('mute').textContent=muted?'Sound off':'Sound on';$('mute').setAttribute('aria-pressed',muted)}
+$('mute').onclick=()=>{muted=!muted;store.set('diwali-muted',muted?'1':'0');setMute()};setMute();
+
+/* ---------- lamps ---------- */
+const LAMP=`<svg viewBox="0 0 60 70"><circle class="gl" cx="38" cy="30" r="26" fill="url(#g)"/><defs><radialGradient id="g"><stop offset="0" stop-color="#FFB347" stop-opacity=".7"/><stop offset="1" stop-color="#FFB347" stop-opacity="0"/></radialGradient><linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF7C2"/><stop offset=".55" stop-color="#FFC53D"/><stop offset="1" stop-color="#FF6A00"/></linearGradient></defs><path class="fl" d="M40 18 C46 30 46 38 40 40 C34 38 34 30 40 18Z" fill="url(#fl)"/><path d="M6 44 Q8 64 30 64 Q50 64 56 42 Q48 46 44 44 Z" fill="#C25A2A"/><ellipse cx="28" cy="44" rx="22" ry="4" fill="#5E200A"/><circle cx="20" cy="54" r="2" fill="#F6C453"/><circle cx="30" cy="56" r="2" fill="#F6C453"/><circle cx="40" cy="54" r="2" fill="#F6C453"/></svg>`;
+$('lamps').innerHTML=Array.from({length:10},()=>`<span>${LAMP}</span>`).join('');
+const MAX=100+60+50;
+function setLamps(score){const n=Math.min(10,Math.floor(score/MAX*10+1e-9));[...$('lamps').children].forEach((s,i)=>s.classList.toggle('on',i<n));$('meter').textContent=`${n} of 10 lamps lit`}
+
+/* ---------- question bank ---------- */
+const QB=[
+ ['What does the Sanskrit word “deepavali” mean?',['A row of lamps','A festival of colours','The first day of spring','A gift of sweets'],'Deepa means lamp and avali means row, so deepavali is “a row of lamps”.'],
+ ['On which night does the main Diwali celebration fall?',['The new moon, the darkest night','The full moon, the brightest night','The longest day of the year','The first day of the solar year'],'Diwali falls on the new moon of the Hindu month of Kartik, so lamps light up the darkest night.'],
+ ['Which ancient poem tells the story of Rama and Sita?',['The Ramayana','The Odyssey','The Guru Granth Sahib','The Book of Kells'],'The Ramayana is an ancient Indian epic poem. (The Guru Granth Sahib is the Sikh holy scripture.)'],
+ ['How long did Rama, Sita and Lakshmana live in exile in the forest?',['14 years','7 years','40 days','1 year'],'They lived in the forest for 14 years.'],
+ ['Who kidnapped Sita?',['Ravana, the demon king','Hanuman','Lakshmana','Narakasura'],'Ravana took Sita to his kingdom. Hanuman helped Rama to rescue her.'],
+ ['Which city lit rows of lamps to welcome Rama and Sita home?',['Ayodhya','Amritsar','Pavapuri','Leicester'],'The people of Ayodhya lit lamps to light the way home for Rama and Sita.'],
+ ['Lakshmi is the Hindu goddess of …',['wealth and good fortune','war and battles','rain and rivers','music and dance'],'Families welcome Lakshmi, goddess of wealth and good fortune, on the main night of Diwali.'],
+ ['What do Sikhs remember on Bandi Chhor Divas?',['Guru Hargobind’s release from Gwalior Fort','The birth of the first Guru','Rama’s return to Ayodhya','The building of a new temple'],'In 1619 Guru Hargobind was set free from prison at Gwalior Fort. Bandi Chhor Divas means “the day of release”.'],
+ ['How many imprisoned kings were freed with Guru Hargobind?',['52','5','14','100'],'Guru Hargobind made sure 52 kings were freed with him. They held on to his cloak as they left.'],
+ ['Which building do Sikhs light up beautifully at Diwali?',['The Golden Temple in Amritsar','The Taj Mahal in Agra','Wat Arun in Bangkok','Gwalior Fort'],'The Golden Temple (Harmandir Sahib) in Amritsar is lit with lamps and lights.'],
+ ['What do Jains remember at Diwali?',['Lord Mahavira reaching moksha','Lord Mahavira becoming a king','A great battle','The harvest'],'Jains remember Mahavira reaching moksha, freedom from the cycle of rebirth, in 527 BCE.'],
+ ['What is a diya?',['A small clay oil lamp','A sweet made from milk','A Diwali dance','A greeting card'],'Diyas are small clay lamps filled with oil or ghee and a cotton wick.'],
+ ['What are rangoli patterns usually made from?',['Coloured powder, rice or flower petals','Paint on the walls','Paper cut-outs','Wet clay'],'Rangoli are made on the floor at the entrance, often from coloured powder, rice or petals.'],
+ ['Which of these is a Diwali sweet (mithai)?',['Ladoo','Samosa','Naan','Dal'],'Ladoo are round sweets. Samosa, naan and dal are savoury foods.'],
+ ['How many days does the Diwali festival last?',['Five','One','Three','Ten'],'From Dhanteras to Bhai Dooj, Diwali lasts five days.'],
+ ['Which day of Diwali celebrates brothers and sisters?',['Bhai Dooj','Dhanteras','Govardhan Puja','Choti Diwali'],'On Bhai Dooj, the fifth day, brothers and sisters honour and give gifts to each other.'],
+ ['Why do some cities limit fireworks at Diwali?',['The smoke makes air pollution worse','Fireworks are too quiet','Diwali is in the daytime','Fireworks are not allowed in any festival'],'Smoke from fireworks can make the air unhealthy, so some cities limit them.'],
+ ['Diwali celebrates the victory of …',['light over darkness','summer over winter','the sea over the land','one country over another'],'Diwali celebrates light over darkness, good over evil and knowledge over ignorance.'],
+ ['What is Diwali called in Nepal?',['Tihar','Holi','Songkran','Eid'],'In Nepal the five-day festival is called Tihar.'],
+ ['Which UK city has one of the biggest Diwali celebrations outside India?',['Leicester','Edinburgh','Oxford','Cardiff'],'Leicester hosts one of the largest Diwali celebrations outside India.'],
+ ['What do many people do on Dhanteras, the first day?',['Clean the house and buy something new','Fly kites all day','Fast for a week','Plant rice'],'On Dhanteras people clean their homes and often buy gold, silver or new kitchen pots.'],
+ ['In the Govardhan Puja story, what does Krishna lift to shelter people from a storm?',['A mountain','A boat','A temple','An elephant'],'Krishna lifts Govardhan Hill to shelter the villagers. Some people also celebrate their New Year on this day.'],
+];
+const STORIES=[
+ ['Rama and Sita return to Ayodhya','Hindu'],['Lakshmi is welcomed into clean homes','Hindu'],['Krishna defeats the demon Narakasura','Hindu'],
+ ['Guru Hargobind is freed with 52 kings','Sikh'],['The Golden Temple in Amritsar is lit up','Sikh'],['“The day of release” (Bandi Chhor Divas)','Sikh'],
+ ['Mahavira reaches moksha','Jain'],['Lamps stand for the light of Mahavira’s teaching','Jain'],['Pavapuri, where Mahavira died, is a place of pilgrimage','Jain'],
+];
+const FAITHS=[['Hindu','#D9662B','Hindus'],['Sikh','#2D5EC9','Sikhs'],['Jain','#1E9C90','Jains']];
+const DAYS=[['Dhanteras','Cleaning and buying new things'],['Choti Diwali','Krishna defeats Narakasura'],['Lakshmi Puja','The main night'],['Govardhan Puja','Krishna lifts a mountain'],['Bhai Dooj','Brothers and sisters']];
+
+/* ---------- game state ---------- */
+let G;
+function total(){return G.s1+G.s2+G.s3}
+function upd(){$('sc1').textContent=`Score ${total()}`;$('sc2').textContent=`Score ${total()}`;$('sc3').textContent=`Score ${total()}`;setLamps(total())}
+const best=()=>+(store.get('diwali-best')||0);
+function showBest(){const b=best();$('best').textContent=b?`Best on this device: ${b} / ${MAX}`:''}
+showBest();setLamps(0);
+$('name').value=store.get('diwali-name')||'';
+
+$('go').onclick=start;$('again').onclick=()=>{hide('end');start()};
+function start(){
+  G={name:$('name').value.trim()||'Player',s1:0,s2:0,s3:0,qi:0,qs:shuffle(QB).slice(0,10),r1:0};
+  store.set('diwali-name',$('name').value.trim());
+  hide('start','end');show('r1');upd();askQ();$('r1').scrollIntoView({behavior:'smooth',block:'start'});
+}
+/* round 1 */
+function askQ(){
+  const [q,opts,why]=G.qs[G.qi];$('r1n').textContent=`Question ${G.qi+1} of 10`;$('qt').textContent=q;
+  $('fb').className='fb';hide('nx');
+  const o=$('opts');o.innerHTML='';
+  shuffle(opts.map((t,i)=>[t,i===0])).forEach(([t,ok])=>{const b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=()=>pickQ(b,ok,why);b.dataset.ok=ok?1:0;o.appendChild(b)});
+  o.firstChild.focus({preventScroll:true});
+}
+function pickQ(b,ok,why){
+  [...$('opts').children].forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('right')});
+  if(ok){G.s1+=10;G.r1++;good();burst(b)}else{b.classList.add('wrong');bad()}
+  const f=$('fb');f.className='fb show '+(ok?'good':'bad');f.innerHTML=`<b>${ok?'Correct! A lamp grows brighter.':'Not quite.'}</b>${why}`;
+  upd();$('nx').textContent=G.qi===9?'On to Round 2':'Next question';show('nx');$('nx').focus({preventScroll:true});
+}
+$('nx').onclick=()=>{G.qi++;if(G.qi<10)askQ();else{hide('r1');startR2()}};
+/* round 2 */
+function startR2(){
+  const pick=FAITHS.flatMap(([f])=>shuffle(STORIES.filter(s=>s[1]===f)).slice(0,2));
+  G.r2={left:shuffle(pick),sel:null,done:0,miss:new Set()};
+  $('bins').innerHTML=FAITHS.map(([f,c,label])=>`<button class="bin" style="--c:${c}" data-f="${f}"><strong>${label}</strong></button>`).join('');
+  [...$('bins').children].forEach(b=>b.onclick=()=>dropR2(b));
+  drawChips();$('fb2').className='fb';hide('nx2');show('r2');upd();$('r2').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function drawChips(){const c=$('chips');c.innerHTML='';G.r2.left.forEach((s,i)=>{const b=document.createElement('button');b.className='chip'+(G.r2.sel===s?' sel':'');b.textContent=s[0];b.onclick=()=>{G.r2.sel=s;drawChips();[...$('bins').children].forEach(x=>x.classList.add('ready'))};c.appendChild(b)});$('r2n').textContent=`${G.r2.done} of 6 sorted`}
+function dropR2(bin){
+  const s=G.r2.sel;const f=$('fb2');
+  if(!s){f.className='fb show';f.innerHTML='Tap a story first, then tap a faith.';return}
+  if(bin.dataset.f===s[1]){
+    if(!G.r2.miss.has(s[0])){G.s2+=10}good();burst(bin);
+    const sm=document.createElement('small');sm.textContent=s[0];bin.appendChild(sm);
+    G.r2.left=G.r2.left.filter(x=>x!==s);G.r2.sel=null;G.r2.done++;f.className='fb show good';f.innerHTML=`<b>Yes!</b>“${s[0]}” is part of the ${s[1]} Diwali story.`;
+    [...$('bins').children].forEach(x=>x.classList.remove('ready'));
+  }else{
+    G.r2.miss.add(s[0]);bad();f.className='fb show bad';f.innerHTML=`<b>Try again.</b>That story does not belong to ${bin.querySelector('strong').textContent}. (No points for this card now, but you still need to sort it.)`;
+    const chip=[...$('chips').children].find(x=>x.textContent===s[0]);if(chip){chip.classList.remove('shake');void chip.offsetWidth;chip.classList.add('shake')}
+  }
+  upd();drawChips();
+  if(G.r2.done===6){f.className='fb show good';f.innerHTML=`<b>All sorted!</b>You scored ${G.s2} out of 60 in this round.`;show('nx2');$('nx2').focus({preventScroll:true})}
+}
+$('nx2').onclick=()=>{hide('r2');startR3()};
+/* round 3 */
+function startR3(){
+  G.r3={next:0,miss:false};
+  $('slots').innerHTML=DAYS.map((d,i)=>`<div class="slot"><b>${i+1}</b>Day ${i+1}</div>`).join('');
+  const c=$('days');c.innerHTML='';
+  shuffle(DAYS.map((d,i)=>[d,i])).forEach(([d,i])=>{const b=document.createElement('button');b.className='chip';b.textContent=d[0];b.onclick=()=>pickDay(b,i);c.appendChild(b)});
+  $('fb3').className='fb';hide('nx3');show('r3');$('r3n').textContent='Day 1 of 5';upd();$('r3').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function pickDay(b,i){
+  const f=$('fb3');
+  if(i===G.r3.next){
+    if(!G.r3.miss)G.s3+=10;G.r3.miss=false;good();
+    const sl=$('slots').children[i];sl.classList.add('done');sl.innerHTML=`<b>${i+1}</b><span>${DAYS[i][0]}</span>${DAYS[i][1]}`;burst(sl);
+    b.remove();G.r3.next++;f.className='fb show good';f.innerHTML=`<b>Day ${i+1}: ${DAYS[i][0]}.</b>${DAYS[i][1]}.`;
+    $('r3n').textContent=G.r3.next<5?`Day ${G.r3.next+1} of 5`:'All five days placed';
+    if(G.r3.next===5){f.innerHTML=`<b>Perfect order!</b>You scored ${G.s3} out of 50 in this round.`;show('nx3');$('nx3').focus({preventScroll:true})}
+  }else{G.r3.miss=true;bad();b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');f.className='fb show bad';f.innerHTML=`<b>Not day ${G.r3.next+1}.</b>Think about it: which day comes ${['first','second','third','fourth','fifth'][G.r3.next]}?`}
+  upd();
+}
+$('nx3').onclick=finish;
+function finish(){
+  hide('r3');const s=total();const pct=s/MAX;
+  const st=pct>=.9?3:pct>=.65?2:pct>=.4?1:0;
+  $('endName').textContent=`Well done, ${G.name}!`;$('final').textContent=`${s} / ${MAX}`;
+  $('stars').textContent='★'.repeat(st)+'☆'.repeat(3-st);$('stars').setAttribute('aria-label',`${st} out of 3 stars`);
+  $('verdict').textContent=st===3?'Every lamp is shining. You are a Diwali expert!':st===2?'A bright result. Rewatch one part of the film and try to light every lamp.':st===1?'Some lamps are lit. Watch the film again and have another go.':'Watch the film again, then play once more: you can light these lamps!';
+  $('breakdown').innerHTML=`<tr><td>Round 1 · Quiz (${G.r1} of 10 correct)</td><td>${G.s1} / 100</td></tr><tr><td>Round 2 · Whose story?</td><td>${G.s2} / 60</td></tr><tr><td>Round 3 · Five days</td><td>${G.s3} / 50</td></tr>`;
+  if(s>best())store.set('diwali-best',s);showBest();
+  show('end');$('end').scrollIntoView({behavior:'smooth',block:'start'});
+  fanfare();fireworks(st+2);
+}
+
+/* ---------- celebration effects ---------- */
+const fx=$('fx'),fc=fx.getContext('2d');let parts=[],running=false;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeFx(){fx.width=innerWidth*devicePixelRatio;fx.height=innerHeight*devicePixelRatio}
+addEventListener('resize',sizeFx);sizeFx();
+const COLS=['#F6C453','#FF9933','#F2557A','#2EC4B6','#9B5DE5','#FFF4DE'];
+function spawn(x,y,n,spd){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=(Math.random()*.6+.4)*spd;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:1,c:COLS[Math.random()*COLS.length|0]})}if(!running){running=true;requestAnimationFrame(tick)}}
+function burst(el){if(reduce)return;const r=el.getBoundingClientRect();spawn((r.left+r.width/2)*devicePixelRatio,(r.top+r.height/2)*devicePixelRatio,26,5*devicePixelRatio)}
+function fireworks(n){if(reduce)return;for(let k=0;k<n;k++)setTimeout(()=>spawn(innerWidth*(.2+Math.random()*.6)*devicePixelRatio,innerHeight*(.15+Math.random()*.3)*devicePixelRatio,70,7*devicePixelRatio),k*450)}
+function tick(){fc.clearRect(0,0,fx.width,fx.height);parts=parts.filter(p=>p.life>0);
+  for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.08*devicePixelRatio;p.vx*=.98;p.vy*=.98;p.life-=.016;fc.globalAlpha=Math.max(0,p.life);fc.fillStyle=p.c;fc.beginPath();fc.arc(p.x,p.y,2.6*devicePixelRatio,0,7);fc.fill()}
+  fc.globalAlpha=1;if(parts.length)requestAnimationFrame(tick);else running=false}
+
+/* ---------- rangoli studio ---------- */
+const rg=$('rg'),rc=rg.getContext('2d'),R=450;
+const PAL=['#F2557A','#FF9933','#F6C453','#2EC4B6','#3E7BFA','#9B5DE5','#FFFFFF','#7CD857'];
+let col=PAL[0],brush='dots',strokes=[],cur=null;
+$('pal').innerHTML=PAL.map((c,i)=>`<button class="sw${i?'':' sel'}" style="background:${c}" aria-label="Colour ${i+1}" data-c="${c}"></button>`).join('');
+[...$('pal').children].forEach(b=>b.onclick=()=>{col=b.dataset.c;[...$('pal').children].forEach(x=>x.classList.toggle('sel',x===b))});
+const BR=['dots','line','petals'];
+$('brush').onclick=()=>{brush=BR[(BR.indexOf(brush)+1)%3];$('brush').textContent='Brush: '+brush};
+function guide(){rc.save();rc.translate(R,R);rc.strokeStyle='rgba(255,255,255,.12)';rc.lineWidth=1.5;for(let i=0;i<8;i++){rc.rotate(Math.PI/4);rc.beginPath();rc.moveTo(0,0);rc.lineTo(0,-R);rc.stroke()}for(const r of[120,240,360]){rc.beginPath();rc.arc(0,0,r,0,7);rc.stroke()}rc.restore()}
+function stamp(s,p,q){ // draw a segment p->q mirrored 16 ways (8 rotations x reflection)
+  rc.save();rc.translate(R,R);
+  for(let k=0;k<8;k++)for(const m of[1,-1]){rc.save();rc.rotate(k*Math.PI/4);rc.scale(m,1);rc.fillStyle=s.c;rc.strokeStyle=s.c;
+    if(s.b==='line'){rc.lineWidth=10;rc.lineCap='round';rc.beginPath();rc.moveTo(p[0],p[1]);rc.lineTo(q[0],q[1]);rc.stroke()}
+    else if(s.b==='dots'){rc.beginPath();rc.arc(q[0],q[1],9,0,7);rc.fill()}
+    else{const a=Math.atan2(q[1],q[0]);rc.save();rc.translate(q[0],q[1]);rc.rotate(a+Math.PI/2);rc.beginPath();rc.ellipse(0,0,9,22,0,0,7);rc.fill();rc.restore()}
+    rc.restore()}
+  rc.restore()}
+function redraw(g=true){rc.clearRect(0,0,900,900);if(g)guide();for(const s of strokes){let prev=s.pts[0];s.pts.forEach((q,i)=>{if(s.b!=='line'||i>0)stamp(s,prev,q);prev=q})}}
+function pt(e){const r=rg.getBoundingClientRect();return[(e.clientX-r.left)/r.width*900-R,(e.clientY-r.top)/r.height*900-R]}
+rg.onpointerdown=e=>{rg.setPointerCapture(e.pointerId);const p=pt(e);cur={c:col,b:brush,pts:[p]};strokes.push(cur);if(brush!=='line')stamp(cur,p,p)};
+rg.onpointermove=e=>{if(!cur)return;const p=pt(e),l=cur.pts[cur.pts.length-1];const gap=brush==='line'?4:brush==='dots'?26:34;if(Math.hypot(p[0]-l[0],p[1]-l[1])<gap)return;cur.pts.push(p);stamp(cur,l,p)};
+rg.onpointerup=rg.onpointercancel=()=>{cur=null};
+$('undo').onclick=()=>{strokes.pop();redraw()};$('clr').onclick=()=>{strokes=[];redraw()};
+$('save').onclick=()=>{const c=document.createElement('canvas');c.width=c.height=900;const k=c.getContext('2d');const g=k.createRadialGradient(450,450,0,450,450,450);g.addColorStop(0,'#3B1452');g.addColorStop(1,'#1A0A2E');k.fillStyle=g;k.fillRect(0,0,900,900);redraw(false);k.drawImage(rg,0,0);redraw();const a=document.createElement('a');a.download='my-rangoli.png';a.href=c.toDataURL('image/png');a.click()};
+redraw();
+</script>
+</body>
+</html>
