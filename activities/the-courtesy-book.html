@@ -263,8 +263,4 @@ document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab
 intro();
 </script>
 
-<!-- Miss L Gems: link back to the home page -->
-<a id="mlg-home" href="../index.html" style="position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:40;padding:6px 11px;border-radius:999px;background:#FFFFFF;color:#2F3A4A;border:1px solid #D9DEE7;font:600 12px/1.3 system-ui,sans-serif;text-decoration:none;opacity:.86">&#9666; Miss L Gems</a>
-<style>body{padding-bottom:52px}@media print{#mlg-home{display:none!important}body{padding-bottom:0}}#mlg-home:focus-visible{outline:2px solid #cdb078;outline-offset:2px}</style>
-<script>(function(){var a=document.getElementById('mlg-home'),t,k=a.innerHTML;a.addEventListener('click',function(e){if(a.dataset.sure)return;e.preventDefault();a.dataset.sure='1';a.textContent='Leave this activity? Tap again';t=setTimeout(function(){delete a.dataset.sure;a.innerHTML=k},3500)})})();</script>
 </body></html>
