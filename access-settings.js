@@ -15,6 +15,10 @@
 // With no dates, the code stays the same until you add one.
 // To change a code right now, add a date and time that has just passed.
 //
+// EASIER: open /teacher-codes on your site and set the dates there.
+// Dates saved on that page are kept in the site's private storage
+// and work together with any dates written below.
+//
 // After editing, press "Commit changes" on GitHub. The site updates
 // by itself within a minute or two.
 // ============================================================
