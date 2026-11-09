@@ -371,11 +371,11 @@ function deliver(blob,fn){return (async function(){var d=null;try{d=window.claud
 var LAST=null;
 function record(o){var p=o.pct||0,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure":near?"Working towards":"Not yet secure",b=[],c=o.counts||[0,0,0],tot=c[0]+c[1]+(c[2]||0);
  var fd=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
- var t2=function(k){return k?(k==1?"Once":k+" times"):"No"},meta=[["English name",o.name||"-"],["Year group",o.yg||"-"],["Form group",o.fg||"-"],["Date",o.date||fd]];if(o.attempt)meta.push(["Left the page",t2(o.attempt.left)],["Left full screen",t2(o.attempt.fs)]);
+ var t2=function(k){return k?(k==1?"Once":k+" times"):"No"},meta=[["English name",o.name||"-"],["Year group",o.yg||"-"],["Form group",o.fg||"-"],["Date",o.date||fd]].concat(o.more||[]);if(o.attempt)meta.push(["Left the page",t2(o.attempt.left)],["Left full screen",t2(o.attempt.fs)]);
  var tiles=[[c[0]+" of "+tot,"Correct ("+p+"%)"]];if(c[2])tiles.push([String(c[2]),"Not answered"]);
- b.push({h:"WIDA Level"});
+ if(o.noWida){}else if(o.levels){b.push({h:"WIDA Level by Skill"});b.push({table:{head:["Skill","Level","Closest descriptor"],w:[16,28,56],rows:o.levels}})}else{b.push({h:"WIDA Level"});
  if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}})}
- else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({p:"Closest descriptor: "+at,o:{z:9.5,c:MUT}})}
+ else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({p:"Closest descriptor: "+at,o:{z:9.5,c:MUT}})}}
  var s2=(o.strengths||[]).slice(0,2),d2=(o.develop||[]).slice(0,2);
  if(s2.length){b.push({h3:"Strengths",c:OK});b.push({list:s2})}
  if(d2.length){b.push({h3:"To work on",c:BAD});b.push({list:d2})}
