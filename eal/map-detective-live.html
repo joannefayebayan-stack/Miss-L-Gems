@@ -295,17 +295,17 @@ function record(o){var p=o.pct||0,met=p>=80,near=p>=50,n=met||near||!o.below?o.t
  var tiles=[[c[0]+" of "+tot,"Correct ("+p+"%)"]];if(c[2])tiles.push([String(c[2]),"Not answered"]);
  if(o.noWida){}else if(o.levels){b.push({h:"WIDA Level by Skill"});b.push({table:{head:["Skill","Level","Closest descriptor"],w:[16,28,56],rows:o.levels}})}else{b.push({h:"WIDA Level"});
  if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}})}
- else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({p:"Closest descriptor: "+at,o:{z:9.5,c:MUT}})}}
+ else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({list:["Closest descriptor: "+at]})}}
  var s2=(o.strengths||[]).slice(0,2),d2=(o.develop||[]).slice(0,2);
  if(s2.length){b.push({h3:"Strengths",c:OK});b.push({list:s2})}
  if(d2.length){b.push({h3:"To work on",c:BAD});b.push({list:d2})}
  b.push({h:"Mistakes to Reteach"});var inc=o.incorrect||[];
- if(inc.length){var mx=8;b.push({table:{head:(o.incorrectHead||["Question","Student answer","Correct answer"]).map(function(h){return h=="My answer"?"Student answer":h=="What I chose"?"Student chose":h}),w:o.incorrectW||[50,25,25],rows:inc.slice(0,mx)}});if(inc.length>mx)b.push({p:"And "+(inc.length-mx)+" more. Copy My Work has the full list.",o:{z:9,c:MUT}})}
- else b.push({p:c[0]?"No incorrect answers.":"No answers were given."});
+ if(inc.length){var mx=8;b.push({table:{head:(o.incorrectHead||["Question","Student answer","Correct answer"]).map(function(h){return h=="My answer"?"Student answer":h=="What I chose"?"Student chose":h}),w:o.incorrectW||[50,25,25],rows:inc.slice(0,mx)}});if(inc.length>mx)b.push({list:["And "+(inc.length-mx)+" more. Copy My Work has the full list."]})}
+ else b.push({list:[c[0]?"No incorrect answers.":"No answers were given."]});
  var used=(o.scaffolds||[]).filter(function(r){return r[1]&&r[1]!="Not used"&&!/^Not recorded/.test(r[1])&&!/for 0 of/.test(r[1])});
- if(used.length){b.push({h:"Support Used"});b.push({p:used.map(function(r){return r[0]+": "+r[1].charAt(0).toLowerCase()+r[1].slice(1)}).join(". ")+"."})}
+ if(used.length){b.push({h:"Support Used"});b.push({list:used.map(function(r){return r[0]+": "+r[1].charAt(0).toLowerCase()+r[1].slice(1)})})}
  var nx=(o.steps||[]).slice(0,2);if(nx.length){b.push({h:"Next Steps"});b.push({list:nx,num:1})}
- if(o.writing&&o.writing.length){b.push({h:"Student Writing"});o.writing.forEach(function(w){b.push({p:String(w[0]).replace(/[\s:\u2026.]+$/,"")+": "+(w[1]||"(not written)")})})}
+ if(o.writing&&o.writing.length){b.push({h:"Student Writing"});b.push({list:o.writing.map(function(w){return String(w[0]).replace(/[\s:\u2026.]+$/,"")+": "+(w[1]||"(not written)")})})}
  if(o.attempt)b.push({p:"Left the page and Left full screen show only what the browser can detect"+(o.attempt.note?" ("+o.attempt.note+")":"")+". They are not proof of cheating.",o:{f:"I",z:8.5,c:MUT}});
  return build({theme:o.theme,title:o.title,subtitle:"Student Record",foot:o.foot,meta:meta,tiles:tiles,blocks:b})}
 function widaCall(sp){if(typeof sp.rec.make=="function")sp.rec.make()}

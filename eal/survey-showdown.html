@@ -215,9 +215,9 @@ function rEnd(){app.className="wrap narrow";const w=winner(),T=G.teams,sup=supRo
  $("cp").onclick=()=>{const m=$("ms"),t=resultText();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>m.textContent="Copied.").catch(()=>{m.innerHTML="";const a=document.createElement("textarea");a.readOnly=true;a.value=t;a.style.width="100%";a.rows=8;m.appendChild(a);a.select()})}}
 function resultText(){const T=G.teams,L=["SURVEY SHOWDOWN RESULTS",new Date().toLocaleDateString("en-GB"),""];T.forEach(t=>L.push(t.name+": "+t.score+" points, "+t.correct+" correct answers, "+t.mistakes+" mistakes, "+t.steals+" steals"));L.push("","ROUNDS");G.hist.forEach(h=>L.push(h.q+" | Found "+h.found+" of 5 | Mistakes "+h.mist+" | "+winText(h)));L.push("","LANGUAGE SUPPORT USED");supRows().forEach(r=>L.push(r[0]+": "+r[1]));L.push("","WORDS TO PRACTISE: "+(G.hist.flatMap(h=>h.missed).join(", ")||"none"));return L.join("\n")}
 function resultPdf(){const T=G.teams,miss=G.hist.flatMap(h=>h.missed),w=winner(),used=supRows().filter(r=>r[1]!=="Not used"),b=[{h:"Team Results"},{table:{head:["Team","Points","Correct","Mistakes","Steals"],w:[40,15,15,15,15],rows:T.map(t=>[t.name,String(t.score),String(t.correct),String(t.mistakes),String(t.steals)])}}];
- if(T.some(t=>t.adj))b.push({p:"Points changed by the teacher: "+T.filter(t=>t.adj).map(t=>t.name+" "+(t.adj>0?"+":"")+t.adj).join(", ")+"."});
- b.push({h:"Rounds"},{table:{head:["Question","Found","Mistakes","Points won"],w:[50,12,13,25],rows:G.hist.map(h=>[h.q,h.found+" of 5",String(h.mist),winText(h)])}},{h:"Words to Practise"},{p:miss.length?miss.join(", "):"The class found every answer."});
- if(used.length)b.push({h:"Support Used"},{p:used.map(r=>r[0]+": "+r[1]).join(". ")+"."});
+ if(T.some(t=>t.adj))b.push({list:["Points changed by the teacher: "+T.filter(t=>t.adj).map(t=>t.name+" "+(t.adj>0?"+":"")+t.adj).join(", ")+"."]});
+ b.push({h:"Rounds"},{table:{head:["Question","Found","Mistakes","Points won"],w:[50,12,13,25],rows:G.hist.map(h=>[h.q,h.found+" of 5",String(h.mist),winText(h)])}},{h:"Words to Practise"},{list:miss.length?G.hist.filter(h=>h.missed.length).map(h=>h.q.replace(/\.$/,"")+": "+h.missed.join(", ")):["The class found every answer."]});
+ if(used.length)b.push({h:"Support Used"},{list:used.map(r=>r[0]+": "+r[1])});
  return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Team Game Record",foot:"Survey Showdown - "+T[0].name+" and "+T[1].name,meta:[["Teams",T[0].name+" and "+T[1].name],["Rounds",String(G.hist.length)],["Winner",w?w.name:"Tie"],["Date",new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})]],tiles:[[String(T[0].score),T[0].name],[String(T[1].score),T[1].name]],blocks:b})}
 function keyPdf(){return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Teacher Answer Key",foot:"Survey Showdown - Teacher answer key",blocks:QS.flatMap((q,i)=>[{h3:"Question "+(i+1)+": "+q.t},{table:{head:["Slot","Answer","Points","Also accept"],w:[10,36,12,42],rows:q.a.map((a,k)=>[String(k+1),a[0],String(a[1]),a[4]||"-"])}}])})}
 function rKey(){app.className="wrap narrow";app.innerHTML=head()+`<div class="box"><b>Teacher answer key.</b> Keep this page away from the class screen. You can open it on your phone: add <b>#key</b> to the end of the game's address. The board shows the question number, and each slot number matches this list.</div>
@@ -339,17 +339,17 @@ function record(o){var p=o.pct||0,met=p>=80,near=p>=50,n=met||near||!o.below?o.t
  var tiles=[[c[0]+" of "+tot,"Correct ("+p+"%)"]];if(c[2])tiles.push([String(c[2]),"Not answered"]);
  if(o.noWida){}else if(o.levels){b.push({h:"WIDA Level by Skill"});b.push({table:{head:["Skill","Level","Closest descriptor"],w:[16,28,56],rows:o.levels}})}else{b.push({h:"WIDA Level"});
  if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}})}
- else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({p:"Closest descriptor: "+at,o:{z:9.5,c:MUT}})}}
+ else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({list:["Closest descriptor: "+at]})}}
  var s2=(o.strengths||[]).slice(0,2),d2=(o.develop||[]).slice(0,2);
  if(s2.length){b.push({h3:"Strengths",c:OK});b.push({list:s2})}
  if(d2.length){b.push({h3:"To work on",c:BAD});b.push({list:d2})}
  b.push({h:"Mistakes to Reteach"});var inc=o.incorrect||[];
- if(inc.length){var mx=8;b.push({table:{head:(o.incorrectHead||["Question","Student answer","Correct answer"]).map(function(h){return h=="My answer"?"Student answer":h=="What I chose"?"Student chose":h}),w:o.incorrectW||[50,25,25],rows:inc.slice(0,mx)}});if(inc.length>mx)b.push({p:"And "+(inc.length-mx)+" more. Copy My Work has the full list.",o:{z:9,c:MUT}})}
- else b.push({p:c[0]?"No incorrect answers.":"No answers were given."});
+ if(inc.length){var mx=8;b.push({table:{head:(o.incorrectHead||["Question","Student answer","Correct answer"]).map(function(h){return h=="My answer"?"Student answer":h=="What I chose"?"Student chose":h}),w:o.incorrectW||[50,25,25],rows:inc.slice(0,mx)}});if(inc.length>mx)b.push({list:["And "+(inc.length-mx)+" more. Copy My Work has the full list."]})}
+ else b.push({list:[c[0]?"No incorrect answers.":"No answers were given."]});
  var used=(o.scaffolds||[]).filter(function(r){return r[1]&&r[1]!="Not used"&&!/^Not recorded/.test(r[1])&&!/for 0 of/.test(r[1])});
- if(used.length){b.push({h:"Support Used"});b.push({p:used.map(function(r){return r[0]+": "+r[1].charAt(0).toLowerCase()+r[1].slice(1)}).join(". ")+"."})}
+ if(used.length){b.push({h:"Support Used"});b.push({list:used.map(function(r){return r[0]+": "+r[1].charAt(0).toLowerCase()+r[1].slice(1)})})}
  var nx=(o.steps||[]).slice(0,2);if(nx.length){b.push({h:"Next Steps"});b.push({list:nx,num:1})}
- if(o.writing&&o.writing.length){b.push({h:"Student Writing"});o.writing.forEach(function(w){b.push({p:String(w[0]).replace(/[\s:\u2026.]+$/,"")+": "+(w[1]||"(not written)")})})}
+ if(o.writing&&o.writing.length){b.push({h:"Student Writing"});b.push({list:o.writing.map(function(w){return String(w[0]).replace(/[\s:\u2026.]+$/,"")+": "+(w[1]||"(not written)")})})}
  if(o.attempt)b.push({p:"Left the page and Left full screen show only what the browser can detect"+(o.attempt.note?" ("+o.attempt.note+")":"")+". They are not proof of cheating.",o:{f:"I",z:8.5,c:MUT}});
  return build({theme:o.theme,title:o.title,subtitle:"Student Record",foot:o.foot,meta:meta,tiles:tiles,blocks:b})}
 function widaCall(sp){if(typeof sp.rec.make=="function")sp.rec.make()}
