@@ -2608,10 +2608,10 @@ Doc.prototype={
   var b="%PDF-1.4\n",off=[];for(var i=1;i<o.length;i++){off[i]=b.length;b+=i+" 0 obj\n"+o[i]+"\nendobj\n"}var x=b.length;b+="xref\n0 "+o.length+"\n0000000000 65535 f \n"+off.slice(1).map(function(v){return String(v).padStart(10,"0")+" 00000 n \n"}).join("")+"trailer\n<</Size "+o.length+"/Root 1 0 R>>\nstartxref\n"+x+"\n%%EOF";
   return new Blob([Uint8Array.from(b,function(c){return c.charCodeAt(0)&255})],{type:"application/pdf"})}
 };
-function build(sp){var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
+function build(sp){if(sp.rec){widaCall(sp);return record(Object.assign({},LAST||{},sp.rec,{theme:sp.theme,title:sp.title,foot:sp.foot}))}var d=new Doc(sp.theme,sp.foot);d.head(sp);if(sp.meta&&sp.meta.length)d.kv(sp.meta);if(sp.tiles)d.tiles(sp.tiles);
  (sp.blocks||[]).forEach(function(b){if(b.h)d.h(b.h,b.sub);else if(b.band)d.band(b.band);else if(b.level)d.level(b.level[0],b.level[1]);else if(b.h3)d.h3(b.h3,b.c);else if(b.kv)d.kv(b.kv);else if(b.tiles)d.tiles(b.tiles);else if(b.table)d.table(b.table);else if(b.box)d.box(b.box);else if(b.list)d.list(b.list,b.num);else if(b.p!=null)d.p(b.p,b.o)});return d.out()}
-function wida(o){var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";if(o.fixed){var fb0=[{h:"WIDA Report",sub:o.fixed.sub}];}
- var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:"None. Every answer was correct."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}if(o.scaffolds){b.push({h:"Language Support Used",sub:"Optional help the student chose to use. Please consider this when reading the WIDA level."});b.push(o.scaffolds.length?{table:{head:["Support","How it was used"],w:[46,54],rows:o.scaffolds}}:{p:o.noScaffolds||"No optional language support was offered."})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
+function wida(o){LAST=o;var p=o.pct,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure on this activity":near?"Working towards":"Not yet secure";if(o.fixed){var fb0=[{h:"WIDA Report",sub:o.fixed.sub}];}
+ var nm=cl(o.name||"This student"),b=[];if(o.counts){b.push({h:"My Results"});b.push({tiles:[[String(o.counts[0]),"Correct"],[String(o.counts[1]),"Incorrect"]].concat(o.counts[2]?[[String(o.counts[2]),"Not answered"]]:[])});if(o.patterns&&o.patterns.length){b.push({h:"Patterns in My Answers"});b.push({list:o.patterns})}if(o.incorrect){b.push({h:"Incorrect Answers"});b.push(o.incorrect.length?{table:{head:o.incorrectHead||["Question","My answer","Correct answer"],w:o.incorrectW||[50,25,25],rows:o.incorrect}}:{p:o.counts[0]&&!o.counts[2]?"None. Every answer was correct.":"No incorrect answers."})}if(o.noWriting)b.push({h:"My Writing"},{p:o.noWriting})}if(o.scaffolds){b.push({h:"Language Support Used",sub:"Optional help the student chose to use. Please consider this when reading the WIDA level."});b.push(o.scaffolds.length?{table:{head:["Support","How it was used"],w:[46,54],rows:o.scaffolds}}:{p:o.noScaffolds||"No optional language support was offered."})}b.push({h:"WIDA Report",sub:"Written automatically from this activity. An activity score is indicative only, so please confirm the level with other evidence."});
  b.push({kv:[["WIDA standard",o.standard],["Key language use",o.use],["Domain",o.domain]]});
  if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Indicative writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}});b.push({p:o.opening});if(o.fixed.text)b.push({p:o.fixed.text})}else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});
  var at=met||near||!o.below?o.at:o.below[1];
@@ -2658,7 +2658,30 @@ function fromText(text,o){o=o||{};var L=String(text).split("\n"),i=0,sp={theme:o
   buf.push(l)}
  flush();return build(sp)}
 function deliver(blob,fn){return (async function(){var d=null;try{d=window.claude?await window.claude.use("downloads"):null}catch(e){d=null}if(d){await d.save({filename:fn,data:blob});return}var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},4000)})()}
-window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida};
+
+var LAST=null;
+function record(o){var p=o.pct||0,met=p>=80,near=p>=50,n=met||near||!o.below?o.target:o.below[0],st=met?"Secure":near?"Working towards":"Not yet secure",b=[],c=o.counts||[0,0,0],tot=c[0]+c[1]+(c[2]||0);
+ var fd=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+ var t2=function(k){return k?(k==1?"Once":k+" times"):"No"},meta=[["English name",o.name||"-"],["Year group",o.yg||"-"],["Form group",o.fg||"-"],["Date",o.date||fd]].concat(o.more||[]);if(o.attempt)meta.push(["Left the page",t2(o.attempt.left)],["Left full screen",t2(o.attempt.fs)]);
+ var tiles=[[c[0]+" of "+tot,"Correct ("+p+"%)"]];if(c[2])tiles.push([String(c[2]),"Not answered"]);
+ if(o.noWida){}else if(o.levels){b.push({h:"WIDA Level by Skill"});b.push({table:{head:["Skill","Level","Closest descriptor"],w:[16,28,56],rows:o.levels}})}else{b.push({h:"WIDA Level"});
+ if(o.fixed){b.push(o.fixed.level?{level:[o.fixed.level,"Writing level: Level "+o.fixed.level+" "+LVN[o.fixed.level-1]]}:{p:"No writing level: the paragraph was not completed.",o:{f:"B",c:AMB}})}
+ else{b.push({level:[n,st+": Level "+n+" "+LVN[n-1]]});var at=met||near||!o.below?o.at:o.below[1];if(at)b.push({list:["Closest descriptor: "+at]})}}
+ var s2=(o.strengths||[]).slice(0,2),d2=(o.develop||[]).slice(0,2);
+ if(s2.length){b.push({h3:"Strengths",c:OK});b.push({list:s2})}
+ if(d2.length){b.push({h3:"To work on",c:BAD});b.push({list:d2})}
+ b.push({h:"Mistakes to Reteach"});var inc=o.incorrect||[];
+ if(inc.length){var mx=8;b.push({table:{head:(o.incorrectHead||["Question","Student answer","Correct answer"]).map(function(h){return h=="My answer"?"Student answer":h=="What I chose"?"Student chose":h}),w:o.incorrectW||[50,25,25],rows:inc.slice(0,mx)}});if(inc.length>mx)b.push({list:["And "+(inc.length-mx)+" more. Copy My Work has the full list."]})}
+ else b.push({list:[c[0]?"No incorrect answers.":"No answers were given."]});
+ var used=(o.scaffolds||[]).filter(function(r){return r[1]&&r[1]!="Not used"&&!/^Not recorded/.test(r[1])&&!/for 0 of/.test(r[1])});
+ if(used.length){b.push({h:"Support Used"});b.push({list:used.map(function(r){return r[0]+": "+r[1].charAt(0).toLowerCase()+r[1].slice(1)})})}
+ (o.sections||[]).forEach(function(x){if(x[1]&&x[1].length){b.push({h:x[0]});b.push({list:x[1]})}});
+ var nx=(o.steps||[]).slice(0,2);if(nx.length){b.push({h:"Next Steps"});b.push({list:nx,num:1})}
+ if(o.writing&&o.writing.length){b.push({h:"Student Writing"});b.push({list:o.writing.map(function(w){return String(w[0]).replace(/[\s:\u2026.]+$/,"")+": "+(w[1]||"(not written)")})})}
+ if(o.attempt)b.push({p:"Left the page and Left full screen show only what the browser can detect"+(o.attempt.note?" ("+o.attempt.note+")":"")+". They are not proof of cheating.",o:{f:"I",z:8.5,c:MUT}});
+ return build({theme:o.theme,title:o.title,subtitle:"Student Record",foot:o.foot,meta:meta,tiles:tiles,blocks:b})}
+function widaCall(sp){if(typeof sp.rec.make=="function")sp.rec.make()}
+window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida,record:record};
 })();
 </script>
 </body></html>
