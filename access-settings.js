@@ -34,6 +34,7 @@ export const GAMES = {
   'unit-08': { name: 'IELTS Foundation Unit 8 Challenge: Health and Medicine', page: '/eal/ielts-preparation/foundation/unit-08-health-and-medicine/activity.html', changes: [] },
   'unit-09': { name: 'IELTS Foundation Unit 9 Challenge: Language', page: '/eal/ielts-preparation/foundation/unit-09-language/activity.html', changes: [] },
   'unit-10': { name: 'IELTS Foundation Unit 10 Challenge: Science and Technology', page: '/eal/ielts-preparation/foundation/unit-10-science-and-technology/activity.html', changes: [] },
+  'y79-unit-01': { name: 'Year 7–9 EAL Unit 1 Challenge: My Day', page: '/eal/year-7-9/unit-01-daily-life/activity.html', changes: [] },
   'map-detective': { name: 'Map Detective', page: '/eal/map-detective.html', changes: [] },
   'map-detective-live': { name: 'Map Detective Live (student page)', page: '/eal/map-detective-live.html', changes: [] },
   'sentence-sorter': { name: 'Sentence Sorter', page: '/eal/sentence-sorter.html', changes: [] },
