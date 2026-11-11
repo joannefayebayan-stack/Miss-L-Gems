@@ -84,6 +84,7 @@ textarea{min-height:64px;resize:vertical}
 .pg i,.bar i,.fill{background:#7CC4A9!important}
 .pod .p1{background:#BFE6D6}
 :focus-visible{outline:3px solid #1F4D40;outline-offset:2px}
+.pbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin:0 0 10px}.pbar .sec{padding:7px 14px;font-size:13px}.pbar .sec.armed{background:var(--tl,#e6f4f1)}.sofar{border:1.5px solid var(--t,#0f766e);border-radius:12px;padding:12px 14px;margin:0 0 12px}.sofar p{margin:0 0 10px;font-size:14px}.sofar .row{margin-top:0;justify-content:flex-start}.pbar .sec{width:auto;margin:0}.sofar .go,.sofar .sec{width:auto;margin:0}
 h1,h2,.box b,.fbk b,.stat b,.ltr,.eyebrow,.eye,.task h4,.end h2{color:#1F4D40}
 </style>
 </head>
@@ -175,9 +176,9 @@ else if(tabs===2)ov("🛑 Final warning","You left this tab again. If it happens
 else{guard=false;const t=document.getElementById("pp");if(t)P=t.value.trim();ended="Paragraph was submitted automatically after repeated tab changes.";pdone=true;const o=document.getElementById("ov");if(o)o.remove();end()}}
 let GA=false,EX=false,CUR="q",yg="";
 function resetRound(){streak=0;if(CUR=="q"){const kd=Q[i].k,ks=Q.map((x,k)=>x.k===kd?k:-1).filter(k=>k>=0);ks.forEach(k=>{const l=LG[k];if(l&&l.a){score-=l.pts||0;if(l.ok)ok--}delete LG[k]});miss=miss.filter(m=>m.k!==kd);const seen=queue.slice(0,qp).filter(k=>!ks.includes(k)),rest=queue.slice(qp).filter(k=>!ks.includes(k));const a=[...new Set(seen)];queue=a.concat(ks,[...new Set(rest)]);qp=a.length;show()}else if(CUR=="w"){W=[];WS=[false,false,false];write()}else{P="";para()}}
-const TG=MLGGuard({wrap:".wrap",part:"this round",active:()=>GA,exempt:()=>EX,restart:resetRound,onDeparture:()=>{tabs++}});
+const TG=MLGGuard({wrap:".wrap",part:"this round",active:()=>GA,exempt:()=>EX||Date.now()<SG,restart:resetRound,onDeparture:()=>{tabs++}});
 function watch(){guard=false;GA=true;EX=true;CUR="v";
-el.innerHTML=`<div class="bar"><div class="fill" style="width:100%"></div></div><div class="badge p">Round 4 · Watch and write 🎬</div>
+el.innerHTML=`<div class="bar"><div class="fill" style="width:100%"></div></div><div class="badge p">Round 4 · Watch and write 🎬</div><div class="pbar"><button class="sec" data-act="sofar">Save my work so far</button><button class="sec" data-act="skip">Skip this part</button></div><div class="sofar" id="sofarBox" hidden><p>Save what you have done so far. Finished parts are marked. Next lesson, open the activity again and use <b>Skip this part</b> to go to the part you need.</p><div class="row"><button class="go" data-act="sofar-pdf">Save PDF</button><button class="sec" data-act="sofar-copy">Copy My Work</button></div></div>
 <p style="font-size:14px;margin:0 0 4px"><b>Step 1:</b> Watch <i>Halloween History | National Geographic</i>. Take notes in order: first, next, then...<br><small>Tip: turn on subtitles (CC) and slow the speed if you need to.</small></p>
 <a class="vid" href="${VIDEO_URL}" target="_blank" rel="noopener">▶ Watch the video (opens YouTube)</a>
 <p style="font-size:14px;margin:0 0 4px"><b>Step 2:</b> Write your notes. You can read them while you write.</p>
@@ -189,14 +190,14 @@ document.getElementById("nt").value=notes;
 document.getElementById("rd").onclick=()=>{notes=document.getElementById("nt").value.trim();skipped=false;para()};
 document.getElementById("sk").onclick=()=>{notes=document.getElementById("nt").value.trim();skipped=true;P="";pdone=false;end()}}
 function para(){guard=true;GA=true;EX=false;CUR="p";
-el.innerHTML=`<div class="badge p">Paragraph test ✍️ · Stay on this page</div>
+el.innerHTML=`<div class="badge p">Paragraph test ✍️ · Stay on this page</div><div class="pbar"><button class="sec" data-act="sofar">Save my work so far</button><button class="sec" data-act="skip">Skip this part</button></div><div class="sofar" id="sofarBox" hidden><p>Save what you have done so far. Finished parts are marked. Next lesson, open the activity again and use <b>Skip this part</b> to go to the part you need.</p><div class="row"><button class="go" data-act="sofar-pdf">Save PDF</button><button class="sec" data-act="sofar-copy">Copy My Work</button></div></div>
 <p style="font-size:14px;margin:0 0 4px">Write a paragraph: <b>${VIDEO_TOPIC}</b>. Use <b>sequence words</b> (tap to add):</p>
 <div class="chips">${SEQ.map(x=>`<button class="chip">${x}</button>`).join("")}</div>
 ${notes?`<div class="box"><b>My notes:</b><br>${notes.replace(/</g,"&lt;").replace(/\n/g,"<br>")}</div>`:""}
 <textarea id="pp" style="min-height:170px" placeholder="First, ..."></textarea><div class="ticks" id="pt"></div>
 <p style="font-size:14px;margin:6px 0">Write 5 to 8 complete sentences in the order things happened.</p><button type="button" class="sec" id="tb">💡 Show writing tip</button><div class="box" id="tp" style="display:none">💡 Put a comma after sequence words: <i>First, people lit bonfires.</i></div>
 <button class="go" id="f2">Finish ✔</button>`;
-if(notes)SC.once("notes");document.getElementById("tb").onclick=()=>{document.getElementById("tp").style.display="";document.getElementById("tb").style.display="none";SC.use("tip")};const ta=document.getElementById("pp");
+if(notes)SC.once("notes");document.getElementById("tb").onclick=()=>{document.getElementById("tp").style.display="";document.getElementById("tb").style.display="none";SC.use("tip")};const ta=document.getElementById("pp");if(P)ta.value=P;
 const ck=()=>{const v=ta.value.trim(),n=v?v.split(/\s+/).length:0;
 document.getElementById("pt").innerHTML=SEQ.map(x=>{const y=new RegExp("\\b"+x+"\\b","i").test(v);return `<span class="${y?"y":""}">${y?"✔":"○"} ${x}</span>`}).join("")+`<span class="${n>=50?"y":""}">${n>=50?"✔":"○"} 50+ words (${n})</span><span class="${/[.!?]$/.test(v)?"y":""}">${/[.!?]$/.test(v)?"✔":"○"} End mark</span>`};
 ta.oninput=ck;ck();
@@ -237,7 +238,7 @@ catch(err){ts.textContent=err&&err.code==="declined"?"Save cancelled.":"PDF coul
 const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
 let Q,i,score,streak,ok,miss,name="",W=[],P="";
 var SC=MLGScaffold([["chip","Sequence word buttons"],["tip","Writing tip"],["notes","My notes while writing"]]);
-function intro(){SC.reset();GA=false;EX=false;TG.reset();skipped=false;tabs=0;ended="";P="";notes="";guard=false;pdone=false;LG=[];queue=[];qp=0;WS=[false,false,false];W=[];el.innerHTML=`<div class="box"><b>Learning Goal</b><br>Find, fix and write complete sentences in English.</div>
+function intro(){SC.reset();RESUME=null;SKP=[];GA=false;EX=false;TG.reset();skipped=false;tabs=0;ended="";P="";notes="";guard=false;pdone=false;LG=[];queue=[];qp=0;WS=[false,false,false];W=[];el.innerHTML=`<div class="box"><b>Learning Goal</b><br>Find, fix and write complete sentences in English.</div>
 <div class="box"><b>Learning Objectives</b> By the end I can:<ul style="margin:4px 0;padding-left:20px"><li>spot sentences, fragments and run-ons,</li><li>fix fragments and run-ons,</li><li>write my own clear sentences,</li><li>write a paragraph using sequence words.</li></ul></div>
 <div class="box"><b>Success Criteria</b> 80% or more on the quiz, 3 of 3 writing checks, and at least 3 sequence words in my paragraph.</div>
 <div class="box"><b>✅ Sentence</b> = subject + verb + a finished idea.<br><i>I like pizza.</i></div>
@@ -256,7 +257,7 @@ function show(){GA=true;EX=false;CUR="q";if(qp>=queue.length)return pdone||skipp
 let o=sp?`<div class="opts three"><button class="opt" data-v="s"><span class="e">✅</span>Sentence</button><button class="opt" data-v="f"><span class="e">🧩</span>Fragment</button><button class="opt" data-v="r"><span class="e">🚂</span>Run-on</button></div>`
 :`<div class="opts">${q.o.map(x=>`<button class="opt" data-v="${x.replace(/"/g,"&quot;")}">${x}</button>`).join("")}</div>`;
 el.innerHTML=`<div class="stats"><span>Question ${i+1} of ${Q.length}${was?'<span class="tag">↩ Skipped earlier</span>':""}</span><span>🔥 <b>${streak}</b> · ⭐ <b>${score}</b></span></div>
-<div class="bar"><div class="fill" style="width:${dn/Q.length*100}%"></div></div>
+<div class="bar"><div class="fill" style="width:${dn/Q.length*100}%"></div></div><div class="pbar"><button class="sec" data-act="sofar">Save my work so far</button><button class="sec" data-act="skip">Skip this part</button></div><div class="sofar" id="sofarBox" hidden><p>Save what you have done so far. Finished parts are marked. Next lesson, open the activity again and use <b>Skip this part</b> to go to the part you need.</p><div class="row"><button class="go" data-act="sofar-pdf">Save PDF</button><button class="sec" data-act="sofar-copy">Copy My Work</button></div></div>
 <div class="badge ${sp?"":"p"}">${sp?"Round 1 · Spot it":"Round 2 · Fix it"}</div>
 <div class="text">${q.t}</div><p class="ask">${sp?"What is it?":"Choose the best fix."}</p>${o}
 <button class="skip" id="sk">${was?"Leave unanswered and move on":"⏭ Skip for now (come back later)"}</button>
@@ -270,7 +271,7 @@ LG[i]=Object.assign(LG[i]||{},{a:1,ok:b.dataset.v===right,sel:q.k==="spot"?LB[b.
 if(b.dataset.v===right){b.classList.add("right");streak++;score+=10+(streak>=3?5:0);ok++;f.className="fb good";f.innerHTML=`<span class="v">${streak>=3?"🔥 On fire!":"🎉 Correct!"}</span> ${q.w}`}
 else{b.classList.add("wrong");bs.find(x=>x.dataset.v===right).classList.add("right");streak=0;miss.push(q);f.className="fb bad";f.innerHTML=`<span class="v">Not quite.</span> ${q.w}`}
 LG[i].pts=score-s0;document.getElementById("n").style.display="inline-block"}
-function write(){GA=true;EX=false;CUR="w";el.innerHTML=`<div class="bar"><div class="fill" style="width:100%"></div></div><div class="badge p">Round 3 · Write it ✍️</div>
+function write(){GA=true;EX=false;CUR="w";el.innerHTML=`<div class="bar"><div class="fill" style="width:100%"></div></div><div class="badge p">Round 3 · Write it ✍️</div><div class="pbar"><button class="sec" data-act="sofar">Save my work so far</button><button class="sec" data-act="skip">Skip this part</button></div><div class="sofar" id="sofarBox" hidden><p>Save what you have done so far. Finished parts are marked. Next lesson, open the activity again and use <b>Skip this part</b> to go to the part you need.</p><div class="row"><button class="go" data-act="sofar-pdf">Save PDF</button><button class="sec" data-act="sofar-copy">Copy My Work</button></div></div>
 <p style="font-size:14px;margin:0">Write about <b>your life</b>. Watch the ticks turn green! Not ready? You can skip a sentence and come back from your results.</p>
 ${WT.map((w,k)=>`<div class="task"><h4>${w[0]}</h4><textarea id="w${k}" placeholder="Type here..."></textarea><div class="ticks" id="t${k}"></div><button class="skip" id="ws${k}" style="margin-top:8px"></button></div>`).join("")}
 <button class="go" id="f">${pdone?"Back to my results →":"Next: Watch and write →"}</button>`;
@@ -282,16 +283,33 @@ document.getElementById("f").onclick=()=>{W=WT.map((_,k)=>WS[k]?"":document.getE
 const CK=(k,v)=>{const w=WT[k],n=v?v.split(/\s+/).length:0;const c=[["Capital letter",/^[A-Z]/.test(v)],["End mark . ! ?",/[.!?]$/.test(v)],[w[2]+"+ words",n>=w[2]]];if(w[1])c.push([w[3].replace("Use ",""),w[1].test(v)]);return c};
 function chk(k){const v=document.getElementById("w"+k).value.trim();
 document.getElementById("t"+k).innerHTML=WS[k]?`<span class="sk">⏭ Skipped (shows as not answered)</span>`:CK(k,v).map(x=>`<span class="${x[1]?"y":""}">${x[1]?"✔":"○"} ${x[0]}</span>`).join("")}
+let SG=0,SKT=null,SKIP={};
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-act]");if(!b||!(GA))return;const a=b.dataset.act;
+if(a=="sofar"){const x=document.getElementById("sofarBox");if(x){x.hidden=!x.hidden;if(!x.hidden)x.scrollIntoView({block:"nearest"})}}
+else if(a=="sofar-pdf"){SG=Date.now()+5000;soFar("pdf")}
+else if(a=="sofar-copy"){soFar("cp")}
+else if(a=="skip"){if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent="Tap again to skip";clearTimeout(SKT);SKT=setTimeout(()=>{b.classList.remove("armed");b.textContent="Skip this part"},4000);return}clearTimeout(SKT);skipPart()}});
+
+let RESUME=null;
+function grab(){if(CUR=="w"&&document.getElementById("w0"))W=WT.map((_,k)=>WS[k]?"":document.getElementById("w"+k).value.trim());
+if(CUR=="v"&&document.getElementById("nt"))notes=document.getElementById("nt").value.trim();
+if(CUR=="p"&&document.getElementById("pp"))P=document.getElementById("pp").value.trim()}
+function soFar(btn){grab();RESUME=CUR;const g0=guard;guard=false;end();const b=document.getElementById(btn);if(b)b.click()}
+function skipPart(){grab();const L={q:(Q[i]&&Q[i].k==="fix"?"Round 2 Fix it":"Round 1 Spot it"),w:"Round 3 Write it",v:"Round 4 Watch and write",p:"Round 4 Paragraph"};SKP.push(L[CUR]);
+if(CUR=="q"){const kd=Q[i].k;queue=queue.slice(0,qp).concat(queue.slice(qp).filter(k=>Q[k].k!==kd||(LG[k]&&LG[k].a)));Q.forEach((x,k)=>{if(x.k===kd&&!(LG[k]&&LG[k].a))LG[k]=Object.assign(LG[k]||{},{sk:1})});show()}
+else if(CUR=="w"){WS=[true,true,true];W=["","",""];pdone?end():watch()}
+else{guard=false;skipped=true;P="";pdone=false;end()}}
+let SKP=[];
 function end(){GA=false;EX=false;const w=W;
 let b=0;WT.forEach((x,k)=>{const v=w[k]||"",n=v?v.split(/\s+/).length:0;if(/^[A-Z]/.test(v)&&/[.!?]$/.test(v)&&n>=x[2]&&(!x[1]||x[1].test(v)))b++});
 const pq=SEQ.filter(s=>new RegExp("\\b"+s+"\\b","i").test(P)).length,tot=score+b*20+(pq>=3?20:0),p=Math.round(ok/Q.length*100),t=p>=90?"Sentence Superstar":p>=70?"Great Fixer":p>=50?"Rising Writer":"Keep Going!";
 const F=skipped?null:fb(P),fbTxt=F?F.rows.map(r=>r[0]+": "+r[1]).join("\n"):"Paragraph skipped. Feedback will be given when the paragraph is completed.",fbHtml=`<div class="fbk"><b>Teacher feedback</b> <small>(automatic and indicative; your teacher will confirm)</small>${F?F.rows.map(r=>`<p><b>${r[0]}:</b> ${r[1]}</p>`).join(""):"<p>You skipped the paragraph. Come back when you are ready.</p>"}${ended?`<p><b>Note:</b> ${ended}</p>`:""}${tabs?`<p><b>Tab changes:</b> ${tabs}</p>`:""}</div>`;
 const isA=k=>!!(LG[k]&&LG[k].a),ans=Q.filter((_,k)=>isA(k)).length,un=Q.length-ans,wrong=ans-ok,skS=WS.filter(Boolean).length;
 const cnt=(kd,f)=>Q.filter((x,k)=>x.k===kd&&f(k)).length,r1=cnt("spot",k=>LG[k]&&LG[k].ok),n1=cnt("spot",()=>true),r2=cnt("fix",k=>LG[k]&&LG[k].ok),n2=cnt("fix",()=>true);
-const pst=skipped?"SKIPPED - not completed":ended?"Submitted automatically after repeated tab changes":"Completed";
-const needMore=un>0||skS>0||skipped;
-const txt=`${name}${cls?" ("+cls+")":""}\nQuiz: ${ok}/${Q.length} (not answered: ${un})\n1. ${w[0]||(WS[0]?"(skipped)":"")}\n2. ${w[1]||(WS[1]?"(skipped)":"")}\n3. ${w[2]||(WS[2]?"(skipped)":"")}\n\nParagraph:\n${skipped?"(skipped)":P}\n\n${fbTxt}`;
-const fn=(name.replace(/[^\w]+/g,"_")||"Student")+"_sentence_sorter.pdf";
+const pst=skipped?"SKIPPED - not completed":RESUME&&(RESUME=="p"||RESUME=="v"||!pdone)?"Not finished yet":ended?"Submitted automatically after repeated tab changes":"Completed";
+const needMore=un>0||skS>0||skipped||!!RESUME;
+const txt=`${name}${cls?" ("+cls+")":""}\nStatus: ${RESUME?"Not finished (saved part-way)":SKP.length?"Finished (skipped: "+SKP.join(", ")+")":"Finished"}\nQuiz: ${ok}/${Q.length} (not answered: ${un})\n1. ${w[0]||(WS[0]?"(skipped)":"")}\n2. ${w[1]||(WS[1]?"(skipped)":"")}\n3. ${w[2]||(WS[2]?"(skipped)":"")}\n\nParagraph:\n${skipped?"(skipped)":P}\n\n${fbTxt}`;
+const fn=(name.replace(/[^\w]+/g,"_")||"Student")+"_sentence_sorter"+(RESUME?"_so_far":"")+".pdf";
 const R=[{h:"Sentence Sorter - Student Result",z:16},
 {t:"Name: "+name+(cls?"     Class: "+cls:"")+"     Date: "+new Date().toLocaleDateString()},
 {h:"Summary"},
@@ -316,10 +334,10 @@ R.push({h:"Language support used"});SC.rows().forEach(r=>R.push({t:r[0]+": "+r[1
 R.push({t:"This feedback is generated by the game and is a guide only. Your teacher will confirm the level using WIDA and IELTS-style criteria.",z:9,c:"mut"});
 const unList=Q.map((q,k)=>isA(k)?"":`<div>“${q.t}”</div>`).join("");
 el.innerHTML=`<div class="end"><div class="big">${p>=70?"🏆":"🌟"}</div><h2>${t}</h2><div class="grid"><div class="stat"><small>Score</small><strong id="tot">${tot}</strong></div><div class="stat"><small>Quiz</small><strong>${ok}/${Q.length}</strong></div><div class="stat"><small>Writing checks</small><strong>${b}/3</strong></div><div class="stat"><small>Sequence words</small><strong>${pq}/5</strong></div><div class="stat"><small>Skipped</small><strong>${un+skS+(skipped?1:0)}</strong></div></div>
-${needMore?`<div class="box o"><b>You skipped some work.</b> It will show as <b>NOT ANSWERED</b> in your PDF. You can finish it now or send the PDF as it is.</div>`:""}
+${RESUME?`<div class="box o"><b>This is your work so far.</b> Save the PDF or copy your work. Tap <b>Back to my work</b> to carry on.</div>`:needMore?`<div class="box o"><b>You skipped some work.</b> It will show as <b>NOT ANSWERED</b> in your PDF. You can finish it now or send the PDF as it is.</div>`:""}
 ${miss.length?`<div class="miss"><b>Review these:</b>${miss.map(m=>`<div>“${m.t}” → ${m.k==="spot"?LB[m.a]:m.c}</div>`).join("")}</div>`:""}
 ${un?`<div class="miss"><b>Not answered:</b>${unList}</div>`:""}
-${SC.html()}${fbHtml}${needMore?`<button class="go" id="fin">↩ Finish my skipped work</button>`:""}<button class="sec" id="pdf">📄 Save PDF to send my teacher</button><button class="sec" id="cp">Copy my work</button><button class="sec" id="ag">Play again</button><p class="toast" id="ts"></p></div>`;
+${SC.html()}${fbHtml}${needMore?`<button class="go" id="fin">${RESUME?"↩ Back to my work":"↩ Finish my skipped work"}</button>`:""}<button class="sec" id="pdf">📄 Save PDF to send my teacher</button><button class="sec" id="cp">Copy my work</button><button class="sec" id="ag">Play again</button><p class="toast" id="ts"></p></div>`;
 document.getElementById("cp").onclick=()=>{try{navigator.clipboard.writeText(txt).then(()=>ts.textContent="Copied! Paste it to your teacher.")}catch(e){ts.textContent="Copy failed. Please screenshot instead."}};
 const SPEC=()=>{const rows=Q.map((q,k)=>{const l=LG[k]||{};return[String(k+1),q.k==="spot"?"Spot it":"Fix it",q.t,l.a?l.sel:{t:"Not answered",c:"amb",b:1},l.a?(l.ok?"":l.cor):"",l.a?(l.ok?{t:"Correct",c:"ok",b:1}:{t:"Not yet",c:"bad",b:1}):{t:"Skipped",c:"amb",b:1}]});
 const nm=name||"This student",st=[],dv=[],nx=[];if(n1&&r1/n1>=.8)st.push("Spots fragments and run-ons: "+r1+" of "+n1+" correct.");else dv.push("Spotting fragments and run-ons: "+r1+" of "+n1+" correct.");if(n2&&r2/n2>=.8)st.push("Fixes incorrect sentences: "+r2+" of "+n2+" correct.");else dv.push("Fixing incorrect sentences: "+r2+" of "+n2+" correct.");if(b>=2)st.push("Wrote sentences that passed "+b+" of 3 checks for capitals, end marks, length and the target word.");else dv.push("Own sentences passed "+b+" of 3 writing checks.");
@@ -328,9 +346,9 @@ const bad=Q.filter((x,k)=>LG[k]&&LG[k].a&&!LG[k].ok).slice(0,2);if(bad.length)nx
 const conf={};Q.forEach((x,k)=>{const l=LG[k];if(l&&l.a&&!l.ok&&x.k==="spot"){const c=l.cor+" as "+l.sel;conf[c]=(conf[c]||0)+1}});const top=Object.entries(conf).sort((a,b)=>b[1]-a[1])[0],pat=[];if(n1)pat.push("Spot it: "+r1+" of "+n1+" correct.");if(n2)pat.push("Fix it: "+r2+" of "+n2+" correct.");if(top)pat.push("The most common mix-up was choosing "+top[0].split(" as ")[1]+" when the answer was "+top[0].split(" as ")[0]+" ("+top[1]+" time"+(top[1]==1?"":"s")+").");const lvm=F&&/Level (\d)/.exec(F.rows[0][1]),lvn=lvm?+lvm[1]:0;
 const wb=window.MLGPDF.wida({scaffolds:SC.rows(),counts:[ok,wrong,un],patterns:pat,incorrectHead:["Sentence","My answer","Correct answer"],incorrect:Q.map((x,k)=>({x,l:LG[k]})).filter(o=>o.l&&o.l.a&&!o.l.ok).map(o=>[o.x.t,o.l.sel,o.l.cor]),fixed:{level:lvn,sub:"Written automatically from this activity. The level comes only from the paragraph and is indicative, so please confirm it with other evidence.",text:F?F.rows[0][1].replace(/^Level \d+ [A-Za-z]+ \(indicative\): /,"At this level: "):""},name:nm,standard:"Language Arts",use:"Inform and Narrate",domain:"Writing",pct:p,target:3,at:"",opening:nm+" scored "+ok+" of "+Q.length+" ("+p+"%) on the sentence quiz, passed "+b+" of 3 writing checks and "+(skipped?"skipped the paragraph.":"wrote a paragraph using "+pq+" of 5 sequence words."),strengths:st,develop:dv,steps:nx,limits:"Based on one Sentence Sorter attempt. Automatic checks look at form, not meaning, so the teacher should confirm the writing level."});
 const boxes=WT.map((x,k)=>({box:{title:"Sentence "+(k+1),hint:strip(x[0]).replace(/^Sentence \d: /,""),text:WS[k]?"Skipped - not answered":(w[k]||"(blank)"),c:WS[k]?[154,46,34]:undefined}}));
-return{rec:{name:name,yg:yg,fg:cls,writing:WT.map((x,k)=>["Sentence "+(k+1),W[k]||""]).concat([["Paragraph",skipped?"(skipped)":P]]),attempt:TG.stats()},theme:"eal",title:"Sentence Sorter",subtitle:"Fragments and Run-ons: Student Result",foot:"Sentence Sorter - "+name+(cls?" ("+cls+")":""),meta:[["English Name",name],["Year Group",yg||"-"],["Form Group",cls||"-"],["Date",new Date().toLocaleDateString("en-GB")]],tiles:[[String(tot),t],[ok+"/"+Q.length,"Quiz ("+p+"%)"],[b+"/3","Writing checks"],[pq+"/5","Sequence words"],[String(un+skS+(skipped?1:0)),"Skipped"]],blocks:wb.concat([{h:"Rounds 1 and 2: My Answers"},{table:{head:["#","Round","Sentence","My answer","Correct answer","Result"],w:[5,10,33,22,20,10],rows:rows,z:8}},{h:"Round 3: My Sentences"}],boxes,[{h:"Round 4: Paragraph",sub:VIDEO_TOPIC},{box:{title:pst,text:skipped?"Skipped - not completed.":(P||"(blank)")}}],notes?[{box:{title:"My notes",text:notes}}]:[],[{h:"Automatic Feedback",sub:"Generated by the game as a guide only."},{p:fbTxt.split("\n").filter(l=>!/^WIDA Can Do/.test(l)).join("\n")}],tabs?[{p:"Page departures: "+tabs,o:{f:"I",z:8.5}}]:[])}};
+return{rec:{name:name,yg:yg,fg:cls,writing:WT.map((x,k)=>["Sentence "+(k+1),W[k]||""]).concat([["Paragraph",skipped?"(skipped)":P]]),attempt:TG.stats(),more:[["Status",RESUME?"Not finished (saved part-way)":SKP.length?"Finished (skipped: "+SKP.join(", ")+")":"Finished"]]},theme:"eal",title:"Sentence Sorter",subtitle:"Fragments and Run-ons: Student Result",foot:"Sentence Sorter - "+name+(cls?" ("+cls+")":""),meta:[["English Name",name],["Year Group",yg||"-"],["Form Group",cls||"-"],["Date",new Date().toLocaleDateString("en-GB")],["Status",RESUME?"Not finished (saved part-way)":SKP.length?"Finished (skipped: "+SKP.join(", ")+")":"Finished"]],tiles:[[String(tot),t],[ok+"/"+Q.length,"Quiz ("+p+"%)"],[b+"/3","Writing checks"],[pq+"/5","Sequence words"],[String(un+skS+(skipped?1:0)),"Skipped"]],blocks:wb.concat([{h:"Rounds 1 and 2: My Answers"},{table:{head:["#","Round","Sentence","My answer","Correct answer","Result"],w:[5,10,33,22,20,10],rows:rows,z:8}},{h:"Round 3: My Sentences"}],boxes,[{h:"Round 4: Paragraph",sub:VIDEO_TOPIC},{box:{title:pst,text:skipped?"Skipped - not completed.":(P||"(blank)")}}],notes?[{box:{title:"My notes",text:notes}}]:[],[{h:"Automatic Feedback",sub:"Generated by the game as a guide only."},{p:fbTxt.split("\n").filter(l=>!/^WIDA Can Do/.test(l)).join("\n")}],tabs?[{p:"Page departures: "+tabs,o:{f:"I",z:8.5}}]:[])}};
 document.getElementById("pdf").onclick=()=>mkpdf(R,fn,SPEC);
-const fin=document.getElementById("fin");if(fin)fin.onclick=()=>{if(un>0){queue=Q.map((_,k)=>k).filter(k=>!isA(k));qp=0;if(queue.length)return show()}skS>0?write():watch()};
+const fin=document.getElementById("fin");if(fin)fin.onclick=()=>{if(RESUME){const r=RESUME;RESUME=null;return r=="q"?show():r=="w"?write():r=="v"?watch():para()}if(un>0){queue=Q.map((_,k)=>k).filter(k=>!isA(k));qp=0;if(queue.length)return show()}skS>0?write():watch()};
 document.getElementById("ag").onclick=intro}
 intro();
 </script>
