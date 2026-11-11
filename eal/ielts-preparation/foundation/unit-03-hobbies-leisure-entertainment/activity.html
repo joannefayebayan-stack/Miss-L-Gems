@@ -58,6 +58,12 @@
 
   /* stepper */
   .stepper { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+.partbar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin: -8px 0 14px; }
+.partbar button.secondary { min-height: 38px; font-size: 13px; padding: 6px 14px; }
+.partbar button.armed { background: var(--teal-light); }
+.sofar { border: 1px solid var(--teal); border-radius: 12px; padding: 12px 14px; margin: 0 0 16px; background: var(--white); }
+.sofar p { margin: 0 0 10px; font-size: 14px; }
+.sofar .actions { display: flex; flex-wrap: wrap; gap: 8px; }
   .step { flex: 1 1 0; min-width: 90px; font-size: 12px; font-weight: 700; color: var(--muted); background: var(--bg); border: 1px solid var(--line); border-radius: 100px; padding: 6px 10px; text-align: center; white-space: nowrap; }
   .step.done { color: var(--teal-dark); background: var(--teal-light); border-color: transparent; }
   .step.now { color: var(--white); background: var(--teal); border-color: var(--teal); }
@@ -700,7 +706,8 @@ function newAttemptState() {
     partResets: [],
     reloads: 0,
     pendingNotice: null,
-    completedAt: null
+    completedAt: null,
+    skipped: {}              // part key -> true when the student skipped it
   };
 }
 
@@ -713,6 +720,15 @@ function esc(s) {
 function byId(list, id) { return list.find(q => q.id === id); }
 function optText(q, oid) { const o = q.opts.find(x => x[0] === oid); return o ? o[1] : ''; }
 function wordCount(t) { const s = (t || '').trim(); return s ? s.split(/\s+/).length : 0; }
+function isSkipped(key) { return !!(state.skipped && state.skipped[key]); }
+function partIndex(key) { return PARTS.findIndex(p => p.key === key); }
+function partDone(key) { return !isSkipped(key) && (state.phase === 'complete' || partIndex(key) < state.part); }
+function partStatus(key) {
+  if (isSkipped(key)) return 'Skipped';
+  if (state.phase === 'complete' || partIndex(key) < state.part) return 'Finished';
+  return partIndex(key) === state.part ? 'In progress (not finished)' : 'Not started';
+}
+function skippedTitles() { return PARTS.filter(p => isSkipped(p.key)).map(p => p.title); }
 function partName(key) { const p = PARTS.find(x => x.key === key); return p ? p.title : key; }
 function normalise(s) {
   return String(s || '').toLowerCase().replace(/[’']/g, '').replace(/[.,!?;:]+$/g, '').replace(/\s+/g, ' ').trim()
@@ -729,12 +745,13 @@ function logSupport(part, tier, inserted) {
 
 function scores() {
   const s = {};
-  s.vocab = VOCAB.filter(q => state.answers[q.id] === q.correct).length;
-  s.grammar = GRAMMAR.filter(q => state.answers[q.id] === q.correct).length;
-  s.reading = READING.filter(q => state.answers[q.id] === q.correct).length;
-  s.listening = LISTEN_FORM.filter(listenCorrect).length;
+  const on = k => partDone(k) ? 1 : 0;
+  s.vocab = on('vocab') * VOCAB.filter(q => state.answers[q.id] === q.correct).length;
+  s.grammar = on('grammar') * GRAMMAR.filter(q => state.answers[q.id] === q.correct).length;
+  s.reading = on('reading') * READING.filter(q => state.answers[q.id] === q.correct).length;
+  s.listening = on('listening') * LISTEN_FORM.filter(listenCorrect).length;
   s.total = s.vocab + s.grammar + s.reading + s.listening;
-  s.max = VOCAB.length + GRAMMAR.length + READING.length + LISTEN_FORM.length;
+  s.max = on('vocab') * VOCAB.length + on('grammar') * GRAMMAR.length + on('reading') * READING.length + on('listening') * LISTEN_FORM.length;
   return s;
 }
 
@@ -792,6 +809,12 @@ function onStart() {
 function stepper() {
   return `<div class="stepper" aria-label="Progress">${PARTS.map((p, i) =>
     `<div class="step ${i < state.part ? 'done' : i === state.part ? 'now' : ''}">${p.short}</div>`).join('')}</div>
+    <div class="partbar no-print"><button class="secondary" data-act="sofar">Save my work so far</button><button class="secondary" data-act="skip">Skip this part</button></div>
+    <div class="sofar no-print" id="sofarBox" hidden>
+      <p>Save what you have done so far. Finished parts are marked. Next lesson, open the activity again and use <b>Skip this part</b> to go to the part you need.</p>
+      <div class="actions"><button class="primary" data-act="sofar-pdf">Save PDF</button><button class="secondary" data-act="sofar-copy">Copy My Work</button></div>
+      <p class="inline-msg info" id="copyMsg"></p>
+    </div>
     <p class="gl-key"><span class="gl-sample">Underlined words</span> can be tapped to see their meaning in English, ไทย and 中文.</p>`;
 }
 
@@ -806,6 +829,28 @@ function renderPart() {
   window.scrollTo(0, 0);
   saveProgress();
 }
+
+let saveGraceUntil = 0, skipArmTimer = null;
+app.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-act]');
+  if (!b || state.phase !== 'active') return;
+  const act = b.dataset.act;
+  if (act === 'sofar') { const box = document.getElementById('sofarBox'); if (box) { box.hidden = !box.hidden; if (!box.hidden) box.scrollIntoView({ block: 'nearest' }); } }
+  else if (act === 'sofar-pdf') { saveTyping(); saveGraceUntil = Date.now() + 5000; mlgSave(); }
+  else if (act === 'sofar-copy') { saveTyping(); copyWork(); }
+  else if (act === 'skip') {
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Tap again to skip';
+      clearTimeout(skipArmTimer); skipArmTimer = setTimeout(() => { b.classList.remove('armed'); b.textContent = 'Skip this part'; }, 4000);
+      return;
+    }
+    clearTimeout(skipArmTimer);
+    saveTyping(); stopSpeech(false);
+    state.skipped = state.skipped || {};
+    state.skipped[PARTS[state.part].key] = true;
+    nextPart();
+  }
+});
 
 function nextPart() {
   state.part++; state.qi = 0;
@@ -1301,7 +1346,7 @@ function lev(a, b) {
 }
 
 /* ---------- Item-level results with a short diagnosis ---------- */
-function itemResults() {
+function allItemResults() {
   const parts = [];
   const mcqItems = (bank, key) => state.order[key].map(id => {
     const q = byId(bank, id), a = state.answers[id];
@@ -1346,6 +1391,7 @@ function itemResults() {
   }) });
   return parts;
 }
+function itemResults() { return allItemResults().filter(p => partDone(p.key)); }
 
 function partStats(p) {
   const correct = p.items.filter(i => i.ok).length;
@@ -1417,6 +1463,11 @@ function widaReport(parts) {
   const sp = SPEAK_Q.map(q => speakChecks(state.speaking[q.id] || ''));
   out.push({ domain: 'Speaking', level: null, evidence: [`Typed notes only: ${sp.filter(s => s.words).length} of 3 answered; reasons given in ${sp.filter(s => s.reason).length}, examples in ${sp.filter(s => s.example).length}.`],
     notes: ['Not assessed. The answers were typed, so pronunciation and fluency were not observed. Listen to the student answer the questions aloud.'] });
+  ['listening', 'reading', 'writing'].forEach(k => {
+    if (partDone(k)) return;
+    const d = out.find(x => x.domain.toLowerCase() === k);
+    if (d) { d.level = null; d.evidence = [`${partName(k)}: ${partStatus(k).toLowerCase()}.`]; d.notes = [isSkipped(k) ? 'Not enough evidence, because this part was skipped.' : 'Not enough evidence yet, because this part was not finished.']; }
+  });
   return out;
 }
 
@@ -1426,7 +1477,7 @@ function strategyRows(parts) {
   return STRATEGIES.map(st => {
     const its = (st.ids || []).map(id => all[id]).filter(Boolean);
     const ok = its.filter(i => i.ok).length;
-    return { text: st.text, part: partName(st.part), src: st.src, result: its.length ? `${ok} of ${its.length} correct` : 'Teacher-assessed (typed notes)' };
+    return { text: st.text, part: partName(st.part), src: st.src, result: its.length ? `${ok} of ${its.length} correct` : ((st.ids || []).length || !partDone(st.part) ? partStatus(st.part) : 'Teacher-assessed (typed notes)') };
   });
 }
 function supportSummaryRows() {
@@ -1468,14 +1519,14 @@ function renderReport() {
   wrap.classList.remove('wide');
   const s = scores();
   const parts = itemResults();
-  const wida = widaReport(parts);
+  const wida = widaReport(allItemResults());
   const w = writingChecks(state.writing);
   const sup = supportSummaryRows(), gls = glossRows();
   const totals = parts.reduce((t, p) => { const x = partStats(p); t.c += x.correct; t.i += x.incorrect; t.u += x.unanswered; return t; }, { c: 0, i: 0, u: 0 });
   const wrong = [];
   parts.forEach(p => p.items.forEach((it, n) => { if (!it.ok) wrong.push({ part: p.name, n: n + 1, it }); }));
   const ranked = parts.map(p => ({ name: p.name, pct: partStats(p).correct / p.items.length, st: partStats(p) })).sort((a, b) => b.pct - a.pct);
-  const best = ranked[0], worst = ranked[ranked.length - 1];
+  const best = ranked[0] || { name: '-', pct: 0, st: { correct: 0, total: 0 } }, worst = ranked[ranked.length - 1] || best;
   const fullRows = p => p.items.map((it, n) => `<tr><td>${n + 1}</td><td>${esc(it.q)}</td><td>${it.answered ? esc(it.ans) : '<i>Not answered</i>'}</td><td>${esc(it.correct)}</td><td class="${it.ok ? 'ok' : 'no'}">${it.ok ? 'Correct' : it.answered ? 'Incorrect' : 'Not answered'}</td></tr>`).join('');
   const listenNote = state.plays ? `Played ${state.plays} of 2 times (${state.accentsPlayed.map(accentLabel).join(', ')} voice).` : 'The recording was not played.';
 
@@ -1490,7 +1541,7 @@ function renderReport() {
       <div>Year Group<b>${esc(student.year)}</b></div>
       <div>Form Group<b>${esc(student.form)}</b></div>
       <div>Completed<b>${esc(fmtDate(state.completedAt))}</b></div>
-      <div>Status<b>Completed · Attempt ${attemptNo}</b></div>
+      <div>Status<b>Completed · Attempt ${attemptNo}${skippedTitles().length ? ' · Skipped: ' + skippedTitles().map(t => t.replace(/^Part /, '').replace(/ ·.*$/, '')).join(', ') : ''}</b></div>
       <div>Auto-marked score<b>${s.total} / ${s.max}</b></div>
     </div>
 
@@ -1506,9 +1557,10 @@ function renderReport() {
       <tr><th>Part</th><th>Correct</th><th>Incorrect</th><th>Not answered</th><th>Score</th></tr>
       ${parts.map(p => { const x = partStats(p); return `<tr><td>${p.name}</td><td>${x.correct}</td><td>${x.incorrect}</td><td>${x.unanswered}</td><td><b>${x.correct} / ${x.total}</b></td></tr>`; }).join('')}
       <tr><td><b>Total (auto-marked)</b></td><td><b>${totals.c}</b></td><td><b>${totals.i}</b></td><td><b>${totals.u}</b></td><td><b>${s.total} / ${s.max}</b></td></tr>
-      <tr><td>E · Writing</td><td colspan="4">Teacher-assessed</td></tr>
-      <tr><td>F · Speaking preparation</td><td colspan="4">Teacher-assessed</td></tr>
+      <tr><td>E · Writing</td><td colspan="4">${isSkipped('writing') ? 'Skipped' : 'Teacher-assessed'}</td></tr>
+      <tr><td>F · Speaking preparation</td><td colspan="4">${isSkipped('speaking') ? 'Skipped' : 'Teacher-assessed'}</td></tr>
     </table>
+    ${skippedTitles().length ? `<p class="note">Skipped parts (not included in the score): ${esc(skippedTitles().join(', '))}.</p>` : ''}
     <p class="note">Practice feedback only. This is not an official IELTS band score.</p>
 
     <h3>3. Incorrect and Unanswered Questions (${wrong.length})</h3>
@@ -1578,7 +1630,7 @@ function renderReport() {
 function mlgSave() {
   const msg = document.getElementById('copyMsg');
   try {
-    const parts = itemResults(), wida = widaReport(parts);
+    const parts = itemResults(), wida = widaReport(allItemResults());
     const totals = parts.reduce((t, p) => { const x = partStats(p); t.c += x.correct; t.i += x.incorrect; t.u += x.unanswered; return t; }, { c: 0, i: 0, u: 0 });
     const all = totals.c + totals.i + totals.u;
     const ranked = parts.map(p => ({ p, st: partStats(p) })).filter(x => x.st.total).sort((a, b) => b.st.correct / b.st.total - a.st.correct / a.st.total);
@@ -1588,33 +1640,59 @@ function mlgSave() {
     const levels = wida.map(d => [d.domain, d.level ? LEVEL_NAMES[d.level].replace(' · ', ' ') : (d.domain === 'Speaking' ? 'Teacher to assess' : 'Not enough evidence'), d.level && CANDO[d.domain] ? CANDO[d.domain][d.level] : (d.notes[0] || '')]);
     const sup = (supportSummaryRows() || []).map(r => [r.part + ', ' + r.tier, r.use]);
     glossRows().forEach(r => sup.push(['Key-word translations, ' + r.part, 'Used for ' + r.words.length + ' word' + (r.words.length > 1 ? 's' : '') + ': ' + r.words.slice(0, 8).join(', ')]));
-    const writing = [['Writing', state.writing || '']].concat(SPEAK_Q.map((q, k) => ['Speaking notes ' + (k + 1) + ' (' + q.q + ')', state.speaking[q.id] || '']));
     const title = ACTIVITY_TITLE.split(' — ')[0];
+    const fin = state.phase === 'complete';
+    const sk = skippedTitles();
+    const statusTxt = fin ? (sk.length ? 'Finished (skipped: ' + sk.map(t => t.replace(/^Part /, '')).join(', ') + ')' : 'Finished') : 'Not finished: saved during ' + PARTS[state.part].title.replace(/^Part /, '');
+    const extra = [['Parts', PARTS.map(p => p.title.replace(/^Part /, '') + ': ' + partStatus(p.key))]];
+    const sofar = soFarLines();
+    if (sofar.length) extra.push(['Answers So Far in ' + PARTS[state.part].title.replace(/^Part /, '') + ' (not marked yet)', sofar]);
+    const wkeep = k => partDone(k) || (!fin && PARTS[state.part].key === k);
+    const writing = [];
+    if (wkeep('writing')) writing.push(['Writing', state.writing || '']);
+    if (wkeep('speaking')) SPEAK_Q.forEach((q, k) => writing.push(['Speaking notes ' + (k + 1) + ' (' + q.q + ')', state.speaking[q.id] || '']));
     const blob = MLGPDF.record({ theme: 'eal', title, foot: title + ' - ' + student.name + ' (' + student.form + ')', name: student.name, yg: student.year, fg: student.form,
       counts: [totals.c, totals.i, totals.u], pct: all ? Math.round(100 * totals.c / all) : 0, levels, strengths, develop,
       incorrectHead: ['Part', 'Question', 'Student answer', 'Correct answer'], incorrectW: [14, 42, 22, 22], incorrect: wrong,
-      scaffolds: sup, writing, sections: [['IELTS Strategies Practised', strategyRows(parts).map(r => r.text + ' (' + r.part.replace(/^Part /, '') + '): ' + r.result)]], steps: nextSteps(parts, wida), attempt: { left: state.departureLog.length, fs: state.screenLocks } });
-    Promise.resolve(MLGPDF.deliver(blob, title.replace(/[^A-Za-z0-9]+/g, '_') + '_' + String(student.name).replace(/[^A-Za-z0-9]+/g, '_') + '.pdf'))
+      more: [['Status', statusTxt]], scaffolds: sup, writing, sections: extra.concat([['IELTS Strategies Practised', strategyRows(parts).map(r => r.text + ' (' + r.part.replace(/^Part /, '') + '): ' + r.result)]]), steps: nextSteps(parts, wida), attempt: { left: state.departureLog.length, fs: state.screenLocks } });
+    Promise.resolve(MLGPDF.deliver(blob, title.replace(/[^A-Za-z0-9]+/g, '_') + '_' + String(student.name).replace(/[^A-Za-z0-9]+/g, '_') + (fin ? '' : '_so_far') + '.pdf'))
       .then(() => { if (msg) msg.textContent = 'PDF ready. Check your downloads, then upload it to Google Classroom.'; })
       .catch(e => { if (msg) msg.textContent = e && e.code === 'declined' ? 'Save cancelled.' : 'The PDF could not be saved. Use Copy My Work instead.'; });
   } catch (e) { if (msg) msg.textContent = 'The PDF could not be made. Use Copy My Work instead.'; }
 }
 
+function soFarLines() {
+  if (state.phase === 'complete') return [];
+  const key = PARTS[state.part].key, out = [];
+  if (key === 'vocab' || key === 'grammar') {
+    const bank = key === 'vocab' ? VOCAB : GRAMMAR;
+    state.order[key].forEach(id => { const q = byId(bank, id), a = state.answers[id]; if (a) out.push(q.q + ' - ' + optText(q, a)); });
+  } else if (key === 'reading') {
+    READING.forEach(q => { const a = state.answers[q.id]; if (a) out.push(q.q + ' - ' + (q.type === 'mcq' ? optText(q, a) : 'Text ' + a)); });
+  } else if (key === 'listening') {
+    LISTEN_FORM.forEach(f => { const a = state.answers[f.id]; if (a) out.push(f.label + ' - ' + (LISTEN_MODE === 'mcq' ? optText(f, a) : String(a).trim())); });
+  }
+  return out;
+}
 function plainReport() {
-  const s = scores(), parts = itemResults(), wida = widaReport(parts), L = [];
+  const s = scores(), parts = itemResults(), wida = widaReport(allItemResults()), L = [];
   L.push(ACTIVITY_TITLE);
   L.push(`English Name: ${student.name}`, `Year Group: ${student.year}`, `Form Group: ${student.form}`);
-  L.push(`Completed: ${fmtDate(state.completedAt)} (Attempt ${attemptNo})`, '');
+  if (state.phase === 'complete') L.push(`Completed: ${fmtDate(state.completedAt)} (Attempt ${attemptNo})`);
+  else L.push(`NOT FINISHED. Saved: ${fmtDate(new Date())} during ${PARTS[state.part].title} (Attempt ${attemptNo})`);
+  L.push('', 'PARTS'); PARTS.forEach(p => L.push(`${p.title}: ${partStatus(p.key)}`));
+  const sf = soFarLines(); if (sf.length) { L.push('', `ANSWERS SO FAR IN ${PARTS[state.part].title.toUpperCase()} (not marked yet)`); sf.forEach(x => L.push('- ' + x)); }
+  L.push('');
   L.push('SCORE BREAKDOWN');
   parts.forEach(p => { const x = partStats(p); L.push(`${p.name}: ${x.correct}/${x.total} (correct ${x.correct}, incorrect ${x.incorrect}, not answered ${x.unanswered})`); });
-  L.push(`Total (auto-marked): ${s.total}/${s.max}`, 'E Writing and F Speaking: teacher-assessed', '');
+  L.push(`Total (auto-marked, finished parts only): ${s.total}/${s.max}`, 'E Writing and F Speaking: teacher-assessed', '');
   L.push('INCORRECT AND UNANSWERED');
   parts.forEach(p => p.items.forEach((it, n) => { if (!it.ok) L.push(`${p.name} Q${n + 1}: ${it.q} | Answer: ${it.answered ? it.ans : '(none)'} | Correct: ${it.correct} | ${it.diag}`); }));
   L.push('', 'PATTERNS');
   parts.forEach(p => { const pat = partPattern(p); L.push(`${p.name}: Strengths: ${pat.strengths.join('; ') || '-'} | To develop: ${pat.develop.join('; ') || '-'}`); pat.notes.forEach(n => L.push('  - ' + n)); });
   L.push('', 'WIDA CAN DO REPORT (indicative, this activity only)');
   wida.forEach(d => { L.push(`${d.domain}: ${d.level ? LEVEL_NAMES[d.level] : 'Not assessed / insufficient evidence'}`); L.push('  Evidence: ' + d.evidence.join(' ')); if (d.level && CANDO[d.domain]) L.push('  Can do: ' + CANDO[d.domain][d.level]); d.notes.forEach(n => L.push('  Note: ' + n)); });
-  L.push('', "STUDENT'S WRITTEN OUTPUT", 'Part E Writing:', state.writing || '(none)', '', 'Part F Speaking preparation:');
+  L.push('', "STUDENT'S WRITTEN OUTPUT", 'Part E Writing:' + (partStatus('writing') === 'Finished' ? '' : ' [' + partStatus('writing') + ']'), state.writing || '(none)', '', 'Part F Speaking preparation:' + (partStatus('speaking') === 'Finished' ? '' : ' [' + partStatus('speaking') + ']'));
   SPEAK_Q.forEach((q, i) => L.push(`${i + 1}. ${q.q}`, state.speaking[q.id] || '(none)'));
   L.push('', 'LANGUAGE SUPPORT USED');
   const sup = supportSummaryRows();
@@ -1726,6 +1804,7 @@ document.addEventListener('visibilitychange', () => {
   if (state.phase !== 'active') return;
   if (document.visibilityState === 'hidden') {
     saveTyping();
+    if (Date.now() < saveGraceUntil) { saveProgress(); return; }
     if (speaking) stopSpeech(true);
     state.departures++;
     state.departureLog.push(`left during ${PARTS[state.part].title}`);
