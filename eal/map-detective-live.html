@@ -6,6 +6,7 @@
 *{box-sizing:border-box}html,body{margin:0}
 body{background:radial-gradient(circle at 15% 0,var(--tl),transparent 45%),var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;min-height:100vh;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,[data-allow]{-webkit-user-select:text;user-select:text}
+.pbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin:0 0 10px}.pbar .btn{padding:7px 14px;font-size:13px}.pbar .btn.armed{background:var(--tl,#e6f4f1)}.sofar{border:1.5px solid var(--t,#0f766e);border-radius:12px;padding:12px 14px;margin:0 0 12px}.sofar p{margin:0 0 10px;font-size:14px}.sofar .row{margin-top:0;justify-content:flex-start}
 .btn{font:inherit;font-weight:700;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;background:var(--teal);color:#fff;box-shadow:0 4px 0 var(--td)}.btn:active{transform:translateY(3px);box-shadow:none}.btn:disabled{opacity:.5;cursor:default}
 .btn.o{background:linear-gradient(90deg,var(--or),#F0A35E);box-shadow:0 4px 0 #C77530}.btn.s{background:var(--card);color:var(--td);border:1.5px solid var(--teal);box-shadow:0 4px 0 var(--bd)}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -111,12 +112,12 @@ $("fb").textContent="Answer sent. Look at the main screen.";try{conn.send({t:"an
 function resScreen(d){lastRes=d;
 g.innerHTML=`<div class="big">${d.ok?"✅":"❌"}</div><h2 class="cen" style="margin:6px 0">${d.ok?"Correct!":d.chosen===null?"No answer":"Not yet"}</h2>
 ${d.ok?`<p class="cen" style="font-size:22px;color:var(--ok);font-weight:800;margin:0">+${d.pts}</p>`:'<p class="cen mut">Look at the main screen for the answer.</p>'}
-<div class="stat"><div><b>${d.total}</b>Points</div><div><b>${ord(d.rank)}</b>of ${d.of}</div></div><p class="cen mut">Wait for the next clue.</p>`}
+<div class="stat"><div><b>${d.total}</b>Points</div><div><b>${ord(d.rank)}</b>of ${d.of}</div></div><p class="cen mut">Wait for the next clue.</p><div class="pbar" style="margin-top:14px"><button class="btn s" data-act="sofar">Save my work so far</button></div><div class="sofar" id="sofarBox" hidden><p>Save what you have done so far. Finished parts are marked.</p><div class="row"><button class="btn" data-act="sofar-pdf">Save PDF</button><button class="btn s" data-act="sofar-copy">Copy My Work</button></div><p class="fb" id="ct"></p></div>`}
 function missionScores(){return SECN.map((n,m)=>{const r=recs.filter(x=>x.m==m);return r.length?[n,r.filter(x=>x.ok).length,r.length]:null}).filter(Boolean)}
 const SECN=["Map Reader","Time Travel","Switch It","Link Up","Final Case"];
 function myText(){const L=[],A=s=>L.push(s),ok=recs.filter(r=>r.ok).length;
 A("MAP DETECTIVE LIVE - MY WORK");A("English Name: "+me.name+" | Year Group: "+me.yg+" | Form Group: "+me.fg);
-A("Completed: "+(fin?new Date().toISOString().slice(0,10):"not completed"));
+A("Status: "+(fin?"Finished":"Not finished (saved part-way through the game)"));A("Completed: "+(fin?new Date().toISOString().slice(0,10):"not completed"));
 A("Score: "+score+" points | Rank: "+(rank?rank+" of "+of:"n/a")+" | Correct: "+ok+" of "+recs.length);A("");
 A("SCORE BY MISSION");missionScores().forEach(x=>A(x[0]+": "+x[1]+"/"+x[2]));A("");
 A("MY ANSWERS");recs.forEach((r,i)=>A((i+1)+". "+SECN[r.m]+" | "+r.stem+" | My answer: "+(r.chosen===null?"[no answer]":r.chosen)+" | "+(r.ok?"Correct":"Not yet. Correct answer: "+r.correct)));return L.join("\n")}
@@ -131,8 +132,14 @@ const MAPL={"Map Reader": "location language (directions and prepositions)", "Ti
 function widaBlocks(){const ok=recs.filter(r=>r.ok).length,pc=recs.length?Math.round(100*ok/recs.length):0,nm=me.name||"This student",st=[],dv=[],nx=[],sc=missionScores();sc.forEach(x=>{const k=MAPL[x[0]]||x[0],a=x[2]?x[1]/x[2]:0;(a>=.8?st:dv).push(x[0]+" ("+x[1]+"/"+x[2]+"): "+k)});sc.filter(x=>x[2]&&x[1]/x[2]<.8).slice(0,2).forEach(x=>nx.push("Practise "+(MAPL[x[0]]||x[0])+" in the solo Map Detective."));nx.push("Complete the writing task in the solo Map Detective, so written language can be judged.");
 const scd=sc.filter(x=>x[2]).sort((a,b)=>b[1]/b[2]-a[1]/a[2]),pat=[];if(scd.length){const b=scd[0],w=scd[scd.length-1];pat.push("Most correct answers came in "+b[0]+" ("+b[1]+"/"+b[2]+"): "+(MAPL[b[0]]||b[0])+".");if(b!==w&&w[1]<w[2])pat.push("Most incorrect answers came in "+w[0]+" ("+w[1]+"/"+w[2]+"): "+(MAPL[w[0]]||w[0])+".")}const na=recs.filter(r=>r.chosen===null).length;if(na)pat.push(na+" clue"+(na==1?" was":"s were")+" not answered in time.");
 return MLGPDF.wida({scaffolds:[],noScaffolds:"This live game has no optional language support.",counts:[ok,recs.length-ok-na,na],patterns:pat,incorrect:recs.filter(r=>!r.ok).map(r=>[r.stem,r.chosen===null?"[no answer]":r.chosen,r.correct]),noWriting:"This live game has no writing task.",name:nm,standard:"Social and Instructional Language",use:"Explain",domain:"Vocabulary and grammar recognition",pct:pc,target:3,at:"Choosing words and phrases to provide precise details, descriptions, comparisons, and ordered procedures",below:[2,"Sequencing narratives or informational text using linking words and phrases"],next:[4,"Connecting main points, events, and central ideas to conclusions"],opening:nm+" answered "+ok+" of "+recs.length+" clues correctly ("+pc+"%) in the live class game.",strengths:st,develop:dv,steps:nx,limits:"Based on one live game with multiple choice answers and no writing, so this shows recognition only. Confirm with written or spoken work."})}
-function mkPdf(text,foot){return MLGPDF.build({rec:{make:widaBlocks,name:me.name,yg:me.yg,fg:me.fg,attempt:{left:EVC.departure||0,fs:EVC["fs-exit"]||0}},theme:"eal",title:"Map Detective Live",foot:foot})}
-function savePdf(){const t=$("ct");try{const bl=mkPdf(myText(),"Map Detective Live - "+me.name+" ("+me.yg+", "+me.fg+")"),a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="Map_Detective_Live_"+me.name.replace(/[^A-Za-z0-9]+/g,"_")+".pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);t.textContent="PDF ready. Check your downloads. If nothing downloads, use Copy My Work."}catch(e){t.textContent="Could not make the PDF. Use Copy My Work instead."}}
+function mkPdf(text,foot){return MLGPDF.build({rec:{make:widaBlocks,name:me.name,yg:me.yg,fg:me.fg,attempt:{left:EVC.departure||0,fs:EVC["fs-exit"]||0},more:[["Status",fin?"Finished":"Not finished (saved part-way)"]]},theme:"eal",title:"Map Detective Live",foot:foot})}
+let SG=0,SKT=null,SKIP={};
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-act]");if(!b||!(AT))return;const a=b.dataset.act;
+if(a=="sofar"){const x=document.getElementById("sofarBox");if(x){x.hidden=!x.hidden;if(!x.hidden)x.scrollIntoView({block:"nearest"})}}
+else if(a=="sofar-pdf"){SG=Date.now()+5000;savePdf()}
+else if(a=="sofar-copy"){copyWork()}
+else if(a=="skip"){if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent="Tap again to skip";clearTimeout(SKT);SKT=setTimeout(()=>{b.classList.remove("armed");b.textContent="Skip this part"},4000);return}clearTimeout(SKT);}});
+function savePdf(){const t=$("ct");try{const bl=mkPdf(myText(),"Map Detective Live - "+me.name+" ("+me.yg+", "+me.fg+")"),a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="Map_Detective_Live_"+me.name.replace(/[^A-Za-z0-9]+/g,"_")+(fin?"":"_so_far")+".pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);t.textContent="PDF ready. Check your downloads. If nothing downloads, use Copy My Work."}catch(e){t.textContent="Could not make the PDF. Use Copy My Work instead."}}
 function copyWork(){const c=$("ct");(navigator.clipboard?navigator.clipboard.writeText(myText()):Promise.reject()).then(()=>c.textContent="Copied. Paste it into Google Classroom or an email.").catch(()=>{c.innerHTML="";const a=document.createElement("textarea");a.readOnly=true;a.value=myText();a.setAttribute("data-allow","");a.style.cssText="width:100%;min-height:140px";c.appendChild(a)})}
 
 /* ---------- connection ---------- */
@@ -179,7 +186,7 @@ function modal(m,rs){const d=$("ac");d.innerHTML=`<div class="acb"><h3>${rs?"�
 function resetAttempt(){const m=curQ?curQ.m:-1;recs=recs.filter(r=>r.m!=m);score=recs.filter(r=>r.ok).length*1000;ST=CFG.resetAt-1;try{conn.send({t:"reset"})}catch(e){}
 if(curQ&&!lastResFor(curQ.qi)){sentAns=null;curQ.a=null;qScreen(curQ)}}
 const lastResFor=q=>lastRes&&lastRes.qi===q;
-const away=e=>{if(!AT||AW||Date.now()-FST<1500)return;AW=true;ST++;TA=Date.now();ev("departure")};
+const away=e=>{if(!AT||AW||Date.now()-FST<1500||Date.now()<SG)return;AW=true;ST++;TA=Date.now();ev("departure")};
 const back=()=>{if(!AW)return;AW=false;if(!AT)return;
 if(ST>=CFG.resetAt){resetAttempt();modal("You left the activity a second time. Your points and answers for this mission were cleared. Stay on this page and work on your own.",1)}else{ev("warning");modal("Warning: you left the activity page. Stay on this page. If you leave again, your points and answers for this mission will be cleared.")}};
 document.addEventListener("visibilitychange",()=>document.hidden?away({type:"tab-hidden"}):back());window.addEventListener("blur",away);window.addEventListener("focus",back);

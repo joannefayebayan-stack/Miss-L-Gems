@@ -69,6 +69,7 @@ audio{height:34px;max-width:230px}
 .pg i,.bar i,.fill{background:#7CC4A9!important}
 .pod .p1{background:#BFE6D6}
 :focus-visible{outline:3px solid #1F4D40;outline-offset:2px}
+.pbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin:0 0 10px}.pbar .sec{padding:7px 14px;font-size:13px}.pbar .sec.armed{background:var(--tl,#e6f4f1)}.sofar{border:1.5px solid var(--t,#0f766e);border-radius:12px;padding:12px 14px;margin:0 0 12px}.sofar p{margin:0 0 10px;font-size:14px}.sofar .row{margin-top:0;justify-content:flex-start}.pbar .sec{width:auto;margin:0}.sofar .start,.sofar .sec{width:auto;margin:0}
 h1,h2,.box b,.fbk b,.stat b,.ltr,.eyebrow,.eye,.task h4,.end h2{color:#1F4D40}
 </style>
 </head>
@@ -179,7 +180,7 @@ function speak(t,done){if(!TTS){if(done)done();return}speechSynthesis.cancel();s
 function playAll(){let k=0;const nx=()=>{document.querySelectorAll(".opt").forEach((e,x)=>e.classList.toggle("now",x===k-1&&k<=3));if(k>=3){setTimeout(()=>document.querySelectorAll(".opt").forEach(e=>e.classList.remove("now")),900);return}const j=k++;document.querySelectorAll(".opt").forEach((e,x)=>e.classList.toggle("now",x===j));speak(opts[j].t,()=>setTimeout(nx,600))};nx()}
 var SC=MLGScaffold([["tr","Thai and Chinese translations"]]);
 document.addEventListener("click",e=>{if(e.target&&e.target.id==="trb"){document.getElementById("trw").style.display="";e.target.style.display="none";SC.use("tr",W[i][1])}});
-function intro(){active=false;
+function intro(){active=false;RESUME=false;SKP=[];
  app.innerHTML=`<div class="note"><b>Learning Goal</b><br>Hear and say 40 tricky English words correctly.</div>
  <div class="note"><b>Learning Objectives</b> By the end I can:<br>• choose the correct pronunciation from three,<br>• say each word and compare it with the correct one,<br>• notice 8 sound patterns.</div>
  <div class="note"><b>Success Criteria</b> 80% or more correct, and a recording for each word.</div>
@@ -204,7 +205,7 @@ function q(){
  const [c,w,th,zh,x,y]=W[i];done=false;
  opts=sh([{t:w,ok:1},{t:x,ok:0},{t:y,ok:0}]);
  app.innerHTML=`<div class="row" style="justify-content:space-between"><span><span class="badge">${c}</span> ${log[w]&&log[w].skipped?'<span class="badge">↩ Skipped earlier</span>':""}</span><span style="font-size:13px;color:var(--mut)">Word ${Math.min(qp+1,W.length)} of ${W.length}</span></div>
- <div class="bar"><i style="width:${W.filter((x,k)=>res[k]!==undefined).length/W.length*100}%"></i></div>
+ <div class="pbar"><button class="sec" data-act="sofar">Save my work so far</button><button class="sec" data-act="skip">Skip this sound group</button></div><div class="sofar" id="sofarBox" hidden><p>Save what you have done so far. Finished parts are marked. Next lesson, open the activity again and use <b>Skip this sound group</b> to go to the group you need.</p><div class="row"><button class="start" data-act="sofar-pdf">Save PDF</button><button class="sec" data-act="sofar-copy">Copy My Work</button></div><p class="fb" id="ct"></p></div><div class="bar"><i style="width:${W.filter((x,k)=>res[k]!==undefined).length/W.length*100}%"></i></div>
  <div class="word">${w}</div>
  <button type="button" class="sec" id="trb" style="display:block;margin:0 auto 12px">Show translation</button><div class="tr" id="trw" style="display:none"><span><small>ไทย</small>${th}</span><span><small>中文</small>${zh}</span></div>
  <p class="q">Which audio says “${w}” correctly?</p>
@@ -267,7 +268,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const $=id=>document.getElementById(id);
 function modal(t,p,btns,note){$("mt").textContent=t;$("mp").textContent=p;$("mn").textContent=note||"";const b=$("mb");b.innerHTML="";btns.forEach(([l,f,c])=>{const x=document.createElement("button");x.textContent=l;x.className=c||"sec";x.onclick=()=>{$("modal").hidden=true;if(f)f()};b.appendChild(x)});$("modal").hidden=false;if(b.firstChild)b.firstChild.focus()}
 // ---- tab-departure check: 1st = warning, 2nd = restart ----
-const TG=MLGGuard({wrap:".wrap",part:"this sound group",active:()=>active,exempt:()=>micAsk,restart:resetPart,onDeparture:()=>{sw++}});
+const TG=MLGGuard({wrap:".wrap",part:"this sound group",active:()=>active,exempt:()=>micAsk||Date.now()<SG,restart:resetPart,onDeparture:()=>{sw++}});
 function resetAll(msg){if(TTS)speechSynthesis.cancel();if(mr&&mr.state==="recording"){mr.onstop=null;mr.stop()}if(stream)stream.getTracks().forEach(t=>t.stop());Object.values(recs).forEach(u=>URL.revokeObjectURL(u));Object.values(log).forEach(l=>{if(l.url)URL.revokeObjectURL(l.url)});W=ALL;i=0;res=[];recs={};log={};sw=0;away=false;active=false;TG.reset();intro();if(msg)modal("Activity restarted",msg,[["OK",null,"sec"]])}
 $("reset").onclick=()=>modal("Reset the activity?","Your score, recordings, answers and tab-switch count will be cleared and you will return to the start.",[["Cancel",null,"sec"],["Yes, reset",()=>resetAll(),"sec"]]);
 // ---- Final Review + PDF (browser print → Save as PDF) ----
@@ -277,7 +278,21 @@ const tricky=ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>w[1]);if(tricky.lengt
 const rows=ALL.map((w,k)=>{const l=L(w);return[String(k+1),w[0],{t:w[1],b:1},l.answered?"Audio "+l.sel+": "+l.selText:(l.skipped?"Skipped":"Not answered"),l.answered?(l.ok?{t:"Correct",c:"ok",b:1}:{t:"Not yet",c:"bad",b:1}):{t:"No answer",c:"amb",b:1},l.url?"Recorded":{t:"None",c:"mut"}]});
 const grd=gr.filter(x=>x[2]).slice().sort((a,b)=>b[1]/b[2]-a[1]/a[2]),pat=[];if(grd.length){pat.push('Most correct answers: the "'+grd[0][0]+'" sound group ('+grd[0][1]+" of "+grd[0][2]+").");const lw=grd[grd.length-1];if(lw!==grd[0]&&lw[1]<lw[2])pat.push('Most incorrect answers: the "'+lw[0]+'" sound group ('+lw[1]+" of "+lw[2]+").")}const un=ALL.length-ans.length;if(un)pat.push(un+" word"+(un==1?" was":"s were")+" not answered.");
 const wb=MLGPDF.wida({scaffolds:SC.rows(),counts:[okN,ans.length-okN,un],patterns:pat,incorrectHead:["Word","Sound group","What I chose"],incorrectW:[30,30,40],incorrect:ALL.filter(w=>L(w).answered&&!L(w).ok).map(w=>[w[1],w[0],"Audio "+L(w).sel+": "+L(w).selText]),noWriting:"This activity has no writing task. Spoken recordings cannot be included in a PDF.",name:n,standard:"Social and Instructional Language",use:"Recount",domain:"Listening and pronunciation",pct:pc,target:1,at:"Matching everyday oral content related words and phrases to pictures, diagrams, or photographs",next:[2,"Matching oral descriptions of characters or main events in content related topics"],opening:n+" chose the correct pronunciation for "+okN+" of "+ALL.length+" words ("+pc+"%) and made "+rec+" recording"+(rec==1?"":"s")+".",strengths:st,develop:dv,steps:nx,limits:"Based on one Sound Detective attempt at word level. WIDA has no pronunciation descriptor, so this is the closest match. Recordings are not included in the PDF, so the teacher should confirm spoken accuracy."});
-return MLGPDF.build({rec:{name:n,yg:yg,fg:c,attempt:TG.stats()},theme:"eal",title:"Sound Detective",subtitle:"Tricky Words, Level 1: Final Review",foot:"Sound Detective - "+n+" ("+c+")",meta:[["English Name",n],["Year Group",yg||"-"],["Form Group",c],["Date",dt]],tiles:[[okN+"/"+ALL.length,"Correct ("+pc+"%)"],[ans.length+"/"+ALL.length,"Answered"],[rec+"/"+ALL.length,"Recordings"],[String(dep),"Page departures"]],blocks:wb.concat([{h:"Score by Sound Group"},{table:{head:["Sound group","Result"],w:[60,40],rows:gr.map(x=>[x[0],{t:x[1]+" of "+x[2],bar:x[2]?Math.round(100*x[1]/x[2]):0}])}},{h:"All Words"},{table:{head:["#","Sound group","Word","Answer selected","Result","Recording"],w:[5,18,17,30,13,12],rows:rows,z:8.3}},{p:"Audio recordings cannot be included in the PDF.",o:{f:"I",z:8.5,c:[93,100,112]}}])})}
+return MLGPDF.build({rec:{name:n,yg:yg,fg:c,attempt:TG.stats(),more:[["Status",sdStatus()]]},theme:"eal",title:"Sound Detective",subtitle:"Tricky Words, Level 1: Final Review",foot:"Sound Detective - "+n+" ("+c+")",meta:[["English Name",n],["Year Group",yg||"-"],["Form Group",c],["Date",dt],["Status",sdStatus()]],tiles:[[okN+"/"+ALL.length,"Correct ("+pc+"%)"],[ans.length+"/"+ALL.length,"Answered"],[rec+"/"+ALL.length,"Recordings"],[String(dep),"Page departures"]],blocks:wb.concat([{h:"Score by Sound Group"},{table:{head:["Sound group","Result"],w:[60,40],rows:gr.map(x=>[x[0],{t:x[1]+" of "+x[2],bar:x[2]?Math.round(100*x[1]/x[2]):0}])}},{h:"All Words"},{table:{head:["#","Sound group","Word","Answer selected","Result","Recording"],w:[5,18,17,30,13,12],rows:rows,z:8.3}},{p:"Audio recordings cannot be included in the PDF.",o:{f:"I",z:8.5,c:[93,100,112]}}])})}
+let SG=0,SKT=null,SKIP={};
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-act]");if(!b||!(active))return;const a=b.dataset.act;
+if(a=="sofar"){const x=document.getElementById("sofarBox");if(x){x.hidden=!x.hidden;if(!x.hidden)x.scrollIntoView({block:"nearest"})}}
+else if(a=="sofar-pdf"){SG=Date.now()+5000;soFar(1)}
+else if(a=="sofar-copy"){soFar(0)}
+else if(a=="skip"){if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent="Tap again to skip";clearTimeout(SKT);SKT=setTimeout(()=>{b.classList.remove("armed");b.textContent="Skip this sound group"},4000);return}clearTimeout(SKT);skipPart()}});
+
+let RESUME=false,SKP=[];
+const sdStatus=()=>RESUME?"Not finished (saved part-way)":SKP.length?"Finished (skipped: "+SKP.join(", ")+")":"Finished";
+function soFar(pdf){if(TTS)speechSynthesis.cancel();
+if(!pdf){const L=w=>log[w[1]]||{},t=["Sound Detective - "+name+(cls?" ("+cls+")":""),"Status: Not finished (saved part-way)",""].concat(ALL.map((w,k)=>(k+1)+". "+w[0]+" | "+w[1]+" | "+(L(w).answered?"Audio "+L(w).sel+": "+L(w).selText+" | "+(L(w).ok?"Correct":"Not yet"):L(w).skipped?"Skipped":"Not answered yet")+(L(w).url?" | Recorded":""))).join("\n"),c=$("ct");
+(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{if(c)c.textContent="Copied. Paste it into Google Classroom if your teacher asks."}).catch(()=>{if(c)c.textContent="Copying is not available here. Use Save PDF instead."});return}
+RESUME=true;review();const d=$("dl");if(d)d.click()}
+function skipPart(){if(TTS)speechSynthesis.cancel();const g=W[i][0];SKP.push(g);queue=queue.slice(0,qp).concat(queue.slice(qp).filter(k=>W[k][0]!==g||res[k]!==undefined));W.forEach((w,k)=>{if(w[0]===g&&res[k]===undefined)log[w[1]]=Object.assign(log[w[1]]||{},{skipped:true})});q()}
 function review(){
  active=false;
  const L=w=>log[w[1]]||{},ans=ALL.filter(w=>L(w).answered).length,rec=ALL.filter(w=>L(w).url).length,d=new Date(),iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
@@ -292,10 +307,10 @@ function review(){
  <div class="noprint"><button class="start" id="dl">Download My Responses (PDF)</button><button class="sec" id="bk" style="width:100%;margin-top:10px">← Back to my results</button></div>`;
  const upd=()=>{$("sn").textContent=$("fn").value.trim()||"—";$("sc2").textContent=$("fc").value.trim()||"—";$("sd").textContent=$("fd").value||"—"};
  ["fn","fc","fd"].forEach(x=>$(x).oninput=upd);upd();
- $("bk").onclick=summary;
+ if(RESUME){$("bk").textContent="↩ Back to my work";$("bk").onclick=()=>{RESUME=false;active=true;q()}}else $("bk").onclick=summary;
  $("dl").onclick=()=>{upd();const n=$("fn").value.trim(),c=$("fc").value.trim();
   if(!n||!c||!$("fd").value){modal("Please complete your details","Fill in your name, class/form and date before saving your PDF.",[["OK",null,"sec"]]);return}
-  try{const fnm="SoundDetective_"+n.replace(/[^A-Za-z0-9]+/g,"_")+"_"+c.replace(/[^A-Za-z0-9]+/g,"_")+".pdf";MLGPDF.deliver(soundPdf(n,c,$("fd").value,sw),fnm);$("sg").textContent="PDF saved: "+new Date().toLocaleString();return}catch(e){}
+  try{const fnm="SoundDetective_"+n.replace(/[^A-Za-z0-9]+/g,"_")+"_"+c.replace(/[^A-Za-z0-9]+/g,"_")+(RESUME?"_so_far":"")+".pdf";MLGPDF.deliver(soundPdf(n,c,$("fd").value,sw),fnm);$("sg").textContent="PDF saved: "+new Date().toLocaleString();return}catch(e){}
   if(typeof window.print!=="function"){modal("Printing is not available","Your browser cannot open the print window. Try Chrome or Safari, or take screenshots of this page to upload.",[["OK",null,"sec"]]);return}
   const old=document.title;document.title="SoundDetective_"+n.replace(/[\\\/:*?"<>|\s]+/g,"_")+"_"+c.replace(/[\\\/:*?"<>|\s]+/g,"_");$("sg").textContent="Saved: "+new Date().toLocaleString();
   window.onafterprint=()=>{document.title=old};window.print()}}
