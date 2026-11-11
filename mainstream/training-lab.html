@@ -308,6 +308,11 @@ if(x.miss.length&&x.l!='strong')d.plan.push('Review: '+x.miss.join('; ')+'.');
 if(x.l=='new')d.plan.push('Play '+UN[x.u]+'. There are not enough answers yet.')});
 d.skills.forEach(function(x){var t=x.name+' ('+x.p+'%)';if(x.l=='strong')d.strengths.push(t);if(x.l=='focus'){d.focus.push(t);d.plan.push(TIP[x.name])}});
 if(!d.focus.length&&d.n>=5)d.plan.push('Great work! Try the whole-unit mix (15 questions) to stay sharp.');return d}
+function copyWork(){var w=S.who||{},d=data(),L=['Training Lab - Year 10 PHE, Unit 2','English Name: '+(w.name||'')+' | Year Group: '+(w.yg||'')+' | Form Group: '+(w.fg||''),'Saved: '+new Date().toLocaleString('en-GB'),'','Overall: '+d.tot+'% ('+d.n+' answers)','','BY SUBUNIT'];
+d.units.forEach(function(x){L.push(UN[x.u]+': '+(x.n?x.p+'% ('+x.n+' answers)':'Not played yet'))});L.push('','BY SKILL');d.skills.forEach(function(x){L.push(x.name+': '+(x.n?x.p+'% ('+x.n+' answers)':'Not played yet'))});
+L.push('','STRENGTHS');(d.strengths.length?d.strengths:['-']).forEach(function(t){L.push('- '+t)});L.push('','WHAT TO FOCUS ON');(d.focus.length?d.focus:['-']).forEach(function(t){L.push('- '+t)});
+L.push('','REVIEW THESE');var any=0;d.units.forEach(function(x){x.miss.forEach(function(m){any=1;L.push('- '+UN[x.u]+': '+m)})});if(!any)L.push('- none');L.push('','STUDY PLAN');d.plan.forEach(function(t,i){L.push((i+1)+'. '+t)});
+var t=L.join('\n');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('Copied. Paste it into Google Classroom if your teacher asks.')}).catch(function(){msg('Copying is not available here. Use Save PDF instead.')})}
 function msg(t){var e=document.getElementById('pm');if(e)e.innerHTML='<div class="fb">'+t+'</div>'}
 function clearLog(){S.log=[];try{localStorage.removeItem('trainingLabLog')}catch(e){}report()}
 function thaiUse(){var a=S.log.filter(function(x){return x.m!='e'&&x.th!==undefined}),n=a.filter(function(x){return x.th}).length;return a.length?'Switched on for '+n+' of '+a.length+' answers':'Not recorded yet'}
@@ -321,7 +326,7 @@ h+='<div class="card"><h2>By skill</h2>';d.skills.forEach(function(x){h+='<p sty
 var rv=[];d.units.forEach(function(x){x.miss.forEach(function(m){rv.push('<li><span class="th">'+x.u+'</span> '+m.replace(/</g,'&lt;')+'</li>')})});
 h+='<div class="card"><h2>🔁 Review these</h2>'+(rv.length?'<ul>'+rv.join('')+'</ul>':'<span class="th">No missed items right now.</span>')+'</div>';
 h+='<div class="card"><h2>📋 Study plan</h2><ol>'+d.plan.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ol></div>';
-app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()}
+app.innerHTML=h+'<div class="row"><button class="btn" onclick="savePdf()">📄 Save PDF</button><button class="btn" onclick="copyWork()">Copy My Work</button><button class="ghost" onclick="clearLog()">Reset progress</button></div><div id="pm"></div>'+toggle()}
 function savePdf(){var w=S.who||{},nm=w.name||'',fm=w.fg||'',yr=w.yg||'';
 var d=data(),nu=function(t){return String(t).replace(/^[^\x20-\x7E]+\s*/,'')},cell=function(x){return x.n?{t:x.p+'% ('+x.n+' answers)',bar:x.p}:{t:'Not played yet',c:'mut'}},lab=function(x){var c=x.l=='strong'?'ok':x.l=='focus'?'bad':x.l=='ok'?'amb':'mut';return{t:nu(LB[x.l]),c:c,b:1}};
 var rev=[];d.units.forEach(function(x){x.miss.forEach(function(m){rev.push([UN[x.u].split(' ')[0],m])})});
