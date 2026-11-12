@@ -37,6 +37,7 @@ export const GAMES = {
   'y79-unit-01': { name: 'Year 7–9 EAL Unit 1 Challenge: My Day', page: '/eal/year-7-9/unit-01-daily-life/activity.html', changes: [] },
   'map-detective': { name: 'Map Detective', page: '/eal/map-detective.html', changes: [] },
   'map-detective-live': { name: 'Map Detective Live (student page)', page: '/eal/map-detective-live.html', changes: [] },
+  'email-lab': { name: 'Email Lab', page: '/eal/email-lab.html', changes: [] },
   'sentence-sorter': { name: 'Sentence Sorter', page: '/eal/sentence-sorter.html', changes: [] },
   'sound-detective': { name: 'Sound Detective', page: '/eal/sound-detective.html', changes: [] },
   'survey-showdown': { name: 'Survey Showdown', page: '/eal/survey-showdown.html', changes: [] },
