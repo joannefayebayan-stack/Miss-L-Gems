@@ -121,6 +121,13 @@ export default async function middleware(request) {
   const back = url.pathname + url.search;
   const { games, saved } = await currentGames(now);
 
+  // Teacher-only Home button on activity pages: the small script asks this address,
+  // and only the teacher's device gets "yes". Students never see the button.
+  if (path === '/teacher-check') {
+    return new Response(isTeacher ? 'yes' : 'no', { status: isTeacher ? 200 : 403, headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' } });
+  }
+  if (path === '/teacher-back.js') return; // the script itself holds nothing private
+
   // Teacher sign-out
   if (path === '/teacher-signout') {
     return new Response(null, { status: 303, headers: { location: '/', 'set-cookie': setCookie('mlg_t', '', 0), 'cache-control': 'no-store' } });
