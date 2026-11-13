@@ -100,7 +100,7 @@ var E=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&am
 var BOX='<div class="mlg-sc" style="border:1px solid #D9DEE7;border-radius:12px;padding:10px 12px;margin:10px 0;background:#fff;color:#2F3A4A;font-size:14px;line-height:1.45;text-align:left"><b>Language support I used</b>';
 function make(defs){var u;function reset(){u={};defs.forEach(function(d){u[d[0]]={n:0,items:[]}})}reset();
 function say(x){if(!x.n)return"Not used";var s=x.n==1?"Used once":"Used "+x.n+" times";if(x.items.length){var a=x.items.slice(0,12);s+=": "+a.join(", ")+(x.items.length>12?" and "+(x.items.length-12)+" more":"")}return s}
-return{use:function(k,item){var x=u[k];if(!x)return;x.n++;if(item&&x.items.indexOf(item)<0)x.items.push(item)},once:function(k){var x=u[k];if(x&&!x.n)x.n=1},reset:reset,
+return{use:function(k,item){var x=u[k];if(!x)return;x.n++;if(item&&x.items.indexOf(item)<0)x.items.push(item)},once:function(k){var x=u[k];if(x&&!x.n)x.n=1},reset:reset,dump:function(){return u},load:function(x){reset();for(var k in x)if(u[k]&&x[k]){u[k].n=x[k].n|0;u[k].items=(x[k].items||[]).slice(0,60)}},
 rows:function(){return defs.map(function(d){return[d[1],say(u[d[0]])]})},
 html:function(){return BOX+defs.map(function(d){return'<div>'+E(d[1])+': <b>'+E(say(u[d[0]]))+'</b></div>'}).join("")+'</div>'}}}
 make.note=function(t){return BOX+'<div>'+E(t)+'</div></div>'};
@@ -132,7 +132,7 @@ function modal(h,m){ac.innerHTML="<div><h3>"+h+"</h3><p>"+m+"</p><button id=\"ml
 function away(){if(!o.active()||AW||ex()||Date.now()-FST<1500)return;AW=true}
 function back(){if(!AW)return;AW=false;if(!o.active())return;DEP++;ST=Math.min(ST+1,2);if(o.onDeparture)o.onDeparture();if(ST>=2){o.restart();modal("Part restarted","You left the activity a second time. Your answers for "+o.part+" were cleared and it restarted. Your other answers are safe. Stay on this page and work on your own.")}else modal("Notice","Warning: you left the activity page. Stay on this page. If you leave again, your answers for "+o.part+" will be cleared and it will restart.")}
 document.addEventListener("visibilitychange",function(){document.hidden?away():back()});window.addEventListener("blur",away);window.addEventListener("focus",back);
-gate();return{enter:enter,check:check,reset:function(){ST=0;AW=false;DEP=0;FSO=0},stats:function(){return{left:DEP,fs:FSO}}}};
+gate();return{enter:enter,check:check,reset:function(){ST=0;AW=false;DEP=0;FSO=0},stats:function(){return{left:DEP,fs:FSO}},dump:function(){return[DEP,FSO,ST]},load:function(a){DEP=a[0]|0;FSO=a[1]|0;ST=a[2]|0;AW=false;FST=Date.now()}}};
 </script>
 <script>
 const SPOT=[
@@ -237,7 +237,7 @@ try{await window.MLGPDF.deliver(blob,fn);ts.textContent="PDF saved. Send it to y
 catch(err){ts.textContent=err&&err.code==="declined"?"Save cancelled.":"PDF could not be saved. Try again or use “Copy my work”."}}
 const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
 let Q,i,score,streak,ok,miss,name="",W=[],P="";
-var SC=MLGScaffold([["chip","Sequence word buttons"],["tip","Writing tip"],["notes","My notes while writing"]]);
+var SC=MLGScaffold([["tap","Thai and Chinese translations (tap a word)"],["chip","Sequence word buttons"],["tip","Writing tip"],["notes","My notes while writing"]]);
 function intro(){SC.reset();RESUME=null;SKP=[];GA=false;EX=false;TG.reset();skipped=false;tabs=0;ended="";P="";notes="";guard=false;pdone=false;LG=[];queue=[];qp=0;WS=[false,false,false];W=[];el.innerHTML=`<div class="box"><b>Learning Goal</b><br>Find, fix and write complete sentences in English.</div>
 <div class="box"><b>Learning Objectives</b> By the end I can:<ul style="margin:4px 0;padding-left:20px"><li>spot sentences, fragments and run-ons,</li><li>fix fragments and run-ons,</li><li>write my own clear sentences,</li><li>write a paragraph using sequence words.</li></ul></div>
 <div class="box"><b>Success Criteria</b> 80% or more on the quiz, 3 of 3 writing checks, and at least 3 sequence words in my paragraph.</div>
@@ -245,6 +245,7 @@ function intro(){SC.reset();RESUME=null;SKP=[];GA=false;EX=false;TG.reset();skip
 <div class="box p"><b>🧩 Fragment</b> = a piece of a sentence. Something is missing.<br><i>Because it was late.</i></div>
 <div class="box o"><b>🚂 Run-on</b> = two sentences stuck together.<br><i>It was raining we stayed inside.</i></div>
 <p style="font-size:14px;margin:12px 0 4px">4 rounds: <b>1 Spot it</b> (12) · <b>2 Fix it</b> (6) · <b>3 Write it</b> (3 sentences) · <b>4 Watch and write</b> (paragraph)</p>
+<div class="box">Tap a word with a dotted line to see <b>ไทย</b> and <b>中文</b>.</div>
 <div class="box">⏭ Not sure? Press <b>Skip for now</b> on any question. Skipped questions come back at the end. If you skip again, they are shown as <b>not answered</b> in your PDF.</div>
 <label for="nm"><b>English Name</b></label><input type="text" id="nm" aria-required="true" style="margin:4px 0 10px"><label for="yg"><b>Year Group</b></label><input type="text" id="yg" placeholder="e.g. Year 10" aria-required="true" style="margin:4px 0 10px"><label for="cn"><b>Form Group</b></label><input type="text" id="cn" placeholder="e.g. 10A" aria-required="true" style="margin:4px 0 10px"><p class="fb bad" id="er" style="margin:0;min-height:20px;font-weight:700"></p><button class="go" id="s" style="margin-top:6px">Let’s play!</button>`;
 const nmI=document.getElementById("nm"),cnI=document.getElementById("cn"),erE=document.getElementById("er");
@@ -479,6 +480,69 @@ function record(o){var p=o.pct||0,met=p>=80,near=p>=50,n=met||near||!o.below?o.t
  return build({theme:o.theme,title:o.title,subtitle:"Student Record",foot:o.foot,meta:meta,tiles:tiles,blocks:b})}
 function widaCall(sp){if(typeof sp.rec.make=="function")sp.rec.make()}
 window.MLGPDF={build:build,fromText:fromText,deliver:deliver,wida:wida,record:record};
+})();
+</script>
+<script id="mlg-gloss">
+/* Sentence Sorter: tap a dotted word to see Thai and Chinese. Optional, and recorded as language support. */
+(function(){
+var GL={},host=document.getElementById("g");
+("sentence|ประโยค|句子\nsentences|ประโยค|句子\nfragment|ส่วนของประโยค (ประโยคไม่สมบูรณ์)|句子片段（不完整的句子）\nfragments|ส่วนของประโยค (ประโยคไม่สมบูรณ์)|句子片段（不完整的句子）\n"+
+"run-on|ประโยคที่เขียนติดกันโดยไม่มีตัวเชื่อม|连写句（两个句子连在一起）\nrun-ons|ประโยคที่เขียนติดกันโดยไม่มีตัวเชื่อม|连写句（两个句子连在一起）\n"+
+"subject|ประธาน|主语\nverb|คำกริยา|动词\nfinished|สมบูรณ์|完整的\nunfinished|ไม่สมบูรณ์|不完整的\ncomplete|สมบูรณ์|完整的\nidea|ความคิด|意思\nideas|ความคิด|意思\n"+
+"punctuation|เครื่องหมายวรรคตอน|标点符号\ncomma|เครื่องหมายจุลภาค ( , )|逗号\nfull stop|เครื่องหมายมหัพภาค ( . )|句号\ncapital letter|อักษรตัวพิมพ์ใหญ่|大写字母\nend mark|เครื่องหมายจบประโยค|句末标点\n"+
+"joining word|คำเชื่อม|连接词\njoined|เชื่อมกัน|连接\nstuck together|ติดกัน|连在一起\nmissing|ขาดหายไป|缺少\nparagraph|ย่อหน้า|段落\nsequence words|คำบอกลำดับ|顺序词\nsequence|ลำดับ|顺序\n"+
+"notes|บันทึกย่อ|笔记\nspot|หาให้เจอ|找出\nfix|แก้ไข|改正\nskip|ข้าม|跳过\nskipped|ข้ามไป|跳过的\ncorrectly|อย่างถูกต้อง|正确地\norder|ลำดับ|顺序\nsubtitles|คำบรรยาย|字幕\nwarning|คำเตือน|警告\n"+
+"submitted|ส่งแล้ว|已提交\nsuccess criteria|เกณฑ์ความสำเร็จ|成功标准\nlearning goal|เป้าหมายการเรียนรู้|学习目标\nlearning objectives|จุดประสงค์การเรียนรู้|学习目的").split("\n").forEach(function(l){var a=l.split("|");GL[a[0]]=[a[1],a[2]]});
+var keys=Object.keys(GL).sort(function(a,b){return b.length-a.length});
+var GRE=new RegExp("(^|[^A-Za-z-])("+keys.join("|")+")(?![A-Za-z-])","gi");
+var st=document.createElement("style");st.textContent=".gw{border-bottom:2px dotted #C77B2B;cursor:help}#mlg-tip{position:fixed;z-index:40;background:#2F3A4A;color:#fff;padding:8px 12px;border-radius:10px;font-size:15px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:240px;display:none}@media print{.gw{border:0}#mlg-tip{display:none!important}}";document.head.appendChild(st);
+function dec(r){var tw=document.createTreeWalker(r,NodeFilter.SHOW_TEXT,{acceptNode:function(n){return n.parentNode.closest("button,textarea,input,select,pre,summary,svg,a,.gw,#mlg-resume")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}}),L=[];while(tw.nextNode())L.push(tw.currentNode);
+ L.forEach(function(n){var t=n.nodeValue;GRE.lastIndex=0;if(!GRE.test(t))return;GRE.lastIndex=0;var h=t.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]}).replace(GRE,function(m,p,w){return p+'<span class="gw" data-w="'+w.toLowerCase()+'">'+w+'</span>'});var sp=document.createElement("span");sp.innerHTML=h;n.replaceWith.apply(n,Array.prototype.slice.call(sp.childNodes))})}
+var tip=document.createElement("div");tip.id="mlg-tip";tip.setAttribute("role","status");document.body.appendChild(tip);var tt;
+var ob=new MutationObserver(function(){tip.style.display="none";ob.disconnect();try{dec(host)}catch(e){}ob.observe(host,{childList:true,subtree:true})});
+document.addEventListener("click",function(e){var w=e.target.closest&&e.target.closest(".gw");if(!w){tip.style.display="none";return}var k=w.dataset.w,z=GL[k];if(!z)return;try{SC.use("tap",k)}catch(x){}
+ var r=w.getBoundingClientRect();tip.textContent="";var b=document.createElement("b");b.textContent=k;tip.appendChild(b);tip.appendChild(document.createElement("br"));tip.appendChild(document.createTextNode(z[0]));tip.appendChild(document.createElement("br"));tip.appendChild(document.createTextNode(z[1]));
+ tip.style.display="block";tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,r.left))+"px";tip.style.top=(r.bottom+6)+"px";clearTimeout(tt);tt=setTimeout(function(){tip.style.display="none"},5000)});
+try{dec(host)}catch(e){}ob.observe(host,{childList:true,subtree:true});
+})();
+</script>
+<script id="mlg-save">
+/* Miss L Gems saved progress: keeps work on this device so a reload or a new lesson can carry on. */
+window.MLGSave=function(key,o){
+var K="mlg-save:"+key,E=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+function load(){try{var s=JSON.parse(localStorage.getItem(K)||"null");if(s&&s._t&&Date.now()-s._t<1209600000)return s}catch(e){}return null}
+function save(){try{var s=o.get();if(!s)return;s._t=Date.now();localStorage.setItem(K,JSON.stringify(s))}catch(e){}}
+function clear(){try{localStorage.removeItem(K)}catch(e){}}
+setInterval(save,2000);window.addEventListener("pagehide",save);window.addEventListener("beforeunload",save);document.addEventListener("visibilitychange",function(){if(document.hidden)save()});
+function offer(){var host=o.host(),old=document.getElementById("mlg-resume");if(old)old.remove();var s=load();if(!s||!host)return;
+ var d=document.createElement("div");d.id="mlg-resume";d.style.cssText="border:2px solid #F5C49A;background:#FFF8EF;color:#2F3A4A;border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:15px;line-height:1.45;text-align:left";
+ var when=new Date(s._t).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}),bs="font:inherit;font-weight:700;border-radius:10px;padding:10px 16px;cursor:pointer;";
+ d.innerHTML="<b>Saved work found</b><br>"+E(o.who(s))+" · saved "+E(when)+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="mlg-res-go" style="'+bs+'border:0;background:#2F6F6B;color:#fff">Continue my work</button><button type="button" id="mlg-res-no" style="'+bs+'border:1px solid #C9C2B3;background:#fff;color:#2F3A4A">Start again</button></div><div style="font-size:13px;margin-top:8px;color:#5B6478">Not you? Press Start again.</div>';
+ host.insertBefore(d,host.firstChild);
+ document.getElementById("mlg-res-go").onclick=function(){d.remove();try{o.set(s)}catch(e){clear();try{o.fail()}catch(x){}}};
+ document.getElementById("mlg-res-no").onclick=function(){d.remove()}}
+return{save:save,clear:clear,load:load,offer:offer}};
+/* Sentence Sorter: saved progress */
+(function(){
+var LIVE=false,END=false,_intro=intro,_show=show,_write=write,_watch=watch,_para=para,_end=end;
+var SV=MLGSave("sentence-sorter",{
+ host:function(){return document.getElementById("g")},
+ who:function(s){return s.name+(s.cls?" ("+s.cls+")":"")},
+ fail:function(){intro()},
+ get:function(){if(!LIVE||!name||!Q)return null;if(!END){try{grab()}catch(e){}}
+  var lg={};LG.forEach(function(v,k){if(v)lg[k]=v});
+  return{name:name,cls:cls,yg:yg,Q:Q,i:i,score:score,streak:streak,ok:ok,miss:miss,LG:lg,queue:queue,qp:qp,W:W,WS:WS,P:P,notes:notes,skipped:skipped,pdone:pdone,ended:ended,tabs:tabs,CUR:CUR,SKP:SKP,RESUME:RESUME,END:END,ans:!END&&CUR=="q"&&!!(LG[i]&&LG[i].a),sc:SC.dump(),tg:TG.dump()}},
+ set:function(s){name=s.name;cls=s.cls;yg=s.yg||"";Q=s.Q;i=s.i|0;score=s.score|0;streak=s.streak|0;ok=s.ok|0;miss=s.miss||[];LG=[];for(var k in s.LG)LG[+k]=s.LG[k];
+  queue=s.queue||[];qp=s.qp|0;W=s.W||[];WS=s.WS||[false,false,false];P=s.P||"";notes=s.notes||"";skipped=!!s.skipped;pdone=!!s.pdone;ended=s.ended||"";tabs=s.tabs|0;SKP=s.SKP||[];RESUME=s.RESUME||null;CUR=s.CUR||"q";
+  SC.load(s.sc||{});TG.load(s.tg||[0,0,0]);TG.enter();
+  if(s.END){end()}else if(CUR=="w"){write()}else if(CUR=="v"){watch()}else if(CUR=="p"){para()}else{if(s.ans)qp++;show()}}});
+intro=function(){LIVE=false;END=false;_intro();SV.offer()};
+show=function(){LIVE=true;END=false;return _show()};
+write=function(){LIVE=true;END=false;return _write()};
+watch=function(){LIVE=true;END=false;return _watch()};
+para=function(){LIVE=true;END=false;return _para()};
+end=function(){LIVE=true;END=true;return _end()};
+window.MLGSV=SV;SV.offer();
 })();
 </script>
 <script src="/teacher-back.js" defer></script>
