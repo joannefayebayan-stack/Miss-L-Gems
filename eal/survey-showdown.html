@@ -94,6 +94,20 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .kq{padding:10px 0;border-top:1px solid var(--line)}
 .kq ol{margin:4px 0 0;padding-left:24px}
 .kq small{color:var(--mut)}
+.ab{background:#EEEAF8;color:#463A73;border-radius:14px;padding:8px 14px;text-align:center;font-weight:700;display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;align-items:baseline}
+.ab small{font-weight:600;color:#5E5590}
+.topic{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.topic button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;text-align:left;font-weight:700;color:var(--ink)}
+.topic button small{display:block;font-weight:500;color:var(--mut);font-size:14px}
+.topic button[aria-pressed="true"]{border-color:var(--deep);background:var(--mintl);color:var(--deep)}
+.topic button.abt[aria-pressed="true"]{border-color:#463A73;background:#EEEAF8;color:#463A73}
+.tell{display:grid;gap:10px}
+.tell .lead{background:#EEEAF8;color:#463A73;border-radius:16px;padding:16px;text-align:center}
+.tell .lead b{display:block;font-size:clamp(22px,3.2vw,30px)}
+.tell .tr{display:block;font-size:15px;font-weight:500;color:var(--mut)}
+.tell .lead .tr{color:#5E5590}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;list-style:none;margin:0;padding:0}
+.people li{background:var(--mintl);border-radius:12px;padding:10px 14px;font-weight:700;color:var(--deep)}
 @media (max-width:560px){.teams{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1;display:flex;gap:8px;align-items:baseline;justify-content:center}.ctl{grid-template-columns:1fr}.strikes{justify-content:center}.slot{grid-template-columns:40px 1fr auto;gap:8px}.slot .n{width:32px;height:32px;font-size:16px}}
 @media (prefers-reduced-motion:reduce){.slot.new{animation:none}#bigx span{animation-duration:.01s;animation-delay:.7s;animation-fill-mode:backwards;opacity:1}}
 </style>
@@ -125,17 +139,45 @@ const QS=[
 {t:"Name a place where you can buy food.",th:"บอกชื่อสถานที่ที่คุณซื้ออาหารได้",zh:"说出一个可以买食物的地方。",f:"I can buy food at a ___.",a:[["supermarket",35,"ซูเปอร์มาร์เก็ต","超市",""],["restaurant",25,"ร้านอาหาร","餐厅","food stall"],["market",20,"ตลาด","市场",""],["convenience store",15,"ร้านสะดวกซื้อ","便利店","7-Eleven"],["canteen",5,"โรงอาหาร","食堂",""]]},
 {t:"Name a place in a town.",th:"บอกชื่อสถานที่ในเมือง",zh:"说出城镇里的一个地方。",f:"There is a ___ in my town.",a:[["shopping mall",30,"ห้างสรรพสินค้า","商场","mall"],["school",25,"โรงเรียน","学校",""],["hospital",20,"โรงพยาบาล","医院",""],["park",15,"สวนสาธารณะ","公园",""],["bank",10,"ธนาคาร","银行",""]]}
 ];
+/* Anti-Bullying Week questions (theme: Break the Silence). Same layout as QS above. The points are made up for the game. */
+const AB=[
+{t:"Name a kind of bullying.",th:"บอกประเภทของการกลั่นแกล้ง",zh:"说出一种霸凌行为。",f:"___ is a kind of bullying.",a:[["name-calling",30,"การเรียกชื่อล้อเลียน","起外号骂人","teasing, saying mean things"],["leaving someone out",25,"การไม่ให้คนอื่นเข้ากลุ่ม","孤立别人","ignoring, excluding"],["hitting",20,"การตี","打人","pushing, kicking"],["online bullying",15,"การกลั่นแกล้งทางออนไลน์","网络霸凌","cyberbullying, mean messages"],["taking things",10,"การแย่งของ","抢别人的东西","breaking things"]]},
+{t:"Name someone you can tell about bullying.",th:"บอกคนที่คุณสามารถเล่าเรื่องการกลั่นแกล้งให้ฟังได้",zh:"说出一个你可以告诉霸凌事情的人。",f:"I can tell my ___.",a:[["teacher",35,"ครู","老师","form tutor, class teacher"],["parent",25,"พ่อแม่","父母","mum, dad, family"],["friend",20,"เพื่อน","朋友","best friend"],["school counsellor",12,"ครูแนะแนว","学校心理辅导老师","counselor, school nurse"],["older brother or sister",8,"พี่ชายหรือพี่สาว","哥哥或姐姐","cousin"]]},
+{t:"Name a way to help someone who is being bullied.",th:"บอกวิธีช่วยคนที่ถูกกลั่นแกล้ง",zh:"说出一种帮助被霸凌的人的方法。",f:"I can help by ___.",a:[["telling a teacher",35,"บอกครู","告诉老师","telling an adult, reporting it"],["being their friend",25,"เป็นเพื่อนกับเขา","做他的朋友","staying with them, sitting with them"],["asking if they are OK",20,"ถามว่าเขาโอเคไหม","问他还好吗","talking to them, listening"],["saying \"stop\"",12,"พูดว่า \"หยุด\"","说\"住手\"","telling the bully to stop"],["not laughing",8,"ไม่หัวเราะ","不笑","not joining in"]]},
+{t:"Name a feeling a person has when they are bullied.",th:"บอกความรู้สึกของคนที่ถูกกลั่นแกล้ง",zh:"说出一个人被霸凌时的一种感受。",f:"They feel ___.",a:[["sad",35,"เศร้า","难过","upset, unhappy"],["scared",25,"กลัว","害怕","afraid, worried"],["lonely",20,"เหงา","孤独","alone"],["angry",12,"โกรธ","生气","mad"],["embarrassed",8,"อับอาย","尴尬","ashamed"]]},
+{t:"Name something you can do if someone is mean to you online.",th:"บอกสิ่งที่คุณทำได้ ถ้ามีคนใจร้ายกับคุณทางออนไลน์",zh:"如果有人在网上对你不好，说出你可以做的一件事。",f:"If someone is mean to me online, I ___.",a:[["tell an adult",30,"บอกผู้ใหญ่","告诉大人","tell a teacher, tell my parents"],["block them",25,"บล็อกเขา","拉黑他","unfriend, unfollow"],["take a screenshot",20,"แคปหน้าจอ","截图","save the messages"],["report it",15,"รายงาน","举报","report them"],["don't reply",10,"ไม่ตอบกลับ","不回复","ignore it, log off"]]},
+{t:"Name a place where bullying can happen.",th:"บอกสถานที่ที่การกลั่นแกล้งเกิดขึ้นได้",zh:"说出一个可能发生霸凌的地方。",f:"Bullying can happen ___.",a:[["online",35,"ออนไลน์","在网上","on social media, in a group chat, in games"],["in the classroom",20,"ในห้องเรียน","在教室里","in class"],["in the toilets",18,"ในห้องน้ำ","在厕所里","in the bathroom"],["on the bus",15,"บนรถบัส","在公交车上","on the school bus"],["in the canteen",12,"ในโรงอาหาร","在食堂","at lunch, at break, outside"]]},
+{t:"Name something kind you can say to someone who is sad.",th:"บอกคำพูดดี ๆ ที่คุณพูดกับคนที่กำลังเศร้าได้",zh:"说出一句你可以对难过的人说的暖心话。",f:"I can say, \"___\"",a:[["Are you OK?",35,"คุณโอเคไหม","你还好吗？","Are you alright?"],["Do you want to sit with me?",20,"อยากนั่งกับฉันไหม","你想和我坐在一起吗？","Come with us."],["I'm here for you.",20,"ฉันอยู่ตรงนี้นะ","我在这里陪你。","I'm here."],["It's not your fault.",15,"ไม่ใช่ความผิดของคุณ","这不是你的错。",""],["Let's tell a teacher.",10,"ไปบอกครูกันเถอะ","我们去告诉老师吧。",""]]},
+{t:"Name a way to make a new student feel welcome.",th:"บอกวิธีทำให้นักเรียนใหม่รู้สึกว่าได้รับการต้อนรับ",zh:"说出一种让新同学感到受欢迎的方法。",f:"We can ___.",a:[["say hello",30,"ทักทาย","打招呼","say hi, smile"],["show them around",25,"พาเดินดูโรงเรียน","带他参观学校","give them a tour"],["sit with them at lunch",20,"นั่งกินข้าวกลางวันด้วยกัน","午饭时和他坐在一起","eat with them"],["ask their name",15,"ถามชื่อ","问他的名字","introduce ourselves"],["invite them to join us",10,"ชวนมาร่วมกลุ่ม","邀请他加入我们","invite them to play"]]},
+{t:"Name a word that describes a good friend.",th:"บอกคำที่อธิบายเพื่อนที่ดี",zh:"说出一个形容好朋友的词。",f:"A good friend is ___.",a:[["kind",35,"ใจดี","善良","nice"],["helpful",20,"ชอบช่วยเหลือ","乐于助人",""],["honest",20,"ซื่อสัตย์","诚实",""],["funny",15,"ตลก","有趣",""],["friendly",10,"เป็นมิตร","友好","caring, loyal"]]},
+{t:"Name a reason people stay silent about bullying.",th:"บอกเหตุผลที่คนไม่กล้าพูดเรื่องการกลั่นแกล้ง",zh:"说出人们对霸凌保持沉默的一个原因。",f:"People stay silent because they ___.",a:[["are scared",35,"กลัว","害怕","are afraid"],["think no one will help",20,"คิดว่าไม่มีใครช่วย","觉得没人会帮忙","think no one will listen"],["feel embarrassed",20,"รู้สึกอาย","觉得丢脸","feel ashamed"],["don't want to make it worse",15,"ไม่อยากให้เรื่องแย่ลง","不想让事情变得更糟","worry it will get worse"],["don't know who to tell",10,"ไม่รู้ว่าจะบอกใคร","不知道该告诉谁",""]]},
+{t:"Name a way to be kind at school.",th:"บอกวิธีทำดีต่อคนอื่นที่โรงเรียน",zh:"说出在学校里友善待人的一种方式。",f:"At school, I can ___.",a:[["help others",30,"ช่วยเหลือคนอื่น","帮助别人","help a friend"],["share",25,"แบ่งปัน","分享","share my things"],["smile",20,"ยิ้ม","微笑","say hello"],["say thank you",15,"พูดขอบคุณ","说谢谢","say please"],["include everyone",10,"ให้ทุกคนมีส่วนร่วม","让每个人都参与","let others join"]]},
+{t:"Name something you should not share online.",th:"บอกสิ่งที่ไม่ควรแชร์ทางออนไลน์",zh:"说出一样不应该在网上分享的东西。",f:"I should not share my ___ online.",a:[["password",35,"รหัสผ่าน","密码",""],["address",25,"ที่อยู่","地址","home address"],["phone number",20,"เบอร์โทรศัพท์","电话号码",""],["photos",12,"รูปภาพ","照片","pictures"],["school name",8,"ชื่อโรงเรียน","学校名字","location"]]},
+{t:"Name a place at school where you can get help.",th:"บอกสถานที่ในโรงเรียนที่คุณขอความช่วยเหลือได้",zh:"说出学校里一个可以寻求帮助的地方。",f:"I can get help in the ___.",a:[["classroom",30,"ห้องเรียน","教室",""],["office",25,"ห้องธุรการ","办公室","school office, reception"],["counsellor's room",20,"ห้องแนะแนว","心理辅导室","counselling room"],["nurse's room",15,"ห้องพยาบาล","医务室","clinic, sick room"],["library",10,"ห้องสมุด","图书馆",""]]},
+{t:"Name something that makes a classroom feel safe.",th:"บอกสิ่งที่ทำให้ห้องเรียนรู้สึกปลอดภัย",zh:"说出一样让教室感觉安全的东西。",f:"___ makes a classroom feel safe.",a:[["kindness",30,"ความใจดี","友善","kind words"],["respect",25,"ความเคารพ","尊重",""],["a kind teacher",20,"ครูใจดี","和蔼的老师","the teacher"],["clear rules",15,"กฎที่ชัดเจน","明确的规则","rules"],["friendship",10,"ความเป็นเพื่อน","友谊","friends"]]},
+{t:"Name a way to say sorry.",th:"บอกวิธีพูดขอโทษ",zh:"说出一种道歉的说法。",f:"I can say, \"___\"",a:[["I'm sorry.",40,"ฉันขอโทษ","对不起。","Sorry."],["I didn't mean it.",20,"ฉันไม่ได้ตั้งใจ","我不是故意的。",""],["It won't happen again.",15,"จะไม่เกิดขึ้นอีก","不会再发生了。","I won't do it again."],["I was wrong.",15,"ฉันผิดเอง","是我错了。",""],["Can we still be friends?",10,"เรายังเป็นเพื่อนกันได้ไหม","我们还能做朋友吗？",""]]}
+];
+const SETS={everyday:{name:"Everyday life",qs:QS,rounds:[3,5,8,10,20],
+ goal:"Work in a team and say common English words about everyday life.",
+ obj:["understand a short question about everyday life,","answer with a word or a short sentence,","take turns and listen to my team."]},
+ ab:{name:"Anti-Bullying Week: Break the Silence",qs:AB,rounds:[3,5,8,10,15],
+ goal:"Work in a team and use English to talk about bullying, kindness and getting help.",
+ obj:["understand a short question about bullying and kindness,","answer with a word or a short sentence,","name people and places that can help."]}};
+const setOf=g=>SETS[g&&g.set]?g.set:"everyday";
+/* "Who can I tell?" page. Change these lines to match your school. [English, Thai, Chinese] */
+const TELL=[["My teacher or form tutor","ครูหรือครูประจำชั้น","老师或班主任"],["The school counsellor","ครูแนะแนว","学校心理辅导老师"],["My parent or carer","พ่อแม่หรือผู้ปกครอง","父母或监护人"],["A friend I trust","เพื่อนที่ฉันไว้ใจ","我信任的朋友"],["Any adult at school","ผู้ใหญ่คนไหนก็ได้ในโรงเรียน","学校里的任何一位大人"]];
+const ONLINE=[["Don't reply.","ไม่ตอบกลับ","不回复。"],["Take a screenshot.","แคปหน้าจอ","截图。"],["Block and report.","บล็อกและรายงาน","拉黑并举报。"],["Tell an adult.","บอกผู้ใหญ่","告诉大人。"]];
 const SUP=[["tq","Thai and Chinese translation of the question"],["fr","Sentence frame"],["ta","Thai and Chinese translation of an answer"]];
 const KEY="surveyShowdownGame";
 const $=id=>document.getElementById(id),app=$("app");
 const E=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const shuf=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
-let G=null,U=[],view="start",keyFrom="start",msg="",justShown=-1;
+let G=null,U=[],pick="everyday",view="start",keyFrom="start",msg="",justShown=-1;
 function store(){if(!G)return;try{if(G.phase!=="end")localStorage.setItem(KEY,JSON.stringify(G));else localStorage.removeItem(KEY)}catch(e){}}
 function saved(){try{const g=JSON.parse(localStorage.getItem(KEY));return g&&g.teams?g:null}catch(e){return null}}
-function fresh(names,n){return{teams:names.map(x=>({name:x,score:0,correct:0,mistakes:0,steals:0,adj:0})),order:shuf(QS.map((_,k)=>k)).slice(0,n),r:0,hist:[],sup:{tq:[0,0,0],fr:[0,0,0],ta:[0,0,0]},...roundState()}}
+function fresh(names,n,set){return{set:set,teams:names.map(x=>({name:x,score:0,correct:0,mistakes:0,steals:0,adj:0})),order:shuf(SETS[set].qs.map((_,k)=>k)).slice(0,n),r:0,hist:[],sup:{tq:[0,0,0],fr:[0,0,0],ta:[0,0,0]},...roundState()}}
 function roundState(){return{phase:"face",ctl:null,strikes:0,bank:0,shown:[0,0,0,0,0],late:[0,0,0,0,0],tr:[0,0,0,0,0],tq:false,fr:false,found:0,mist:0,say:""}}
-const Q=()=>QS[G.order[G.r]];
+const Q=()=>SETS[setOf(G)].qs[G.order[G.r]];
 const QN=()=>G.order[G.r]+1;
 const snap=()=>{U.push(JSON.stringify(G));if(U.length>60)U.shift()};
 const who=()=>G.phase==="play"?G.ctl:G.phase==="steal"?1-G.ctl:2;
@@ -158,22 +200,28 @@ function mistake(){if(G.phase==="play"){snap();G.strikes++;G.mist++;G.teams[G.ct
  else if(G.phase==="steal"){snap();G.mist++;G.teams[1-G.ctl].mistakes++;award(G.ctl,"fail")}else return;
  bigX();render()}
 function next(){snap();if(G.r+1>=G.order.length){G.phase="end";store();U=[];view="end";return render()}G.r++;Object.assign(G,roundState());render()}
-function render(){store();({start:rStart,game:rGame,end:rEnd,key:rKey})[view]()}
-function head(){return`<header><div class="eye">Years 10 &amp; 11 EAL · Speaking</div><h1>Survey Showdown</h1></header>`}
+function render(){store();({start:rStart,game:rGame,end:rEnd,key:rKey,tell:rTell})[view]()}
+function head(set){return`<header><div class="eye">Years 10 &amp; 11 EAL · Speaking</div><h1>Survey Showdown</h1></header>`+(set==="ab"?banner():"")}
+function banner(){return`<div class="ab">Anti-Bullying Week · Break the Silence <small>16–20 November 2026</small></div>`}
+function goalHtml(set){const S=SETS[set];return`<div class="box"><b>Learning Goal</b><br>${E(S.goal)}</div>
+ <div class="box"><b>Learning Objectives</b> By the end I can:<ul>${S.obj.map(o=>`<li>${E(o)}</li>`).join("")}</ul></div>
+ <div class="box"><b>Success Criteria</b><ul><li>I answer in English.</li><li>I use a full sentence when I can.</li><li>I listen and do not repeat an answer on the board.</li></ul></div>`}
+function roundOpts(set){return SETS[set].rounds.map(n=>`<option ${n===5?"selected":""}>${n}</option>`).join("")}
 function rStart(){app.className="wrap narrow";const s=saved();
- app.innerHTML=head()+`<div class="box"><b>Learning Goal</b><br>Work in a team and say common English words about everyday life.</div>
- <div class="box"><b>Learning Objectives</b> By the end I can:<ul><li>understand a short question about everyday life,</li><li>answer with a word or a short sentence,</li><li>take turns and listen to my team.</li></ul></div>
- <div class="box"><b>Success Criteria</b><ul><li>I answer in English.</li><li>I use a full sentence when I can.</li><li>I listen and do not repeat an answer on the board.</li></ul></div>
+ app.innerHTML=head()+`<div id="ab">${pick==="ab"?banner():""}</div><div id="gl" style="display:grid;gap:10px">${goalHtml(pick)}</div>
  <div class="card" style="display:grid;gap:12px">
- ${s?`<div class="box"><b>You have a game in progress.</b> ${E(s.teams[0].name)} ${s.teams[0].score}, ${E(s.teams[1].name)} ${s.teams[1].score}. <button class="btn line" id="cont" style="margin-top:8px;display:block">Continue this game</button></div>`:""}
+ ${s?`<div class="box"><b>You have a game in progress</b> (${E(SETS[setOf(s)].name)}). ${E(s.teams[0].name)} ${s.teams[0].score}, ${E(s.teams[1].name)} ${s.teams[1].score}. <button class="btn line" id="cont" style="margin-top:8px;display:block">Continue this game</button></div>`:""}
+ <div><label id="tl">Topic</label><div class="topic" role="group" aria-labelledby="tl"><button data-set="everyday" aria-pressed="${pick==="everyday"}">Everyday life<small>Home, school, food and daily life · 20 questions</small></button><button class="abt" data-set="ab" aria-pressed="${pick==="ab"}">Anti-Bullying Week<small>Break the Silence · 15 questions</small></button></div></div>
  <div class="two"><div><label for="ta">Team 1 name</label><input id="ta" autocomplete="off" value="Team A" maxlength="24"></div><div><label for="tb">Team 2 name</label><input id="tb" autocomplete="off" value="Team B" maxlength="24"></div></div>
- <div><label for="rn">How many rounds?</label><select id="rn"><option>3</option><option selected>5</option><option>8</option><option>10</option><option>20</option></select></div>
+ <div><label for="rn">How many rounds?</label><select id="rn">${roundOpts(pick)}</select></div>
+ <p class="note" style="margin:0">The points are made up for this game. They are not real survey results.</p>
  <p class="note" id="er" role="alert" style="margin:0;color:var(--bad)"></p>
  <button class="btn wide" id="go">Start the game</button>
  <button class="btn line" id="kb">Teacher answer key</button>
  </div>`;
- $("go").onclick=()=>{const a=$("ta").value.trim(),b=$("tb").value.trim();if(!a||!b){$("er").textContent="Please type a name for both teams.";return}if(a.toLowerCase()===b.toLowerCase()){$("er").textContent="Please give the two teams different names.";return}G=fresh([a,b],+$("rn").value);U=[];view="game";render()};
- $("kb").onclick=()=>{view="key";keyFrom="start";render()};if(s)$("cont").onclick=()=>{G=s;U=[];view=G.phase==="end"?"end":"game";render()}}
+ app.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>{pick=b.dataset.set;app.querySelectorAll("[data-set]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));$("gl").innerHTML=goalHtml(pick);$("ab").innerHTML=pick==="ab"?banner():"";$("rn").innerHTML=roundOpts(pick)});
+ $("go").onclick=()=>{const a=$("ta").value.trim(),b=$("tb").value.trim();if(!a||!b){$("er").textContent="Please type a name for both teams.";return}if(a.toLowerCase()===b.toLowerCase()){$("er").textContent="Please give the two teams different names.";return}G=fresh([a,b],+$("rn").value,pick);U=[];view="game";render()};
+ $("kb").onclick=()=>{view="key";keyFrom="start";render()};if(s)$("cont").onclick=()=>{G=s;U=[];pick=setOf(s);view=G.phase==="end"?"end":"game";render()}}
 function teamBox(k){const t=G.teams[k],on=(G.phase==="play"&&G.ctl===k)||(G.phase==="steal"&&G.ctl!==k),lb=G.phase==="steal"&&G.ctl!==k?"Stealing":G.phase==="play"&&G.ctl===k?"Answering":"";
  return`<div class="team ${k?"b":"a"} ${on?"on":""}"><div class="nm">${E(t.name)}</div><div class="sc" id="s${k}">${t.score}</div><div class="fix"><span class="st">${lb}</span><button data-fix="${k},-5" aria-label="Take 5 points from ${E(t.name)}">−5</button><button data-fix="${k},5" aria-label="Give 5 points to ${E(t.name)}">+5</button></div></div>`}
 function rGame(){app.className="wrap";const q=Q(),P=G.phase;
@@ -182,7 +230,7 @@ function rGame(){app.className="wrap";const q=Q(),P=G.phase;
  const face=P==="face"?`<div class="row c"><button class="btn" data-first="0">${E(G.teams[0].name)} answers first</button><button class="btn" data-first="1">${E(G.teams[1].name)} answers first</button></div>`:"";
  const lastR=G.r+1>=G.order.length;
  const done=P==="done"?`<div class="row c"><button class="btn wide" id="nx" style="max-width:420px">${lastR?"See the final results":"Next round"} →</button></div><p class="note" style="text-align:center;margin:0">Tap a closed answer to show it. It gives no points now.</p>`:"";
- app.innerHTML=`<div class="teams">${teamBox(0)}<div class="mid"><small>Round points</small><b id="bank">${G.bank}</b><small>Round ${G.r+1} of ${G.order.length}</small><small>Question ${QN()}</small></div>${teamBox(1)}</div>
+ app.innerHTML=`${setOf(G)==="ab"?banner():""}<div class="teams">${teamBox(0)}<div class="mid"><small>Round points</small><b id="bank">${G.bank}</b><small>Round ${G.r+1} of ${G.order.length}</small><small>Question ${QN()}</small></div>${teamBox(1)}</div>
  <p class="q">${E(q.t)}</p>
  <div class="help">${G.tq?`<div class="box tr"><span>${q.th}</span><span>${q.zh}</span></div>`:""}${G.fr?`<div class="box"><b>${E(q.f)}</b></div>`:""}
  ${G.tq&&G.fr?"":`<div class="row c">${G.tq?"":`<button class="btn line" id="btq">Show translation</button>`}${G.fr?"":`<button class="btn line" id="bfr">Show sentence frame</button>`}</div>`}</div>
@@ -204,25 +252,37 @@ function winner(){const[a,b]=G.teams;return a.score===b.score?null:a.score>b.sco
 function winText(h){return h.win===null?"No points":G.teams[h.win].name+" +"+h.pts+(h.how==="steal"?" (steal)":"")}
 function patterns(){const H=G.hist,p=[];if(!H.length)return p;const b=H.slice().sort((x,y)=>y.found-x.found)[0],w=H.slice().sort((x,y)=>y.mist-x.mist)[0];p.push("Most answers found: \""+b.q+"\" ("+b.found+" of 5).");if(w.mist)p.push("Most mistakes: \""+w.q+"\" ("+w.mist+").");const st=G.teams.reduce((s,t)=>s+t.steals,0);p.push(st?"Steals won: "+st+".":"No steals were won.");return p}
 function rEnd(){app.className="wrap narrow";const w=winner(),T=G.teams,sup=supRows(),miss=G.hist.flatMap(h=>h.missed),ad=T.filter(t=>t.adj);
- app.innerHTML=head()+`<p class="win">${w?E(w.name)+" wins!":"It's a tie!"}</p>
+ app.innerHTML=head(setOf(G))+`<p class="win">${w?E(w.name)+" wins!":"It's a tie!"}</p>
  <div class="card"><h2>Team results</h2><div class="tw"><table><tr><th>Team</th><th class="num">Points</th><th class="num">Correct answers</th><th class="num">Mistakes</th><th class="num">Steals</th></tr>${T.map(t=>`<tr><td><b>${E(t.name)}</b></td><td class="num"><b>${t.score}</b></td><td class="num">${t.correct}</td><td class="num">${t.mistakes}</td><td class="num">${t.steals}</td></tr>`).join("")}</table></div>${ad.length?`<p class="note">Points changed by the teacher: ${ad.map(t=>E(t.name)+" "+(t.adj>0?"+":"")+t.adj).join(", ")}.</p>`:""}</div>
  <div class="card"><h2>Rounds</h2><div class="tw"><table><tr><th>Question</th><th class="num">Found</th><th class="num">Mistakes</th><th>Points won</th></tr>${G.hist.map(h=>`<tr><td>${E(h.q)}</td><td class="num">${h.found} of 5</td><td class="num">${h.mist}</td><td>${E(winText(h))}</td></tr>`).join("")}</table></div></div>
  <div class="card"><h2>Language support used</h2>${sup.map(r=>`<div>${E(r[0])}: <b>${E(r[1])}</b></div>`).join("")}</div>
  <div class="card"><h2>Words to practise</h2><p style="margin:0">${miss.length?E(miss.join(", ")):"The class found every answer."}</p></div>
+ ${setOf(G)==="ab"?`<div class="row c"><button class="btn wide" id="tk" style="max-width:420px">Finish: Who can I tell? →</button></div>`:""}
  <div class="row c"><button class="btn" id="pd">Save results as PDF</button><button class="btn line" id="cp">Copy results</button><button class="btn line" id="ag">Play again</button></div><p class="msg" id="ms" style="text-align:center"></p>`;
  $("ag").onclick=()=>{G=null;view="start";render()};
+ if($("tk"))$("tk").onclick=()=>{view="tell";render();scrollTo(0,0)};
  $("pd").onclick=async()=>{const m=$("ms");try{await MLGPDF.deliver(resultPdf(),"Survey_Showdown_results.pdf");m.textContent="PDF ready. Check your downloads."}catch(e){m.textContent=e&&e.code==="declined"?"Save cancelled.":"The PDF could not be saved. Use Copy results instead."}};
  $("cp").onclick=()=>{const m=$("ms"),t=resultText();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>m.textContent="Copied.").catch(()=>{m.innerHTML="";const a=document.createElement("textarea");a.readOnly=true;a.value=t;a.style.width="100%";a.rows=8;m.appendChild(a);a.select()})}}
-function resultText(){const T=G.teams,L=["SURVEY SHOWDOWN RESULTS",new Date().toLocaleDateString("en-GB"),""];T.forEach(t=>L.push(t.name+": "+t.score+" points, "+t.correct+" correct answers, "+t.mistakes+" mistakes, "+t.steals+" steals"));L.push("","ROUNDS");G.hist.forEach(h=>L.push(h.q+" | Found "+h.found+" of 5 | Mistakes "+h.mist+" | "+winText(h)));L.push("","LANGUAGE SUPPORT USED");supRows().forEach(r=>L.push(r[0]+": "+r[1]));L.push("","WORDS TO PRACTISE: "+(G.hist.flatMap(h=>h.missed).join(", ")||"none"));return L.join("\n")}
+function tr3(x){return`${E(x[0])}<span class="tr">${x[1]} · ${x[2]}</span>`}
+function rTell(){app.className="wrap narrow";
+ app.innerHTML=head("ab")+`<div class="tell">
+ <div class="lead"><b>Who can I tell?</b><span class="tr">ฉันบอกใครได้บ้าง · 我可以告诉谁？</span></div>
+ <div class="card"><h2>Break the Silence. You are not alone.</h2><p style="margin:0">If you or someone you know is being bullied, tell someone you trust.<span class="tr" style="display:block;color:var(--mut)">อย่าเงียบ คุณไม่ได้อยู่คนเดียว ถ้าคุณหรือคนที่คุณรู้จักถูกกลั่นแกล้ง ให้บอกคนที่คุณไว้ใจ · 打破沉默，你并不孤单。如果你或你认识的人被霸凌，请告诉你信任的人。</span></p></div>
+ <div class="card"><h2>People who can help</h2><ul class="people">${TELL.map(x=>`<li>${tr3(x)}</li>`).join("")}</ul></div>
+ <div class="card"><h2>If it happens online</h2><ul class="people" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">${ONLINE.map(x=>`<li>${tr3(x)}</li>`).join("")}</ul></div>
+ <div class="box" style="text-align:center"><b>Telling someone is brave.</b><span class="tr" style="display:block">การบอกใครสักคนคือความกล้าหาญ · 告诉别人是勇敢的。</span></div>
+ <div class="row c"><button class="btn line" id="bk">← Back to the results</button><button class="btn line" id="ag">Play again</button></div></div>`;
+ $("bk").onclick=()=>{view="end";render()};$("ag").onclick=()=>{G=null;view="start";render()}}
+function resultText(){const T=G.teams,L=["SURVEY SHOWDOWN RESULTS","Topic: "+SETS[setOf(G)].name,new Date().toLocaleDateString("en-GB"),""];T.forEach(t=>L.push(t.name+": "+t.score+" points, "+t.correct+" correct answers, "+t.mistakes+" mistakes, "+t.steals+" steals"));L.push("","ROUNDS");G.hist.forEach(h=>L.push(h.q+" | Found "+h.found+" of 5 | Mistakes "+h.mist+" | "+winText(h)));L.push("","LANGUAGE SUPPORT USED");supRows().forEach(r=>L.push(r[0]+": "+r[1]));L.push("","WORDS TO PRACTISE: "+(G.hist.flatMap(h=>h.missed).join(", ")||"none"));return L.join("\n")}
 function resultPdf(){const T=G.teams,miss=G.hist.flatMap(h=>h.missed),w=winner(),used=supRows().filter(r=>r[1]!=="Not used"),b=[{h:"Team Results"},{table:{head:["Team","Points","Correct","Mistakes","Steals"],w:[40,15,15,15,15],rows:T.map(t=>[t.name,String(t.score),String(t.correct),String(t.mistakes),String(t.steals)])}}];
  if(T.some(t=>t.adj))b.push({list:["Points changed by the teacher: "+T.filter(t=>t.adj).map(t=>t.name+" "+(t.adj>0?"+":"")+t.adj).join(", ")+"."]});
  b.push({h:"Rounds"},{table:{head:["Question","Found","Mistakes","Points won"],w:[50,12,13,25],rows:G.hist.map(h=>[h.q,h.found+" of 5",String(h.mist),winText(h)])}},{h:"Words to Practise"},{list:miss.length?G.hist.filter(h=>h.missed.length).map(h=>h.q.replace(/\.$/,"")+": "+h.missed.join(", ")):["The class found every answer."]});
  if(used.length)b.push({h:"Support Used"},{list:used.map(r=>r[0]+": "+r[1])});
- return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Team Game Record",foot:"Survey Showdown - "+T[0].name+" and "+T[1].name,meta:[["Teams",T[0].name+" and "+T[1].name],["Rounds",String(G.hist.length)],["Winner",w?w.name:"Tie"],["Date",new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})]],tiles:[[String(T[0].score),T[0].name],[String(T[1].score),T[1].name]],blocks:b})}
-function keyPdf(){return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Teacher Answer Key",foot:"Survey Showdown - Teacher answer key",blocks:QS.flatMap((q,i)=>[{h3:"Question "+(i+1)+": "+q.t},{table:{head:["Slot","Answer","Points","Also accept"],w:[10,36,12,42],rows:q.a.map((a,k)=>[String(k+1),a[0],String(a[1]),a[4]||"-"])}}])})}
-function rKey(){app.className="wrap narrow";app.innerHTML=head()+`<div class="box"><b>Teacher answer key.</b> Keep this page away from the class screen. You can open it on your phone: add <b>#key</b> to the end of the game's address. The board shows the question number, and each slot number matches this list.</div>
+ return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Team Game Record",foot:"Survey Showdown - "+T[0].name+" and "+T[1].name,meta:[["Topic",SETS[setOf(G)].name],["Teams",T[0].name+" and "+T[1].name],["Rounds",String(G.hist.length)],["Winner",w?w.name:"Tie"],["Date",new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})]],tiles:[[String(T[0].score),T[0].name],[String(T[1].score),T[1].name]],blocks:b})}
+function keyPdf(){return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Teacher Answer Key",foot:"Survey Showdown - Teacher answer key",blocks:Object.values(SETS).flatMap(S=>[{h:S.name}].concat(S.qs.flatMap((q,i)=>[{h3:"Question "+(i+1)+": "+q.t},{table:{head:["Slot","Answer","Points","Also accept"],w:[10,36,12,42],rows:q.a.map((a,k)=>[String(k+1),a[0],String(a[1]),a[4]||"-"])}}])))})}
+function rKey(){app.className="wrap narrow";app.innerHTML=head()+`<div class="box"><b>Teacher answer key.</b> Keep this page away from the class screen. You can open it on your phone: add <b>#key</b> to the end of the game's address. The board shows the question number, and each slot number matches this list. Check you are looking at the right topic. The points are made up for the game.</div>
  <div class="row"><button class="btn line" id="kx">← Back</button><button class="btn" id="kp">Save answer key as PDF</button></div><p class="msg" id="ms"></p>
- <div class="card">${QS.map((q,i)=>`<div class="kq"><b>Question ${i+1}: ${E(q.t)}</b><ol>${q.a.map(a=>`<li><b>${E(a[0])}</b> (${a[1]})${a[4]?` <small>also accept: ${E(a[4])}</small>`:""}</li>`).join("")}</ol></div>`).join("")}</div>`;
+ ${Object.values(SETS).map(S=>`<div class="card"><h2>${E(S.name)}</h2>${S.qs.map((q,i)=>`<div class="kq"><b>Question ${i+1}: ${E(q.t)}</b><ol>${q.a.map(a=>`<li><b>${E(a[0])}</b> (${a[1]})${a[4]?` <small>also accept: ${E(a[4])}</small>`:""}</li>`).join("")}</ol></div>`).join("")}</div>`).join("")}`;
  $("kx").onclick=()=>{view=keyFrom;if(location.hash==="#key")try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}render()};
  $("kp").onclick=async()=>{const m=$("ms");try{await MLGPDF.deliver(keyPdf(),"Survey_Showdown_answer_key.pdf");m.textContent="PDF ready. Check your downloads."}catch(e){m.textContent=e&&e.code==="declined"?"Save cancelled.":"The PDF could not be saved."}}}
 view=location.hash==="#key"?"key":"start";render();
