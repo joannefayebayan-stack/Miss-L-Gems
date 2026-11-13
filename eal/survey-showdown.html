@@ -94,6 +94,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .kq{padding:10px 0;border-top:1px solid var(--line)}
 .kq ol{margin:4px 0 0;padding-left:24px}
 .kq small{color:var(--mut)}
+.kq.big{border:0;padding:4px 0 0;font-size:20px}.kq.big b{color:var(--deep)}.kq.big li{margin:6px 0}.kq.big li b{color:var(--ink);font-size:24px}.kq.big small{display:block;font-size:16px}
 .ab{background:#EEEAF8;color:#463A73;border-radius:14px;padding:8px 14px;text-align:center;font-weight:700;display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;align-items:baseline}
 .ab small{font-weight:600;color:#5E5590}
 .topic{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
@@ -280,9 +281,19 @@ function resultPdf(){const T=G.teams,miss=G.hist.flatMap(h=>h.missed),w=winner()
  if(used.length)b.push({h:"Support Used"},{list:used.map(r=>r[0]+": "+r[1])});
  return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Team Game Record",foot:"Survey Showdown - "+T[0].name+" and "+T[1].name,meta:[["Topic",SETS[setOf(G)].name],["Teams",T[0].name+" and "+T[1].name],["Rounds",String(G.hist.length)],["Winner",w?w.name:"Tie"],["Date",new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})]],tiles:[[String(T[0].score),T[0].name],[String(T[1].score),T[1].name]],blocks:b})}
 function keyPdf(){return MLGPDF.build({theme:"eal",title:"Survey Showdown",subtitle:"Teacher Answer Key",foot:"Survey Showdown - Teacher answer key",blocks:Object.values(SETS).flatMap(S=>[{h:S.name}].concat(S.qs.flatMap((q,i)=>[{h3:"Question "+(i+1)+": "+q.t},{table:{head:["Slot","Answer","Points","Also accept"],w:[10,36,12,42],rows:q.a.map((a,k)=>[String(k+1),a[0],String(a[1]),a[4]||"-"])}}])))})}
-function rKey(){app.className="wrap narrow";app.innerHTML=head()+`<div class="box"><b>Teacher answer key.</b> Keep this page away from the class screen. You can open it on your phone: add <b>#key</b> to the end of the game's address. The board shows the question number, and each slot number matches this list. Check you are looking at the right topic. The points are made up for the game.</div>
+let kSet=null,kNum="";
+function kq(q,i,big){return`<div class="kq${big?" big":""}"><b>Question ${i+1}: ${E(q.t)}</b><ol>${q.a.map(a=>`<li><b>${E(a[0])}</b> (${a[1]})${a[4]?` <small>also accept: ${E(a[4])}</small>`:""}</li>`).join("")}</ol></div>`}
+function rKey(){app.className="wrap narrow";if(!kSet)kSet=G?setOf(G):pick;
+ app.innerHTML=head()+`<div class="card" style="display:grid;gap:10px"><h2 style="margin:0">Quick find</h2>
+ <div class="topic" role="group" aria-label="Topic"><button data-k="everyday" aria-pressed="${kSet==="everyday"}">Everyday life<small>Questions 1–20</small></button><button class="abt" data-k="ab" aria-pressed="${kSet==="ab"}">Anti-Bullying Week<small>Questions 1–15</small></button></div>
+ <div><label for="kn">Question number on the board</label><input id="kn" type="number" inputmode="numeric" min="1" max="${SETS[kSet].qs.length}" value="${E(kNum)}" placeholder="Type a number" style="font-size:22px"></div>
+ <div id="kr" aria-live="polite"></div></div>
+ <div class="box"><b>Teacher answer key.</b> Keep this page away from the class screen. You can open it on your phone: add <b>#key</b> to the end of the game's address. The board shows the question number, and each slot number matches this list. The points are made up for the game.</div>
  <div class="row"><button class="btn line" id="kx">← Back</button><button class="btn" id="kp">Save answer key as PDF</button></div><p class="msg" id="ms"></p>
- ${Object.values(SETS).map(S=>`<div class="card"><h2>${E(S.name)}</h2>${S.qs.map((q,i)=>`<div class="kq"><b>Question ${i+1}: ${E(q.t)}</b><ol>${q.a.map(a=>`<li><b>${E(a[0])}</b> (${a[1]})${a[4]?` <small>also accept: ${E(a[4])}</small>`:""}</li>`).join("")}</ol></div>`).join("")}</div>`).join("")}`;
+ <details class="card"><summary style="font-weight:700;cursor:pointer">See all questions</summary>${Object.values(SETS).map(S=>`<h2 style="margin-top:12px">${E(S.name)}</h2>${S.qs.map((q,i)=>kq(q,i)).join("")}`).join("")}</details>`;
+ const show=()=>{kNum=$("kn").value.trim();const n=parseInt(kNum,10),Q2=SETS[kSet].qs;$("kr").innerHTML=!kNum?"":n>=1&&n<=Q2.length?kq(Q2[n-1],n-1,true):`<p class="note" style="margin:0;color:var(--bad)">Type a number from 1 to ${Q2.length}.</p>`};
+ $("kn").oninput=show;show();
+ app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{kSet=b.dataset.k;rKey();$("kn").focus()});
  $("kx").onclick=()=>{view=keyFrom;if(location.hash==="#key")try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}render()};
  $("kp").onclick=async()=>{const m=$("ms");try{await MLGPDF.deliver(keyPdf(),"Survey_Showdown_answer_key.pdf");m.textContent="PDF ready. Check your downloads."}catch(e){m.textContent=e&&e.code==="declined"?"Save cancelled.":"The PDF could not be saved."}}}
 view=location.hash==="#key"?"key":"start";render();
